@@ -11,6 +11,8 @@ npm install
 npm start
 ```
 
+Run the persistence regression tests with `npm test` (Node.js built-in test runner; no extra test dependencies required).
+
 Build installers for Windows, macOS, and Linux with `npm run dist`, or use `npm run dist:win`, `npm run dist:mac`, and `npm run dist:linux` individually. Build each platform on that platform for the best signing and packaging results.
 
 The GitHub Actions workflow in `.github/workflows/release.yml` builds Windows x64, Linux x64, and macOS x64/Apple Silicon installers on every push to `master`. Once all builds succeed, it publishes a GitHub release tagged for that commit and marks it as the latest release. The workflow requires the repository Actions setting to allow GitHub Actions to create releases (the workflow requests `contents: write`).

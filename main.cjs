@@ -1,11 +1,10 @@
 const { app, BrowserWindow, dialog, ipcMain, shell } = require('electron');
 const fs = require('node:fs');
 const path = require('node:path');
+const { createCloseController } = require('./close-controller.cjs');
+const { createProjectStore } = require('./project-store.cjs');
 
 let win;
-let allowClose = false;
-let closePromptOpen = false;
-let saveQueue = Promise.resolve();
 const dataDir = () => path.join(app.getPath('userData'), 'projects');
 const currentFile = () => path.join(dataDir(), 'current.json');
 const recoveryDir = () => path.join(dataDir(), 'recovery');
@@ -37,25 +36,26 @@ function persistProject(data) {
   return { saved: true, savedAt: new Date().toISOString() };
 }
 
-ipcMain.handle('project:load', () => {
+function loadProject() {
   try {
     const data = JSON.parse(fs.readFileSync(currentFile(), 'utf8'));
     return validProject(data) ? data : null;
   } catch { return null; }
-});
-ipcMain.handle('project:save', (_event, data) => {
-  saveQueue = saveQueue.catch(() => {}).then(() => persistProject(data));
-  return saveQueue;
-});
-ipcMain.handle('project:restore-latest', async () => {
-  await saveQueue;
+}
+
+function readLatestRecovery() {
   let files=[];
   try { files=fs.readdirSync(recoveryDir()).filter(name=>name.endsWith('.json')).sort().reverse(); } catch { return null; }
   for (const name of files) {
     try { const data=JSON.parse(fs.readFileSync(path.join(recoveryDir(), name), 'utf8')); if(validProject(data)) return data; } catch {}
   }
   return null;
-});
+}
+
+const projectStore = createProjectStore({ persistProject, loadProject, readLatestRecovery });
+ipcMain.handle('project:load', () => projectStore.loadProject());
+ipcMain.handle('project:save', (_event, data) => projectStore.save(data));
+ipcMain.handle('project:restore-latest', () => projectStore.restoreLatest());
 
 function createWindow() {
   win = new BrowserWindow({
@@ -68,26 +68,28 @@ function createWindow() {
     if (url.startsWith('https://')) shell.openExternal(url);
     return { action: 'deny' };
   });
-  win.on('close', event => {
-    if (allowClose) return;
-    event.preventDefault();
-    if (closePromptOpen) return;
-    closePromptOpen = true;
-    dialog.showMessageBox(win, {
-      type: 'question', buttons: ['Weiterarbeiten', 'Speichern & beenden'], defaultId: 0, cancelId: 0,
-      title: 'Netzplaner beenden?', message: 'Dein Projekt wird lokal gespeichert, bevor Netzplaner beendet wird.',
-      detail: 'Automatische Sicherungen bleiben für die Wiederherstellung erhalten.'
-    }).then(async ({ response }) => {
-      closePromptOpen = false;
-      if (response !== 1) return;
-      try {
-        await win.webContents.executeJavaScript('window.flushProjectSave()');
-        await saveQueue;
-      } catch (error) { console.error('Final save failed:', error); }
-      allowClose = true;
-      win.close();
-    });
+  const handleClose = createCloseController({
+    confirmExit: async () => {
+      const { response } = await dialog.showMessageBox(win, {
+        type: 'question', buttons: ['Weiterarbeiten', 'Speichern & beenden'], defaultId: 0, cancelId: 0,
+        title: 'Netzplaner beenden?', message: 'Dein Projekt wird lokal gespeichert, bevor Netzplaner beendet wird.',
+        detail: 'Automatische Sicherungen bleiben für die Wiederherstellung erhalten.'
+      });
+      return response === 1;
+    },
+    flushSave: async () => {
+      await win.webContents.executeJavaScript('window.flushProjectSave()');
+      await projectStore.flush();
+    },
+    showSaveError: error => dialog.showMessageBox(win, {
+      type: 'error', buttons: ['Weiterarbeiten'], defaultId: 0,
+      title: 'Speichern fehlgeschlagen',
+      message: 'Netzplaner bleibt geöffnet, weil das Projekt nicht gespeichert werden konnte.',
+      detail: String(error?.message || error)
+    }),
+    closeWindow: () => win.close()
   });
+  win.on('close', event => { void handleClose(event); });
 }
 
 app.whenReady().then(() => {
