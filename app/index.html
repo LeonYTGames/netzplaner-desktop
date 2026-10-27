@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Netzplaner</title>
+<link rel="stylesheet" href="vendor/filepond.min.css">
+<style>
+:root{--bg:#0b0e14;--panel:#121722;--panel2:#171d29;--border:#2a3344;--text:#ecf2ff;--muted:#8d99ad;--accent:#74b9ff;--accent2:#a78bfa;--danger:#ff6b7a;--grid:32px;--node:#fff8ea;--node-border:#3f6f8b}
+*{box-sizing:border-box}html,body{margin:0;height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);overflow:hidden}button,input{font:inherit}
+.app{height:100%;display:grid;grid-template-rows:58px 1fr}
+.topbar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#0e131d;border-bottom:1px solid var(--border);z-index:50}.brand{font-weight:750;letter-spacing:.2px;margin-right:12px}.project-name{min-width:180px;max-width:360px;background:transparent;border:1px solid transparent;color:var(--text);padding:7px 9px;border-radius:7px}.project-name:focus{outline:none;border-color:var(--border);background:var(--panel)}.spacer{flex:1}
+.btn{border:1px solid var(--border);background:var(--panel2);color:var(--text);border-radius:7px;padding:7px 10px;cursor:pointer}.btn:hover{background:#1b2331;border-color:#3a465b}.btn.accent{border-color:#496b9f;background:#203149}.btn.active{background:#2b4260;border-color:#5a84b8}.btn.danger{color:#ffdce0;border-color:#6a3340}.iconbtn{width:34px;height:34px;padding:0}.kbd{font-size:11px;color:var(--muted);padding:2px 6px;border:1px solid var(--border);border-radius:5px;background:#0b0f16}
+.workspace{display:grid;grid-template-columns:235px 1fr 290px;min-height:0}.sidebar,.inspector{background:var(--panel);min-height:0;overflow:auto}.sidebar{border-right:1px solid var(--border);padding:14px}.inspector{border-left:1px solid var(--border);padding:14px}.section-title{font-size:11px;text-transform:uppercase;letter-spacing:.11em;color:var(--muted);margin:8px 0 9px}.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tool-grid .btn{min-height:40px}.stack{display:flex;flex-direction:column;gap:8px}.checkrow{display:flex;align-items:center;gap:8px;color:#d4dcec;font-size:14px;padding:4px 0}.checkrow input{accent-color:var(--accent)}
+.canvas-wrap{position:relative;overflow:hidden;background:#d8dee7}.canvas{position:absolute;inset:0;overflow:hidden;cursor:grab}.canvas.dragging{cursor:grabbing}.scene{position:absolute;left:0;top:0;transform-origin:0 0}.grid-bg{position:absolute;inset:-50000px;background-image:linear-gradient(to right,rgba(55,70,90,.22) 1px,transparent 1px),linear-gradient(to bottom,rgba(55,70,90,.22) 1px,transparent 1px);background-size:var(--grid) var(--grid);pointer-events:none}.grid-bg.hidden{display:none}.edges{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}.edge-hit{pointer-events:stroke;stroke:transparent;stroke-width:18;cursor:pointer}.edge-line{pointer-events:none}.node{position:absolute;width:240px;min-height:120px;background:var(--node);color:#1d2430;border:2px solid var(--node-border);box-shadow:0 8px 22px rgba(0,0,0,.28);border-radius:2px;user-select:none}.node.selected{outline:3px solid rgba(116,185,255,.7);outline-offset:3px}.node.connecting{outline:3px dashed #a78bfa;outline-offset:3px}.node-head{display:grid;grid-template-columns:1fr 1.55fr;min-height:44px}.node-head>div,.node-row>div{padding:7px 10px;border-right:1px solid #718296;border-bottom:1px solid #718296}.node-head>div:last-child,.node-row>div:last-child{border-right:0}.node-head .label{font-size:12px;text-transform:uppercase;color:#4c5563;letter-spacing:.04em}.node-head .value{font-weight:650;word-break:break-word}.node-body{display:grid;grid-template-columns:1fr 1fr 1fr}.node-body .cell{padding:8px 8px;border-right:1px solid #718296}.node-body .cell:last-child{border-right:0}.node-body small{display:block;text-transform:uppercase;color:#596678;font-size:9px;letter-spacing:.08em}.node-body strong{font-size:18px;line-height:1.15}.node-corners{position:absolute;inset:0;pointer-events:none}.corner{position:absolute;font-size:12px;font-style:italic;z-index:2;font-size:14px;font-style:normal;font-weight:800;line-height:1;letter-spacing:.01em;color:#172231;white-space:nowrap;background:#f8fbff;border:1px solid #7a899b;border-radius:5px;padding:3px 6px;box-shadow:0 2px 5px rgba(20,32,48,.18)}.corner.tl{left:-5px;top:-31px}.corner.tr{right:-5px;top:-31px}.corner.bl{left:-5px;bottom:-31px}.corner.br{right:-5px;bottom:-31px}
+.inspector h3{margin:0 0 12px;font-size:16px}.field{margin-bottom:9px}.field label{display:block;color:var(--muted);font-size:11px;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}.field input,.field textarea{width:100%;background:#0c1119;border:1px solid var(--border);color:var(--text);border-radius:6px;padding:8px 9px}.field input:focus,.field textarea:focus{outline:2px solid rgba(116,185,255,.25);border-color:#4d6f9e}.inspector .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.empty{color:var(--muted);font-size:13px;line-height:1.55}.edge-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}.edge-item{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7px 8px;background:#0c1119;border:1px solid var(--border);border-radius:6px;font-size:12px}.edge-item button{padding:3px 7px}
+.status{position:absolute;left:12px;bottom:12px;display:flex;gap:8px;align-items:center;z-index:10}.badge{background:rgba(14,19,29,.88);border:1px solid var(--border);color:#c8d2e3;padding:5px 8px;border-radius:6px;font-size:11px;backdrop-filter:blur(7px)}
+.dialog{position:fixed;inset:0;background:rgba(0,0,0,.62);display:none;align-items:center;justify-content:center;z-index:100}.dialog.open{display:flex}.modal{width:min(660px,92vw);max-height:84vh;overflow:auto;background:#101620;border:1px solid var(--border);border-radius:11px;padding:18px;box-shadow:0 22px 80px rgba(0,0,0,.5)}.modal h2{margin:0 0 6px}.modal p{margin:0 0 14px;color:var(--muted)}
+.help{display:none;position:fixed;inset:58px 0 0 0;background:var(--bg);z-index:80;overflow:auto}.help.open{display:block}.help-inner{max-width:1000px;margin:0 auto;padding:28px}.hotkeys{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}.hk{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:11px 12px;display:flex;justify-content:space-between;gap:12px}.hk span{color:var(--muted);text-align:right}.notice{padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:#0e141d;color:#c8d2e3;font-size:13px;line-height:1.5}
+.minified .node{width:185px;min-height:92px}.minified .node-head{min-height:34px;font-size:11px}.minified .node-head>div,.minified .node-row>div{padding:5px 7px}.minified .node-body .cell{padding:5px 6px}.minified .node-body strong{font-size:14px}.minified .corner{font-size:12px;padding:3px 5px}.minified .corner.tl,.minified .corner.tr{top:-25px}.minified .corner.bl,.minified .corner.br{bottom:-25px}
+@media(max-width:1000px){.workspace{grid-template-columns:210px 1fr}.inspector{display:none}.topbar .project-name{min-width:130px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">Netzplaner</div>
+    <input id="projectName" class="project-name" value="Unbenanntes Projekt" aria-label="Projektname">
+    <button class="btn" id="newBtn" title="Neues Projekt">Neu</button>
+    <button class="btn" id="importBtn" title="Projekt importieren">Import</button>
+    <button class="btn" id="exportProjectBtn" title="Projekt als JSON exportieren">Export</button>
+    <span id="saveStatus" style="font-size:12px;color:#8d99ad" role="status">Lokal gespeichert</span>
+    <div class="spacer"></div>
+    <button class="btn iconbtn" id="undoBtn" title="Undo (Ctrl/Cmd+Z)">↶</button>
+    <button class="btn iconbtn" id="redoBtn" title="Redo (Ctrl/Cmd+Y / Shift+Ctrl/Cmd+Z)">↷</button>
+    <button class="btn" id="helpBtn" title="Hilfe & Tastenkürzel">Help</button>
+  </header>
+
+  <div class="workspace">
+    <aside class="sidebar">
+      <div class="section-title">Werkzeuge</div>
+      <div class="tool-grid">
+        <button class="btn accent" id="addNodeBtn">＋ Knoten <span class="kbd">N</span></button>
+        <button class="btn" id="connectBtn">↗ Verbindung <span class="kbd">E</span></button>
+        <button class="btn" id="deleteBtn">⌫ Löschen <span class="kbd">Del</span></button>
+        <button class="btn" id="fitBtn">⛶ Einpassen <span class="kbd">F</span></button>
+      </div>
+      <div class="section-title">Ansicht</div>
+      <div class="stack">
+        <label class="checkrow"><input id="gridToggle" type="checkbox" checked> Raster</label>
+        <label class="checkrow"><input id="snapToggle" type="checkbox" checked> Am Raster einrasten</label>
+        <button class="btn" id="minifyBtn">Minify <span class="kbd">M</span></button>
+      </div>
+      <div class="section-title">Export</div>
+      <div class="stack">
+        <button class="btn" id="pngBtn">PNG exportieren</button>
+        <button class="btn" id="jpgBtn">JPEG exportieren</button>
+        <button class="btn" id="pdfBtn">PDF exportieren</button>
+      </div>
+      <div class="section-title">Canvas</div>
+      <div class="stack">
+        <button class="btn" id="zoomInBtn">＋ Zoom</button>
+        <button class="btn" id="zoomOutBtn">− Zoom</button>
+        <button class="btn" id="resetZoomBtn">100 %</button>
+      </div>
+      <div class="section-title">Projektdatei</div>
+      <div class="stack" style="margin-bottom:10px"><button class="btn" id="recoverBtn">Letzte Sicherung wiederherstellen</button></div>
+      <div class="notice">Projektdateien enthalten ausschließlich Name, Knoten, Verbindungen und Positionen. Es werden keine Netzplandaten berechnet.</div>
+    </aside>
+
+    <main class="canvas-wrap" id="canvasWrap">
+      <div class="canvas" id="canvas">
+        <div class="grid-bg" id="gridBg"></div>
+        <div class="scene" id="scene">
+          <svg class="edges" id="edgesSvg" width="5000" height="5000" viewBox="0 0 5000 5000" aria-hidden="true">
+            <defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,4 L0,8 z" fill="#8fa1bb"></path></marker></defs>
+          </svg>
+        </div>
+      </div>
+      <div class="status"><div class="badge" id="zoomBadge">100 %</div><div class="badge" id="modeBadge">Normal</div><div class="badge" id="selectionBadge">Keine Auswahl</div></div>
+    </main>
+
+    <aside class="inspector" id="inspector">
+      <h3>Knotendefinition</h3>
+      <div id="inspectorEmpty" class="empty">Klicke einen Knoten an, um seine Werte zu bearbeiten.</div>
+      <div id="inspectorForm" hidden>
+        <div class="field"><label>ID</label><input id="fId" type="text"></div>
+        <div class="field"><label>Vorgang</label><input id="fTask" type="text"></div>
+        <div class="row">
+          <div class="field"><label>Dauer</label><input id="fDuration" type="text"></div>
+          <div></div>
+        </div>
+        <div class="row">
+          <div class="field"><label>FAZ</label><input id="fFAZ" type="text"></div>
+          <div class="field"><label>FEZ</label><input id="fFEZ" type="text"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label>SAZ</label><input id="fSAZ" type="text"></div>
+          <div class="field"><label>SEZ</label><input id="fSEZ" type="text"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label>FP</label><input id="fFP" type="text"></div>
+          <div class="field"><label>GP</label><input id="fGP" type="text"></div>
+        </div>
+        <div class="stack" style="margin-top:8px"><button class="btn danger" id="deleteSelectedBtn">Knoten löschen</button></div>
+        <div class="section-title">Verbindungen</div>
+        <div id="edgeList" class="edge-list"></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div class="dialog" id="importDialog">
+  <div class="modal">
+    <h2>Projekt importieren</h2>
+    <p>JSON-Projektdatei auswählen. Ein importiertes Projekt ersetzt den aktuellen Netzplan.</p>
+    <input type="file" id="filepondInput" accept="application/json,.json">
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px"><button class="btn" id="cancelImportBtn">Abbrechen</button></div>
+  </div>
+</div>
+
+<div class="help" id="helpPage">
+  <div class="help-inner">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px"><button class="btn" id="closeHelpBtn">← Zurück</button><h1 style="margin:0">Hilfe & Tastenkürzel</h1></div>
+    <div class="notice" style="margin-bottom:18px">Der Netzplaner ist vollständig manuell. Werte wie FAZ, FEZ, SAZ, SEZ, FP und GP werden nie automatisch berechnet. Verbindungen dienen ausschließlich als grafische Darstellung.</div>
+    <h2>Tastenkürzel</h2>
+    <div class="hotkeys">
+      <div class="hk"><strong>N</strong><span>Neuen Knoten erstellen</span></div>
+      <div class="hk"><strong>E</strong><span>Verbindungsmodus aktivieren</span></div>
+      <div class="hk"><strong>Delete / Backspace</strong><span>Ausgewählten Knoten löschen</span></div>
+      <div class="hk"><strong>Escape</strong><span>Verbindungsmodus / Auswahl beenden</span></div>
+      <div class="hk"><strong>Ctrl/Cmd + Z</strong><span>Undo</span></div>
+      <div class="hk"><strong>Ctrl/Cmd + Y</strong><span>Redo</span></div>
+      <div class="hk"><strong>Ctrl/Cmd + Shift + Z</strong><span>Redo</span></div>
+      <div class="hk"><strong>Ctrl/Cmd + S</strong><span>Projekt exportieren</span></div>
+      <div class="hk"><strong>Ctrl/Cmd + O</strong><span>Projekt importieren</span></div>
+      <div class="hk"><strong>F</strong><span>Netzplan einpassen</span></div>
+      <div class="hk"><strong>M</strong><span>Minify umschalten</span></div>
+      <div class="hk"><strong>+ / -</strong><span>Zoom ändern</span></div>
+    </div>
+    <h2 style="margin-top:28px">Bedienung</h2>
+    <p class="empty">Knoten lassen sich per Drag & Drop verschieben. Ist das Raster aktiv und "Am Raster einrasten" aktiviert, rasten ihre Positionen beim Verschieben an den Rasterpunkten ein. Für Verbindungen zuerst <b>Verbindung</b> aktivieren und anschließend Start- und Zielknoten anklicken.</p>
+  </div>
+</div>
+
+<script src="vendor/filepond.min.js"></script>
+<script src="vendor/jspdf.umd.min.js"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const scene = $('scene'), canvas = $('canvas'), wrap = $('canvasWrap'), edgesSvg = $('edgesSvg');
+  const projectName = $('projectName');
+  const GRID_SIZE = 32;
+  const state = { name: 'Unbenanntes Projekt', nodes: [], edges: [], selected: null, connectMode: false, connectFrom: null, grid: true, snap: true, minified: false, zoom: 1, panX: 80, panY: 80 };
+  const history = { undo: [], redo: [], last: null };
+  let saveTimer=null, saveInFlight=Promise.resolve(), initializing=true;
+  function scheduleSave(){ if(initializing)return; $('saveStatus').textContent='Speichert…'; clearTimeout(saveTimer); saveTimer=setTimeout(saveNow,180); }
+  function saveNow(){
+    const data={format:'netzplaner',version:1,name:state.name,nodes:state.nodes,edges:state.edges,view:{grid:state.grid,snap:state.snap,minified:state.minified}};
+    try{ localStorage.setItem('netzplaner.autosave',JSON.stringify(data)); }catch(e){ $('saveStatus').textContent='Speichern fehlgeschlagen'; }
+    if(window.netzplaner?.saveProject){ saveInFlight=saveInFlight.then(()=>window.netzplaner.saveProject(data)).then(()=>{ $('saveStatus').textContent='Lokal gespeichert'; }).catch(()=>{ $('saveStatus').textContent='Speichern fehlgeschlagen'; }); } else $('saveStatus').textContent='Lokal gespeichert';
+    return saveInFlight;
+  }
+  function loadAutosave(){ try { const raw=localStorage.getItem('netzplaner.autosave'); if(!raw)return null; const obj=JSON.parse(raw); return obj?.format==='netzplaner'&&Array.isArray(obj.nodes)&&Array.isArray(obj.edges)?obj:null; } catch { return null; } }
+  function applyProject(obj){ state.name=obj.name||'Unbenanntes Projekt'; state.nodes=Array.isArray(obj.nodes)?obj.nodes:[]; state.edges=Array.isArray(obj.edges)?obj.edges:[]; state.grid=obj.view?.grid!==false; state.snap=obj.view?.snap!==false; state.minified=!!obj.view?.minified; projectName.value=state.name; $('gridToggle').checked=state.grid; $('snapToggle').checked=state.snap; }
+  function exportData(){ state.name=projectName.value.trim()||'Unbenanntes Projekt'; return {format:'netzplaner',version:1,name:state.name,nodes:state.nodes,edges:state.edges,view:{grid:state.grid,snap:state.snap,minified:state.minified}}; }
+
+  function uid(){ return Math.random().toString(36).slice(2,8); }
+  function clone(v){ return JSON.parse(JSON.stringify(v)); }
+  function snapshot(){ return JSON.stringify({name:state.name,nodes:state.nodes,edges:state.edges,grid:state.grid,snap:state.snap,minified:state.minified}); }
+  function pushHistory(){ const s=snapshot(); if(s===history.last) return; history.undo.push(history.last===null?s:history.last); history.redo=[]; history.last=s; updateUndoButtons(); }
+  function restoreSnapshot(raw){ const s=JSON.parse(raw); state.name=s.name||'Unbenanntes Projekt'; state.nodes=s.nodes||[]; state.edges=s.edges||[]; state.grid=s.grid!==false; state.snap=s.snap!==false; state.minified=!!s.minified; state.selected=null; state.connectMode=false; state.connectFrom=null; projectName.value=state.name; $('gridToggle').checked=state.grid; $('snapToggle').checked=state.snap; render(); }
+  function undo(){ if(!history.undo.length)return; const current=snapshot(); const prev=history.undo.pop(); history.redo.push(current); history.last=prev; restoreSnapshot(prev); updateUndoButtons(); }
+  function redo(){ if(!history.redo.length)return; const current=snapshot(); const next=history.redo.pop(); history.undo.push(current); history.last=next; restoreSnapshot(next); updateUndoButtons(); }
+  function updateUndoButtons(){ $('undoBtn').disabled=!history.undo.length; $('redoBtn').disabled=!history.redo.length; }
+
+  function nodeW(){ return state.minified?185:240; }
+  function nodeH(){ return state.minified?92:120; }
+  function fitView(){
+    if(!state.nodes.length){ state.zoom=1; state.panX=80; state.panY=80; applyTransform(); return; }
+    const w=nodeW(), h=nodeH();
+    const minX=Math.min(...state.nodes.map(n=>n.x)), minY=Math.min(...state.nodes.map(n=>n.y));
+    const maxX=Math.max(...state.nodes.map(n=>n.x+w)), maxY=Math.max(...state.nodes.map(n=>n.y+h));
+    const pad=50, vw=wrap.clientWidth-pad*2, vh=wrap.clientHeight-pad*2;
+    const z=Math.min(vw/Math.max(1,maxX-minX),vh/Math.max(1,maxY-minY),1.35);
+    state.zoom=Math.max(.25,Math.min(2.5,z)); state.panX=pad-minX*state.zoom; state.panY=pad-minY*state.zoom; applyTransform();
+  }
+  function applyTransform(){ scene.style.transform=`translate(${state.panX}px,${state.panY}px) scale(${state.zoom})`; $('zoomBadge').textContent=Math.round(state.zoom*100)+' %'; $('modeBadge').textContent=state.minified?'Minified':'Normal'; $('selectionBadge').textContent=state.selected?'Knoten '+(state.nodes.find(n=>n.id===state.selected)?.data.id||''):'Keine Auswahl'; }
+  function snap(v){ return state.snap&&state.grid ? Math.round(v/GRID_SIZE)*GRID_SIZE : v; }
+  function nodeById(id){ return state.nodes.find(n=>n.id===id); }
+  function screenToWorld(clientX,clientY){ const r=canvas.getBoundingClientRect(); return {x:(clientX-r.left-state.panX)/state.zoom,y:(clientY-r.top-state.panY)/state.zoom}; }
+
+  function render(){
+    $('gridBg').classList.toggle('hidden',!state.grid); scene.classList.toggle('minified',state.minified);
+    scene.querySelectorAll('.node').forEach(e=>e.remove());
+    for(const n of state.nodes){
+      const el=document.createElement('div'); el.className='node'+(state.selected===n.id?' selected ':'')+(state.connectFrom===n.id?' connecting':''); el.dataset.nodeId=n.id; el.style.left=n.x+'px'; el.style.top=n.y+'px';
+      const d=n.data;
+      el.innerHTML=`<div class="node-corners"><div class="corner tl">${escapeHtml(d.FAZ)}</div><div class="corner tr">${escapeHtml(d.FEZ)}</div><div class="corner bl">${escapeHtml(d.SAZ)}</div><div class="corner br">${escapeHtml(d.SEZ)}</div></div><div class="node-head"><div><div class="label">ID</div><div class="value">${escapeHtml(d.id)}</div></div><div><div class="label">Vorgang</div><div class="value">${escapeHtml(d.task)}</div></div></div><div class="node-body"><div class="cell"><small>Dauer</small><strong>${escapeHtml(d.duration)}</strong></div><div class="cell"><small>FP</small><strong>${escapeHtml(d.FP)}</strong></div><div class="cell"><small>GP</small><strong>${escapeHtml(d.GP)}</strong></div></div>`;
+      scene.appendChild(el); attachNodeEvents(el,n.id);
+    }
+    drawEdges(); renderInspector(); applyTransform(); scheduleSave();
+  }
+  function escapeHtml(v){ return String(v??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m])); }
+  function attachNodeEvents(el,id){
+    let drag=null;
+    el.addEventListener('pointerdown',e=>{
+      if(e.button!==0)return;
+      e.stopPropagation();
+
+      if(state.connectMode){
+        handleConnectClick(id);
+        return;
+      }
+
+      // Do not call render() here: render() destroys this DOM node and
+      // would invalidate pointer capture before the drag even starts.
+      state.selected=id;
+      scene.querySelectorAll('.node.selected').forEach(n=>n.classList.remove('selected'));
+      el.classList.add('selected');
+      renderInspector();
+      applyTransform();
+
+      const n=nodeById(id);
+      drag={sx:e.clientX,sy:e.clientY,ox:n.x,oy:n.y,moved:false};
+      el.setPointerCapture(e.pointerId);
+    });
+    el.addEventListener('pointermove',e=>{
+      if(!drag)return;
+      const dx=(e.clientX-drag.sx)/state.zoom;
+      const dy=(e.clientY-drag.sy)/state.zoom;
+      if(Math.abs(dx)+Math.abs(dy)>2) drag.moved=true;
+
+      const n=nodeById(id);
+      n.x=snap(drag.ox+dx);
+      n.y=snap(drag.oy+dy);
+
+      // Move the existing element instead of re-rendering the whole scene.
+      // Re-rendering here destroys the element that owns pointer capture.
+      el.style.left=n.x+'px';
+      el.style.top=n.y+'px';
+      drawEdges();
+      renderInspector();
+      applyTransform();
+      scheduleSave();
+    });
+    el.addEventListener('pointerup',e=>{
+      if(!drag)return;
+      if(drag.moved){
+        pushHistory();
+      }
+      drag=null;
+    });
+    el.addEventListener('pointercancel',()=>{
+      drag=null;
+    });
+    el.addEventListener('dblclick',e=>{ e.stopPropagation(); focusFirstField(); });
+  }
+  function drawEdges(){
+    edgesSvg.querySelectorAll('.edge-group').forEach(e=>e.remove());
+    for(const edge of state.edges){
+      const a=nodeById(edge.from), b=nodeById(edge.to); if(!a||!b)continue;
+      const aw=nodeW(), ah=nodeH(); const x1=a.x+aw, y1=a.y+ah/2, x2=b.x, y2=b.y+ah/2;
+      const mid=Math.max(30,Math.abs(x2-x1)*.45); const d=`M ${x1} ${y1} C ${x1+mid} ${y1}, ${x2-mid} ${y2}, ${x2} ${y2}`;
+      const g=document.createElementNS('http://www.w3.org/2000/svg','g'); g.classList.add('edge-group');
+      const hit=document.createElementNS('http://www.w3.org/2000/svg','path'); hit.setAttribute('d',d); hit.setAttribute('fill','none'); hit.classList.add('edge-hit'); hit.dataset.edgeId=edge.id;
+      const line=document.createElementNS('http://www.w3.org/2000/svg','path'); line.setAttribute('d',d); line.setAttribute('fill','none'); line.setAttribute('stroke','#8fa1bb'); line.setAttribute('stroke-width','2.5'); line.setAttribute('marker-end','url(#arrow)'); line.classList.add('edge-line');
+      g.append(hit,line); edgesSvg.appendChild(g); hit.addEventListener('click',e=>{e.stopPropagation(); deleteEdge(edge.id)});
+    }
+  }
+  function selectNode(id){ state.selected=id; render(); }
+  function deleteSelected(){ if(!state.selected)return; pushHistory(); const doomed=state.selected; state.nodes=state.nodes.filter(n=>n.id!==doomed); state.edges=state.edges.filter(e=>e.from!==doomed&&e.to!==doomed); state.selected=null; render(); }
+  function deleteEdge(id){ pushHistory(); state.edges=state.edges.filter(e=>e.id!==id); render(); }
+  function addNode(){ pushHistory(); const idx=state.nodes.length+1; const id=uid(); state.nodes.push({id,x:snap(100+((idx-1)%3)*300),y:snap(100+Math.floor((idx-1)/3)*190),data:{id:String(idx),task:'Neuer Vorgang',duration:'',FAZ:'',FEZ:'',SAZ:'',SEZ:'',FP:'',GP:''}}); state.selected=id; render(); }
+  function handleConnectClick(id){ if(!state.connectFrom){state.connectFrom=id; render(); return;} if(state.connectFrom===id){state.connectFrom=null; render(); return;} if(!state.edges.some(e=>e.from===state.connectFrom&&e.to===id)){pushHistory();state.edges.push({id:uid(),from:state.connectFrom,to:id});} state.connectFrom=null; render(); }
+  function toggleConnect(){ state.connectMode=!state.connectMode; state.connectFrom=null; $('connectBtn').classList.toggle('active',state.connectMode); render(); }
+  function renderInspector(){
+    const n=nodeById(state.selected); const empty=!n; $('inspectorEmpty').hidden=!empty; $('inspectorForm').hidden=empty; if(empty)return; const d=n.data;
+    [['fId','id'],['fTask','task'],['fDuration','duration'],['fFAZ','FAZ'],['fFEZ','FEZ'],['fSAZ','SAZ'],['fSEZ','SEZ'],['fFP','FP'],['fGP','GP']].forEach(([id,k])=>$(id).value=d[k]??'');
+    const list=$('edgeList'); list.innerHTML=''; const rel=state.edges.filter(e=>e.from===n.id||e.to===n.id); if(!rel.length){list.innerHTML='<div class="empty">Keine Verbindungen.</div>'} else rel.forEach(e=>{const a=nodeById(e.from),b=nodeById(e.to);const div=document.createElement('div');div.className='edge-item';div.innerHTML=`<span>${escapeHtml(a?.data.id||'?')} → ${escapeHtml(b?.data.id||'?')}</span><button class="btn" data-edge="${e.id}">×</button>`;div.querySelector('button').onclick=()=>deleteEdge(e.id);list.appendChild(div);});
+  }
+  function bindField(id,key){ $(id).addEventListener('input',()=>{const n=nodeById(state.selected);if(!n)return;n.data[key]=$(id).value; scheduleSave(); if(key==='id'||key==='task') render(); else renderInspector();}); $(id).addEventListener('change',pushHistory); }
+  ['fId','fTask','fDuration','fFAZ','fFEZ','fSAZ','fSEZ','fFP','fGP'].forEach((id,i)=>bindField(id,['id','task','duration','FAZ','FEZ','SAZ','SEZ','FP','GP'][i]));
+  function focusFirstField(){ $('fTask').focus(); $('fTask').select(); }
+
+  function downloadBlob(blob,name){ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},0); }
+  function exportProject(){ state.name=projectName.value.trim()||'Unbenanntes Projekt'; const data=exportData(); saveNow(); downloadBlob(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),safeFile(state.name)+'.json'); history.last=snapshot(); }
+  function safeFile(s){ return (s||'netzplan').replace(/[\\/:*?"<>|]+/g,'_').trim()||'netzplan'; }
+  function projectRect(){
+    const w=nodeW(),h=nodeH(); if(!state.nodes.length) return {x:0,y:0,w:700,h:400}; const xs=state.nodes.map(n=>n.x),ys=state.nodes.map(n=>n.y); const minX=Math.min(...xs)-60,minY=Math.min(...ys)-60,maxX=Math.max(...xs)+w+60,maxY=Math.max(...ys)+h+60; return {x:minX,y:minY,w:Math.max(300,maxX-minX),h:Math.max(220,maxY-minY)};
+  }
+  function makeExportSvg(){
+    const r=projectRect(); const svg=document.createElementNS('http://www.w3.org/2000/svg','svg'); svg.setAttribute('xmlns','http://www.w3.org/2000/svg'); svg.setAttribute('width',r.w); svg.setAttribute('height',r.h); svg.setAttribute('viewBox',`${r.x} ${r.y} ${r.w} ${r.h}`);
+    const bg=document.createElementNS('http://www.w3.org/2000/svg','rect');bg.setAttribute('x',r.x);bg.setAttribute('y',r.y);bg.setAttribute('width',r.w);bg.setAttribute('height',r.h);bg.setAttribute('fill','#f7f8fa');svg.appendChild(bg);
+    const marker=document.createElementNS('http://www.w3.org/2000/svg','marker');marker.setAttribute('id','a');marker.setAttribute('markerWidth','10');marker.setAttribute('markerHeight','8');marker.setAttribute('refX','9');marker.setAttribute('refY','4');marker.setAttribute('orient','auto');const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d','M0,0 L10,4 L0,8 z');p.setAttribute('fill','#617389');marker.appendChild(p);const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');defs.appendChild(marker);svg.appendChild(defs);
+    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+    for(const edge of state.edges){const a=nodeById(edge.from),b=nodeById(edge.to);if(!a||!b)continue;const x1=a.x+w,y1=a.y+h/2,x2=b.x,y2=b.y+h/2,mid=Math.max(30,Math.abs(x2-x1)*.45);const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d',`M ${x1} ${y1} C ${x1+mid} ${y1}, ${x2-mid} ${y2}, ${x2} ${y2}`);path.setAttribute('fill','none');path.setAttribute('stroke','#617389');path.setAttribute('stroke-width','2.5');path.setAttribute('marker-end','url(#a)');g.appendChild(path);}
+    svg.appendChild(g);
+    for(const n of state.nodes){ const d=n.data, ng=document.createElementNS('http://www.w3.org/2000/svg','g'); ng.setAttribute('transform',`translate(${n.x},${n.y})`); const box=document.createElementNS('http://www.w3.org/2000/svg','rect');box.setAttribute('width',w);box.setAttribute('height',h);box.setAttribute('fill','#f4ead7');box.setAttribute('stroke','#5a91ad');box.setAttribute('stroke-width','2');ng.appendChild(box);
+      function line(x1,y1,x2,y2){const l=document.createElementNS('http://www.w3.org/2000/svg','line');l.setAttribute('x1',x1);l.setAttribute('y1',y1);l.setAttribute('x2',x2);l.setAttribute('y2',y2);l.setAttribute('stroke','#6b7f91');l.setAttribute('stroke-width','1');ng.appendChild(l)}
+      line(0,44,w,44);line(w*0.42,0,w*0.42,44);line(w/3,44,w/3,h);line(w*2/3,44,w*2/3,h);
+      function text(x,y,txt,size,weight,anchor='start',fill='#1d2430',italic=false){const t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('x',x);t.setAttribute('y',y);t.setAttribute('font-family','Arial, sans-serif');t.setAttribute('font-size',size);t.setAttribute('font-weight',weight);t.setAttribute('text-anchor',anchor);t.setAttribute('fill',fill);if(italic)t.setAttribute('font-style','italic');t.textContent=String(txt??'');ng.appendChild(t)}
+      text(10,14,'ID',10,400,'start','#596573');text(10,31,d.id,14,700);text(w*0.42+10,14,'VORGANG',10,400,'start','#596573');text(w*0.42+10,31,d.task,14,700);text(w/6,62,'DAUER',9,400,'middle','#66717e');text(w/6,83,d.duration,16,700,'middle');text(w/2,62,'FP',9,400,'middle','#66717e');text(w/2,83,d.FP,16,700,'middle');text(w*5/6,62,'GP',9,400,'middle','#66717e');text(w*5/6,83,d.GP,16,700,'middle');text(-2,-10,d.FAZ,12,400,'start','#222b36',true);text(w+2,-10,d.FEZ,12,400,'end','#222b36',true);text(-2,h+17,d.SAZ,12,400,'start','#222b36',true);text(w+2,h+17,d.SEZ,12,400,'end','#222b36',true);svg.appendChild(ng);
+    }
+    return {svg,r};
+  }
+  async function exportImage(kind){
+    const {svg,r}=makeExportSvg(); const serialized=new XMLSerializer().serializeToString(svg); const data='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(serialized); const img=new Image(); img.onload=()=>{const scale=kind==='png'?2:2,canvas2=document.createElement('canvas');canvas2.width=Math.ceil(r.w*scale);canvas2.height=Math.ceil(r.h*scale);const ctx=canvas2.getContext('2d');ctx.fillStyle='#f7f8fa';ctx.fillRect(0,0,canvas2.width,canvas2.height);ctx.drawImage(img,0,0,canvas2.width,canvas2.height);canvas2.toBlob(blob=>downloadBlob(blob,safeFile(state.name||'netzplan')+'.'+(kind==='jpg'?'jpg':'png')),'image/'+(kind==='jpg'?'jpeg':'png'),0.95)};img.src=data;
+  }
+  async function exportPdf(){
+    const {svg,r}=makeExportSvg(); const serialized=new XMLSerializer().serializeToString(svg); const data='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(serialized); const img=new Image(); img.onload=()=>{const canvas2=document.createElement('canvas');const scale=2;canvas2.width=Math.ceil(r.w*scale);canvas2.height=Math.ceil(r.h*scale);const ctx=canvas2.getContext('2d');ctx.fillStyle='#f7f8fa';ctx.fillRect(0,0,canvas2.width,canvas2.height);ctx.drawImage(img,0,0,canvas2.width,canvas2.height);const {jsPDF}=window.jspdf;const mmPerPx=25.4/96;const pdf=new jsPDF({orientation:r.w>=r.h?'landscape':'portrait',unit:'mm',format:[Math.max(80,r.w*mmPerPx),Math.max(60,r.h*mmPerPx)]});pdf.addImage(canvas2.toDataURL('image/png'),'PNG',0,0,r.w*mmPerPx,r.h*mmPerPx);pdf.save(safeFile(state.name||'netzplan')+'.pdf');};img.src=data;
+  }
+
+  // Project import via FilePond
+  let pond=null;
+  $('importBtn').onclick=()=>{
+    $('importDialog').classList.add('open');
+    setTimeout(()=>{
+      if(!pond){
+        pond=FilePond.create($('filepondInput'),{allowMultiple:false,acceptedFileTypes:['application/json'],labelIdle:'JSON-Datei hierher ziehen oder auswählen',credits:false});
+        pond.on('addfile',(err,file)=>{
+          if(err)return;
+          const reader=new FileReader();
+          reader.onload=()=>{
+            try{
+              const obj=JSON.parse(reader.result);
+              if(obj.format!=='netzplaner') throw new Error('Ungültiges Format');
+              pushHistory();
+              state.name=obj.name||'Unbenanntes Projekt';
+              state.nodes=Array.isArray(obj.nodes)?obj.nodes:[];
+              state.edges=Array.isArray(obj.edges)?obj.edges:[];
+              state.grid=obj.view?.grid!==false;
+              state.snap=obj.view?.snap!==false;
+              state.minified=!!obj.view?.minified;
+              state.selected=null;
+              state.connectMode=false;
+              state.connectFrom=null;
+              projectName.value=state.name;
+              $('gridToggle').checked=state.grid;
+              $('snapToggle').checked=state.snap;
+              render();
+              saveNow();
+              $('importDialog').classList.remove('open');
+              pond.removeFiles();
+              fitView();
+            }catch(e){ alert('Import fehlgeschlagen: '+e.message); }
+          };
+          reader.readAsText(file.file);
+        });
+      }
+    },50);
+  };
+  $('cancelImportBtn').onclick=()=>$('importDialog').classList.remove('open');
+  $('newBtn').onclick=()=>{if(state.nodes.length||state.edges.length){if(!confirm('Aktuelles Projekt verwerfen und ein neues Projekt starten?'))return;} history.undo=[];history.redo=[];history.last=null;state.name='Unbenanntes Projekt';state.nodes=[];state.edges=[];state.selected=null;state.connectMode=false;state.connectFrom=null;projectName.value=state.name;render();updateUndoButtons();};
+  $('recoverBtn').onclick=async()=>{ if(!window.netzplaner?.restoreLatest){ alert('Wiederherstellung ist nur in der Desktop-App verfügbar.'); return; } if(!confirm('Letzte automatische Sicherung laden? Der aktuelle Stand wird vorher ebenfalls gesichert.'))return; const recovered=await window.netzplaner.restoreLatest(); if(recovered){ applyProject(recovered); render(); saveNow(); } else alert('Es wurde keine frühere Sicherung gefunden.'); };
+  $('exportProjectBtn').onclick=exportProject;$('undoBtn').onclick=undo;$('redoBtn').onclick=redo;$('addNodeBtn').onclick=addNode;$('connectBtn').onclick=toggleConnect;$('deleteBtn').onclick=deleteSelected;$('deleteSelectedBtn').onclick=deleteSelected;$('fitBtn').onclick=fitView;$('pngBtn').onclick=()=>exportImage('png');$('jpgBtn').onclick=()=>exportImage('jpg');$('pdfBtn').onclick=exportPdf;
+  $('gridToggle').onchange=()=>{pushHistory();state.grid=$('gridToggle').checked;render();}; $('snapToggle').onchange=()=>{pushHistory();state.snap=$('snapToggle').checked;render();}; $('minifyBtn').onclick=()=>{pushHistory();state.minified=!state.minified;render();fitView();};
+  $('zoomInBtn').onclick=()=>{state.zoom=Math.min(2.5,state.zoom*1.15);applyTransform()};$('zoomOutBtn').onclick=()=>{state.zoom=Math.max(.25,state.zoom/1.15);applyTransform()};$('resetZoomBtn').onclick=()=>{state.zoom=1;applyTransform()};
+  $('helpBtn').onclick=()=>$('helpPage').classList.add('open');$('closeHelpBtn').onclick=()=>$('helpPage').classList.remove('open');
+  projectName.addEventListener('input',()=>{state.name=projectName.value; scheduleSave()}); projectName.addEventListener('change',()=>{state.name=projectName.value.trim()||'Unbenanntes Projekt';projectName.value=state.name; scheduleSave()});
+  // Pan canvas
+  let pan=null; canvas.addEventListener('pointerdown',e=>{if(e.target.closest('.node')||state.connectMode)return;pan={x:e.clientX,y:e.clientY,px:state.panX,py:state.panY};canvas.classList.add('dragging');canvas.setPointerCapture(e.pointerId)});
+  canvas.addEventListener('pointermove',e=>{if(!pan)return;state.panX=pan.px+(e.clientX-pan.x);state.panY=pan.py+(e.clientY-pan.y);applyTransform()});canvas.addEventListener('pointerup',()=>{pan=null;canvas.classList.remove('dragging')});
+  canvas.addEventListener('wheel',e=>{e.preventDefault();const factor=e.deltaY<0?1.08:.93;const before=screenToWorld(e.clientX,e.clientY);state.zoom=Math.max(.25,Math.min(2.5,state.zoom*factor));const after=screenToWorld(e.clientX,e.clientY);state.panX += (after.x-before.x)*state.zoom;state.panY += (after.y-before.y)*state.zoom;applyTransform()},{passive:false});
+  document.addEventListener('keydown',e=>{const tag=document.activeElement?.tagName?.toLowerCase();const editing=['input','textarea'].includes(tag);const mod=e.ctrlKey||e.metaKey;
+    if(mod&&e.key.toLowerCase()==='z'){e.preventDefault();if(e.shiftKey)redo();else undo();return;} if(mod&&e.key.toLowerCase()==='y'){e.preventDefault();redo();return;} if(mod&&e.key.toLowerCase()==='s'){e.preventDefault();exportProject();return;} if(mod&&e.key.toLowerCase()==='o'){e.preventDefault();$('importBtn').click();return;} if(editing)return;
+    if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();deleteSelected();return;} if(e.key==='Escape'){state.connectMode=false;state.connectFrom=null;$('connectBtn').classList.remove('active');state.selected=null;render();return;} if(e.key.toLowerCase()==='n'){e.preventDefault();addNode();return;} if(e.key.toLowerCase()==='e'){e.preventDefault();toggleConnect();return;} if(e.key.toLowerCase()==='f'){e.preventDefault();fitView();return;} if(e.key.toLowerCase()==='m'){e.preventDefault();$('minifyBtn').click();return;} if(e.key==='+'){e.preventDefault();$('zoomInBtn').click();return;} if(e.key==='-'){e.preventDefault();$('zoomOutBtn').click();return;}
+  });
+  $('canvas').addEventListener('click',e=>{if(e.target===canvas&&!state.connectMode){state.selected=null;render();}});
+  window.addEventListener('resize',()=>applyTransform());
+  // Initial example-free project: nothing is calculated or populated.
+  window.flushProjectSave=()=>saveNow();
+  const startupProject=loadAutosave(); if(startupProject) applyProject(startupProject);
+  history.last=snapshot();updateUndoButtons();render();
+  if(window.netzplaner?.loadProject){ window.netzplaner.loadProject().then(saved=>{ if(saved && !startupProject){ applyProject(saved); history.last=snapshot(); } initializing=false; render(); }).catch(()=>{ initializing=false; render(); }); } else { initializing=false; render(); }
+  window.addEventListener('beforeunload',()=>{ try{localStorage.setItem('netzplaner.autosave',JSON.stringify(exportData()));}catch{} });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+name: Build and release desktop installers
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.platform }} (${{ matrix.arch }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: Windows
+            os: windows-latest
+            target: win
+            arch: x64
+            asset: 'release/*.exe'
+          - platform: Linux
+            os: ubuntu-latest
+            target: linux
+            arch: x64
+            asset: 'release/*.AppImage'
+          - platform: macOS
+            os: macos-latest
+            target: mac
+            arch: x64
+            asset: 'release/*.dmg'
+          - platform: macOS
+            os: macos-latest
+            target: mac
+            arch: arm64
+            asset: 'release/*.dmg'
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build installer
+        run: npx electron-builder --${{ matrix.target }} --${{ matrix.arch }}
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform }}-${{ matrix.arch }}
+          path: ${{ matrix.asset }}
+          if-no-files-found: error
+          retention-days: 5
+
+  release:
+    name: Publish master build
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download installers
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: master-${{ github.sha }}
+          name: Netzplaner master build (${{ github.sha }})
+          body: |
+            Automated desktop installers built from master commit `${{ github.sha }}`.
+
+            This release is generated on every push to `master`.
+          target_commitish: ${{ github.sha }}
+          files: release-assets/*
+          fail_on_unmatched_files: true
+          make_latest: true

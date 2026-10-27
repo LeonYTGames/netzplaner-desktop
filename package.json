@@ -1,0 +1,47 @@
+{
+  "name": "netzplaner-desktop",
+  "version": "1.0.0",
+  "description": "Cross-platform desktop network plan editor",
+  "main": "main.cjs",
+  "author": "Netzplaner",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --mac --win --linux",
+    "dist:mac": "electron-builder --mac",
+    "dist:win": "electron-builder --win",
+    "dist:linux": "electron-builder --linux"
+  },
+  "devDependencies": {
+    "electron": "^38.2.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.netzplaner.desktop",
+    "productName": "Netzplaner",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.cjs",
+      "preload.cjs",
+      "app/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    }
+  },
+  "dependencies": {
+    "filepond": "^4.32.12",
+    "jspdf": "^4.2.1"
+  }
+}

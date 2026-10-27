@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Packaging output and build caches
+release/
+dist/
+*.blockmap
+
+# Local OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs and temporary data
+*.log
+npm-debug.log*
+*.tmp
+
+# Secrets and local environment
+.env
+.env.*
+!.env.example
