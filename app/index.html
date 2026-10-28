@@ -28,6 +28,7 @@
     <input id="projectName" class="project-name" value="Unbenanntes Projekt" aria-label="Projektname">
     <button class="btn" id="newBtn" title="Neues Projekt">Neu</button>
     <button class="btn" id="importBtn" title="Projekt importieren">Import</button>
+    <button class="btn accent" id="saveProjectBtn" title="Projekt speichern (Ctrl/Cmd+S)">Speichern</button>
     <button class="btn" id="exportProjectBtn" title="Projekt als JSON exportieren">Export</button>
     <span id="saveStatus" style="font-size:12px;color:#8d99ad" role="status">Lokal gespeichert</span>
     <div class="spacer"></div>
@@ -132,7 +133,7 @@
       <div class="hk"><strong>Ctrl/Cmd + Z</strong><span>Undo</span></div>
       <div class="hk"><strong>Ctrl/Cmd + Y</strong><span>Redo</span></div>
       <div class="hk"><strong>Ctrl/Cmd + Shift + Z</strong><span>Redo</span></div>
-      <div class="hk"><strong>Ctrl/Cmd + S</strong><span>Projekt exportieren</span></div>
+      <div class="hk"><strong>Ctrl/Cmd + S</strong><span>Projekt speichern (beim ersten Mal Speicherort wählen)</span></div>
       <div class="hk"><strong>Ctrl/Cmd + O</strong><span>Projekt importieren</span></div>
       <div class="hk"><strong>F</strong><span>Netzplan einpassen</span></div>
       <div class="hk"><strong>M</strong><span>Minify umschalten</span></div>
@@ -207,7 +208,7 @@
     $('gridBg').classList.toggle('hidden',!state.grid); scene.classList.toggle('minified',state.minified);
     scene.querySelectorAll('.node').forEach(e=>e.remove());
     for(const n of state.nodes){
-      const el=document.createElement('div'); el.className='node'+(state.selected===n.id?' selected ':'')+(state.connectFrom===n.id?' connecting':''); el.dataset.nodeId=n.id; el.style.left=n.x+'px'; el.style.top=n.y+'px';
+      const el=document.createElement('div'); el.className='node'+(state.selected===n.id?' selected ':'')+(state.connectFrom===n.id?' connecting':''); el.dataset.nodeId=n.id; el.tabIndex=0; el.setAttribute('role','button'); el.setAttribute('aria-label',`Knoten ${n.data.id}: ${n.data.task}`); el.style.left=n.x+'px'; el.style.top=n.y+'px';
       const d=n.data;
       el.innerHTML=`<div class="node-corners"><div class="corner tl">${escapeHtml(d.FAZ)}</div><div class="corner tr">${escapeHtml(d.FEZ)}</div><div class="corner bl">${escapeHtml(d.SAZ)}</div><div class="corner br">${escapeHtml(d.SEZ)}</div></div><div class="node-head"><div><div class="label">ID</div><div class="value">${escapeHtml(d.id)}</div></div><div><div class="label">Vorgang</div><div class="value">${escapeHtml(d.task)}</div></div></div><div class="node-body"><div class="cell"><small>Dauer</small><strong>${escapeHtml(d.duration)}</strong></div><div class="cell"><small>FP</small><strong>${escapeHtml(d.FP)}</strong></div><div class="cell"><small>GP</small><strong>${escapeHtml(d.GP)}</strong></div></div>`;
       scene.appendChild(el); attachNodeEvents(el,n.id);
@@ -297,7 +298,22 @@
   function focusFirstField(){ $('fTask').focus(); $('fTask').select(); }
 
   function downloadBlob(blob,name){ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},0); }
-  function exportProject(){ state.name=projectName.value.trim()||'Unbenanntes Projekt'; const data=exportData(); saveNow(); downloadBlob(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),safeFile(state.name)+'.json'); history.last=snapshot(); }
+  async function saveProjectFile(){
+    state.name=projectName.value.trim()||'Unbenanntes Projekt'; projectName.value=state.name;
+    const data=exportData();
+    try{
+      if(window.netzplaner?.saveProjectFile){
+        const result=await window.netzplaner.saveProjectFile(data);
+        if(result?.canceled)return;
+        $('saveStatus').textContent='Gespeichert: '+(result?.path?.split(/[\\/]/).pop()||state.name);
+      }else{
+        downloadBlob(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),safeFile(state.name)+'.json');
+        $('saveStatus').textContent='Projektdatei heruntergeladen';
+      }
+      history.last=snapshot();
+    }catch(error){$('saveStatus').textContent='Speichern fehlgeschlagen';alert('Projekt konnte nicht gespeichert werden: '+error.message);}
+  }
+  function exportProject(){ state.name=projectName.value.trim()||'Unbenanntes Projekt'; const data=exportData(); void saveNow(); downloadBlob(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),safeFile(state.name)+'.json'); history.last=snapshot(); }
   function safeFile(s){ return (s||'netzplan').replace(/[\\/:*?"<>|]+/g,'_').trim()||'netzplan'; }
   function projectRect(){
     const w=nodeW(),h=nodeH(); if(!state.nodes.length) return {x:0,y:0,w:700,h:400}; const xs=state.nodes.map(n=>n.x),ys=state.nodes.map(n=>n.y); const minX=Math.min(...xs)-60,minY=Math.min(...ys)-60,maxX=Math.max(...xs)+w+60,maxY=Math.max(...ys)+h+60; return {x:minX,y:minY,w:Math.max(300,maxX-minX),h:Math.max(220,maxY-minY)};

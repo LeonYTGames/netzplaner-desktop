@@ -8,6 +8,8 @@ let win;
 const dataDir = () => path.join(app.getPath('userData'), 'projects');
 const currentFile = () => path.join(dataDir(), 'current.json');
 const recoveryDir = () => path.join(dataDir(), 'recovery');
+const savedPathFile = () => path.join(app.getPath('userData'), 'saved-project-path.json');
+let savedProjectPath = (() => { try { return JSON.parse(fs.readFileSync(savedPathFile(), 'utf8')).path || null; } catch { return null; } })();
 
 function validProject(data) {
   return data && data.format === 'netzplaner' && Array.isArray(data.nodes) && Array.isArray(data.edges);
@@ -37,6 +39,12 @@ function persistProject(data) {
 }
 
 function loadProject() {
+  if (savedProjectPath) {
+    try {
+      const data = JSON.parse(fs.readFileSync(savedProjectPath, 'utf8'));
+      if (validProject(data)) return data;
+    } catch {}
+  }
   try {
     const data = JSON.parse(fs.readFileSync(currentFile(), 'utf8'));
     return validProject(data) ? data : null;
@@ -56,6 +64,23 @@ const projectStore = createProjectStore({ persistProject, loadProject, readLates
 ipcMain.handle('project:load', () => projectStore.loadProject());
 ipcMain.handle('project:save', (_event, data) => projectStore.save(data));
 ipcMain.handle('project:restore-latest', () => projectStore.restoreLatest());
+ipcMain.handle('project:save-file', async (_event, data) => {
+  await projectStore.save(data);
+  let target = savedProjectPath;
+  if (!target) {
+    const result = await dialog.showSaveDialog(win, {
+      title: 'Projekt speichern',
+      defaultPath: path.join(app.getPath('documents'), `${String(data.name || 'netzplan-project').replace(/[\\/:*?"<>|]+/g, '_')}.json`),
+      filters: [{ name: 'Netzplaner-Projekt', extensions: ['json'] }]
+    });
+    if (result.canceled || !result.filePath) return { canceled: true };
+    target = result.filePath;
+  }
+  atomicWrite(target, JSON.stringify(data, null, 2));
+  atomicWrite(savedPathFile(), JSON.stringify({ path: target }, null, 2));
+  savedProjectPath = target;
+  return { saved: true, path: target };
+});
 
 function createWindow() {
   win = new BrowserWindow({
