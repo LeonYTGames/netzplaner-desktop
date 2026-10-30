@@ -539,33 +539,46 @@
       alert('Nothing to export');
       return;
     }
-    const serializer = new XMLSerializer();
-    const serializedSvg = serializer.serializeToString(svgElement);
-    const svgDataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(serializedSvg);
-    const image = new Image();
-    image.onload = function onImageLoad(){
-      const scale = 3;
-      const canvasElement = document.createElement('canvas');
-      canvasElement.width = Math.ceil(rect.w * scale);
-      canvasElement.height = Math.ceil(rect.h * scale);
-      const context = canvasElement.getContext('2d');
-      context.fillStyle = '#f7f8fa';
-      context.fillRect(0, 0, canvasElement.width, canvasElement.height);
-      context.drawImage(image, 0, 0, canvasElement.width, canvasElement.height);
-      const jsPdf = window.jspdf.jsPDF;
-      const pixelsPerMillimeter = 25.4 / 96;
-      const pageWidth = Math.max(80, rect.w * pixelsPerMillimeter);
-      const pageHeight = Math.max(60, rect.h * pixelsPerMillimeter);
-      const orientation = rect.w >= rect.h ? 'landscape' : 'portrait';
-      const pdfDocument = new jsPdf({orientation: orientation, unit: 'mm', format: [pageWidth, pageHeight]});
-      const imageData = canvasElement.toDataURL('image/png');
-      pdfDocument.addImage(imageData, 'PNG', 0, 0, pageWidth, pageHeight);
-      pdfDocument.save(safeFile(state.name || 'network') + '.pdf');
-    };
-    image.onerror = function onImageError(){
-      alert('PDF export failed');
-    };
-    image.src = svgDataUrl;
+    try{
+      const serializer = new XMLSerializer();
+      const serializedSvg = serializer.serializeToString(svgElement);
+      const svgDataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(serializedSvg);
+      const image = new Image();
+      image.onload = function onImageLoad(){
+        try{
+          const scale = 3;
+          const canvasElement = document.createElement('canvas');
+          canvasElement.width = Math.ceil(rect.w * scale);
+          canvasElement.height = Math.ceil(rect.h * scale);
+          const context = canvasElement.getContext('2d');
+          context.fillStyle = '#f7f8fa';
+          context.fillRect(0, 0, canvasElement.width, canvasElement.height);
+          context.drawImage(image, 0, 0, canvasElement.width, canvasElement.height);
+          const jsPdfConstructor = window.jspdf && (window.jspdf.jsPDF || window.jspdf);
+          if(!jsPdfConstructor){
+            alert('PDF export not available');
+            return;
+          }
+          const pixelsPerMillimeter = 25.4 / 96;
+          const pageWidth = Math.max(80, rect.w * pixelsPerMillimeter);
+          const pageHeight = Math.max(60, rect.h * pixelsPerMillimeter);
+          const orientation = rect.w >= rect.h ? 'landscape' : 'portrait';
+          const pdfDocument = new jsPdfConstructor({orientation: orientation, unit: 'mm', format: [pageWidth, pageHeight]});
+          const imageData = canvasElement.toDataURL('image/png');
+          pdfDocument.addImage(imageData, 'PNG', 0, 0, pageWidth, pageHeight);
+          const pdfBlob = pdfDocument.output('blob');
+          downloadBlob(pdfBlob, safeFile(state.name || 'network') + '.pdf');
+        }catch(error){
+          alert('PDF export failed: ' + error.message);
+        }
+      };
+      image.onerror = function onImageError(){
+        alert('PDF export failed');
+      };
+      image.src = svgDataUrl;
+    }catch(error){
+      alert('PDF export failed: ' + error.message);
+    }
   }
 
   // Project import via FilePond
