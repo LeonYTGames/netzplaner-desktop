@@ -1,22 +1,47 @@
-(function (root, factory) {
-  if (typeof module === 'object' && module.exports) module.exports = factory();
-  else root.ProjectActions = factory();
-})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
-  async function startNewProject({ hasContent, confirmDiscard, resetProject, persistProject }) {
-    if (hasContent && !(await confirmDiscard())) return false;
+(function initializeProjectActionsModule(root, factory) {
+  if (typeof module === 'object' && module.exports) {
+    module.exports = factory();
+  } else {
+    root.ProjectActions = factory();
+  }
+})(typeof globalThis !== 'undefined' ? globalThis : this, function createProjectActionsModule() {
+  async function startNewProject(options) {
+    const hasContent = options.hasContent;
+    const confirmDiscard = options.confirmDiscard;
+    const resetProject = options.resetProject;
+    const persistProject = options.persistProject;
+
+    if (hasContent) {
+      const shouldDiscard = await confirmDiscard();
+      if (!shouldDiscard) {
+        return false;
+      }
+    }
+
     resetProject();
     await persistProject();
     return true;
   }
 
-  async function restoreLatestProject({ saveCurrent, readLatest, applyRecovered, saveRecovered }) {
+  async function restoreLatestProject(options) {
+    const saveCurrent = options.saveCurrent;
+    const readLatest = options.readLatest;
+    const applyRecovered = options.applyRecovered;
+    const saveRecovered = options.saveRecovered;
+
     await saveCurrent();
-    const recovered = await readLatest();
-    if (!recovered) return null;
-    applyRecovered(recovered);
+    const recoveredProject = await readLatest();
+    if (!recoveredProject) {
+      return null;
+    }
+
+    applyRecovered(recoveredProject);
     await saveRecovered();
-    return recovered;
+    return recoveredProject;
   }
 
-  return Object.freeze({ startNewProject, restoreLatestProject });
+  return Object.freeze({
+    startNewProject: startNewProject,
+    restoreLatestProject: restoreLatestProject
+  });
 });
