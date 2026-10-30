@@ -335,7 +335,30 @@
   ['fId','fTask','fDuration','fFAZ','fFEZ','fSAZ','fSEZ','fFP','fGP'].forEach((id,i)=>bindField(id,['id','task','duration','FAZ','FEZ','SAZ','SEZ','FP','GP'][i]));
   function focusFirstField(){ $('fTask').focus(); $('fTask').select(); }
 
-  function downloadBlob(blob,name){ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},0); }
+  async function downloadBlob(blob,name){
+    try{
+      if(window.netzplaner && typeof window.netzplaner.exportFile === 'function'){
+        const arrayBuffer = await blob.arrayBuffer();
+        const data = Array.from(new Uint8Array(arrayBuffer));
+        const extension = name.split('.').pop();
+        const baseName = name.replace(/\.[^/.]+$/, '');
+        const result = await window.netzplaner.exportFile({ fileName: baseName, extension: extension, data: data });
+        if(result && result.canceled) return;
+        if(result && result.error){ alert('Export failed: ' + result.error); return; }
+        return;
+      }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function(){ try{ URL.revokeObjectURL(url); }catch(e){} a.remove(); }, 1000);
+    }catch(error){
+      alert('Export failed: ' + error.message);
+    }
+  }
   async function saveProjectFile(){
     state.name=projectName.value.trim()||'Untitled Project'; projectName.value=state.name;
     const data=exportData();
@@ -357,25 +380,210 @@
     const w=nodeW(),h=nodeH(); if(!state.nodes.length) return {x:0,y:0,w:700,h:400}; const xs=state.nodes.map(n=>n.x),ys=state.nodes.map(n=>n.y); const minX=Math.min(...xs)-60,minY=Math.min(...ys)-60,maxX=Math.max(...xs)+w+60,maxY=Math.max(...ys)+h+60; return {x:minX,y:minY,w:Math.max(300,maxX-minX),h:Math.max(220,maxY-minY)};
   }
   function makeExportSvg(){
-    const r=projectRect(); const svg=document.createElementNS('http://www.w3.org/2000/svg','svg'); svg.setAttribute('xmlns','http://www.w3.org/2000/svg'); svg.setAttribute('width',r.w); svg.setAttribute('height',r.h); svg.setAttribute('viewBox',`${r.x} ${r.y} ${r.w} ${r.h}`);
-    const bg=document.createElementNS('http://www.w3.org/2000/svg','rect');bg.setAttribute('x',r.x);bg.setAttribute('y',r.y);bg.setAttribute('width',r.w);bg.setAttribute('height',r.h);bg.setAttribute('fill','#f7f8fa');svg.appendChild(bg);
-    const marker=document.createElementNS('http://www.w3.org/2000/svg','marker');marker.setAttribute('id','a');marker.setAttribute('markerWidth','10');marker.setAttribute('markerHeight','8');marker.setAttribute('refX','9');marker.setAttribute('refY','4');marker.setAttribute('orient','auto');const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d','M0,0 L10,4 L0,8 z');p.setAttribute('fill','#617389');marker.appendChild(p);const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');defs.appendChild(marker);svg.appendChild(defs);
-    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
-    for(const edge of state.edges){const a=nodeById(edge.from),b=nodeById(edge.to);if(!a||!b)continue;const x1=a.x+w,y1=a.y+h/2,x2=b.x,y2=b.y+h/2,mid=Math.max(30,Math.abs(x2-x1)*.45);const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d',`M ${x1} ${y1} C ${x1+mid} ${y1}, ${x2-mid} ${y2}, ${x2} ${y2}`);path.setAttribute('fill','none');path.setAttribute('stroke','#617389');path.setAttribute('stroke-width','2.5');path.setAttribute('marker-end','url(#a)');g.appendChild(path);}
-    svg.appendChild(g);
-    for(const n of state.nodes){ const d=n.data, ng=document.createElementNS('http://www.w3.org/2000/svg','g'); ng.setAttribute('transform',`translate(${n.x},${n.y})`); const box=document.createElementNS('http://www.w3.org/2000/svg','rect');box.setAttribute('width',w);box.setAttribute('height',h);box.setAttribute('fill','#f4ead7');box.setAttribute('stroke','#5a91ad');box.setAttribute('stroke-width','2');ng.appendChild(box);
-      function line(x1,y1,x2,y2){const l=document.createElementNS('http://www.w3.org/2000/svg','line');l.setAttribute('x1',x1);l.setAttribute('y1',y1);l.setAttribute('x2',x2);l.setAttribute('y2',y2);l.setAttribute('stroke','#6b7f91');l.setAttribute('stroke-width','1');ng.appendChild(l)}
-      line(0,44,w,44);line(w*0.42,0,w*0.42,44);line(w/3,44,w/3,h);line(w*2/3,44,w*2/3,h);
-      function text(x,y,txt,size,weight,anchor='start',fill='#1d2430',italic=false){const t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('x',x);t.setAttribute('y',y);t.setAttribute('font-family','Arial, sans-serif');t.setAttribute('font-size',size);t.setAttribute('font-weight',weight);t.setAttribute('text-anchor',anchor);t.setAttribute('fill',fill);if(italic)t.setAttribute('font-style','italic');t.textContent=String(txt??'');ng.appendChild(t)}
-      text(10,14,'ID',10,400,'start','#596573');text(10,31,d.id,14,700);text(w*0.42+10,14,'VORGANG',10,400,'start','#596573');text(w*0.42+10,31,d.task,14,700);text(w/6,62,'DAUER',9,400,'middle','#66717e');text(w/6,83,d.duration,16,700,'middle');text(w/2,62,'FP',9,400,'middle','#66717e');text(w/2,83,d.FP,16,700,'middle');text(w*5/6,62,'GP',9,400,'middle','#66717e');text(w*5/6,83,d.GP,16,700,'middle');text(-2,-10,d.FAZ,12,400,'start','#222b36',true);text(w+2,-10,d.FEZ,12,400,'end','#222b36',true);text(-2,h+17,d.SAZ,12,400,'start','#222b36',true);text(w+2,h+17,d.SEZ,12,400,'end','#222b36',true);svg.appendChild(ng);
+    const exportWidth = nodeW();
+    const exportHeight = nodeH();
+    if(!state.nodes.length) return {svg: null, r:{x:0,y:0,w:700,h:400}};
+    const xs=state.nodes.map(function(n){return n.x;});
+    const ys=state.nodes.map(function(n){return n.y;});
+    const minX=Math.min.apply(null,xs)-80;
+    const minY=Math.min.apply(null,ys)-80;
+    const maxX=Math.max.apply(null,xs)+exportWidth+80;
+    const maxY=Math.max.apply(null,ys)+exportHeight+80;
+    const rect={x:minX,y:minY,w:Math.max(400,maxX-minX),h:Math.max(300,maxY-minY)};
+    const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('xmlns','http://www.w3.org/2000/svg');
+    svg.setAttribute('width',String(rect.w));
+    svg.setAttribute('height',String(rect.h));
+    svg.setAttribute('viewBox',rect.x+' '+rect.y+' '+rect.w+' '+rect.h);
+    const bg=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    bg.setAttribute('x',String(rect.x));
+    bg.setAttribute('y',String(rect.y));
+    bg.setAttribute('width',String(rect.w));
+    bg.setAttribute('height',String(rect.h));
+    bg.setAttribute('fill','#f7f8fa');
+    svg.appendChild(bg);
+    const marker=document.createElementNS('http://www.w3.org/2000/svg','marker');
+    marker.setAttribute('id','exportArrow');
+    marker.setAttribute('markerWidth','10');
+    marker.setAttribute('markerHeight','8');
+    marker.setAttribute('refX','9');
+    marker.setAttribute('refY','4');
+    marker.setAttribute('orient','auto');
+    marker.setAttribute('markerUnits','strokeWidth');
+    const arrowPath=document.createElementNS('http://www.w3.org/2000/svg','path');
+    arrowPath.setAttribute('d','M0,0 L10,4 L0,8 z');
+    arrowPath.setAttribute('fill','#617389');
+    marker.appendChild(arrowPath);
+    const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
+    defs.appendChild(marker);
+    svg.appendChild(defs);
+    const edgeGroup=document.createElementNS('http://www.w3.org/2000/svg','g');
+    for(let i=0;i<state.edges.length;i++){
+      const edge=state.edges[i];
+      const fromNode=nodeById(edge.from);
+      const toNode=nodeById(edge.to);
+      if(!fromNode||!toNode) continue;
+      const x1=fromNode.x+exportWidth;
+      const y1=fromNode.y+exportHeight/2;
+      const x2=toNode.x;
+      const y2=toNode.y+exportHeight/2;
+      const mid=Math.max(30,Math.abs(x2-x1)*0.45);
+      const pathData='M '+x1+' '+y1+' C '+(x1+mid)+' '+y1+', '+(x2-mid)+' '+y2+', '+x2+' '+y2;
+      const pathElement=document.createElementNS('http://www.w3.org/2000/svg','path');
+      pathElement.setAttribute('d',pathData);
+      pathElement.setAttribute('fill','none');
+      pathElement.setAttribute('stroke','#617389');
+      pathElement.setAttribute('stroke-width','2.5');
+      pathElement.setAttribute('marker-end','url(#exportArrow)');
+      edgeGroup.appendChild(pathElement);
     }
-    return {svg,r};
+    svg.appendChild(edgeGroup);
+    for(let i=0;i<state.nodes.length;i++){
+      const node=state.nodes[i];
+      const nodeData=node.data||{};
+      const nodeGroup=document.createElementNS('http://www.w3.org/2000/svg','g');
+      nodeGroup.setAttribute('transform','translate('+node.x+','+node.y+')');
+      const nodeBox=document.createElementNS('http://www.w3.org/2000/svg','rect');
+      nodeBox.setAttribute('width',String(exportWidth));
+      nodeBox.setAttribute('height',String(exportHeight));
+      nodeBox.setAttribute('fill','#f4ead7');
+      nodeBox.setAttribute('stroke','#5a91ad');
+      nodeBox.setAttribute('stroke-width','2');
+      nodeGroup.appendChild(nodeBox);
+      function drawLine(lineX1,lineY1,lineX2,lineY2){
+        const lineElement=document.createElementNS('http://www.w3.org/2000/svg','line');
+        lineElement.setAttribute('x1',String(lineX1));
+        lineElement.setAttribute('y1',String(lineY1));
+        lineElement.setAttribute('x2',String(lineX2));
+        lineElement.setAttribute('y2',String(lineY2));
+        lineElement.setAttribute('stroke','#6b7f91');
+        lineElement.setAttribute('stroke-width','1');
+        nodeGroup.appendChild(lineElement);
+      }
+      function drawText(textX,textY,textContent,fontSize,fontWeight,textAnchor,fillColor,isItalic){
+        const textElement=document.createElementNS('http://www.w3.org/2000/svg','text');
+        textElement.setAttribute('x',String(textX));
+        textElement.setAttribute('y',String(textY));
+        textElement.setAttribute('font-family','Arial, sans-serif');
+        textElement.setAttribute('font-size',String(fontSize));
+        textElement.setAttribute('font-weight',String(fontWeight));
+        textElement.setAttribute('text-anchor',textAnchor);
+        textElement.setAttribute('fill',fillColor);
+        if(isItalic){ textElement.setAttribute('font-style','italic'); }
+        textElement.textContent=String(textContent===undefined||textContent===null?'':textContent);
+        nodeGroup.appendChild(textElement);
+      }
+      drawLine(0,52,exportWidth,52);
+      drawLine(exportWidth*0.42,0,exportWidth*0.42,52);
+      drawLine(exportWidth/3,52,exportWidth/3,exportHeight);
+      drawLine(exportWidth*2/3,52,exportWidth*2/3,exportHeight);
+      drawText(10,18,'ID',10,400,'start','#596573',false);
+      drawText(10,38,nodeData.id,14,700,'start','#1d2430',false);
+      drawText(exportWidth*0.42+10,18,'OPERATION',10,400,'start','#596573',false);
+      drawText(exportWidth*0.42+10,38,nodeData.task,14,700,'start','#1d2430',false);
+      drawText(exportWidth/6,74,'DURATION',9,400,'middle','#66717e',false);
+      drawText(exportWidth/6,98,nodeData.duration,20,700,'middle','#1d2430',false);
+      drawText(exportWidth/2,74,'FP',9,400,'middle','#66717e',false);
+      drawText(exportWidth/2,98,nodeData.FP,20,700,'middle','#1d2430',false);
+      drawText(exportWidth*5/6,74,'GP',9,400,'middle','#66717e',false);
+      drawText(exportWidth*5/6,98,nodeData.GP,20,700,'middle','#1d2430',false);
+      drawText(-2,-12,nodeData.FAZ,12,400,'start','#222b36',true);
+      drawText(exportWidth+2,-12,nodeData.FEZ,12,400,'end','#222b36',true);
+      drawText(-2,exportHeight+20,nodeData.SAZ,12,400,'start','#222b36',true);
+      drawText(exportWidth+2,exportHeight+20,nodeData.SEZ,12,400,'end','#222b36',true);
+      svg.appendChild(nodeGroup);
+    }
+    return {svg: svg, r: rect};
   }
   async function exportImage(kind){
-    const {svg,r}=makeExportSvg(); const serialized=new XMLSerializer().serializeToString(svg); const data='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(serialized); const img=new Image(); img.onload=()=>{const scale=kind==='png'?2:2,canvas2=document.createElement('canvas');canvas2.width=Math.ceil(r.w*scale);canvas2.height=Math.ceil(r.h*scale);const ctx=canvas2.getContext('2d');ctx.fillStyle='#f7f8fa';ctx.fillRect(0,0,canvas2.width,canvas2.height);ctx.drawImage(img,0,0,canvas2.width,canvas2.height);canvas2.toBlob(blob=>downloadBlob(blob,safeFile(state.name||'netzplan')+'.'+(kind==='jpg'?'jpg':'png')),'image/'+(kind==='jpg'?'jpeg':'png'),0.95)};img.src=data;
+    const exportResult = makeExportSvg();
+    const svgElement = exportResult.svg;
+    const rect = exportResult.r;
+    if(!svgElement){
+      alert('Nothing to export');
+      return;
+    }
+    const serializer = new XMLSerializer();
+    const serializedSvg = serializer.serializeToString(svgElement);
+    const svgDataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(serializedSvg);
+    const image = new Image();
+    image.onload = function onImageLoad(){
+      const scale = 3;
+      const canvasElement = document.createElement('canvas');
+      canvasElement.width = Math.ceil(rect.w * scale);
+      canvasElement.height = Math.ceil(rect.h * scale);
+      const context = canvasElement.getContext('2d');
+      context.fillStyle = '#f7f8fa';
+      context.fillRect(0, 0, canvasElement.width, canvasElement.height);
+      context.drawImage(image, 0, 0, canvasElement.width, canvasElement.height);
+      if(kind === 'jpg'){
+        canvasElement.toBlob(function(blob){
+          if(blob){ downloadBlob(blob, safeFile(state.name || 'network') + '.jpg'); }
+        }, 'image/jpeg', 0.95);
+      }else{
+        canvasElement.toBlob(function(blob){
+          if(blob){ downloadBlob(blob, safeFile(state.name || 'network') + '.png'); }
+        }, 'image/png');
+      }
+    };
+    image.onerror = function onImageError(){
+      alert('Image export failed');
+    };
+    image.src = svgDataUrl;
   }
   async function exportPdf(){
-    const {svg,r}=makeExportSvg(); const serialized=new XMLSerializer().serializeToString(svg); const data='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(serialized); const img=new Image(); img.onload=()=>{const canvas2=document.createElement('canvas');const scale=2;canvas2.width=Math.ceil(r.w*scale);canvas2.height=Math.ceil(r.h*scale);const ctx=canvas2.getContext('2d');ctx.fillStyle='#f7f8fa';ctx.fillRect(0,0,canvas2.width,canvas2.height);ctx.drawImage(img,0,0,canvas2.width,canvas2.height);const {jsPDF}=window.jspdf;const mmPerPx=25.4/96;const pdf=new jsPDF({orientation:r.w>=r.h?'landscape':'portrait',unit:'mm',format:[Math.max(80,r.w*mmPerPx),Math.max(60,r.h*mmPerPx)]});pdf.addImage(canvas2.toDataURL('image/png'),'PNG',0,0,r.w*mmPerPx,r.h*mmPerPx);pdf.save(safeFile(state.name||'netzplan')+'.pdf');};img.src=data;
+    const exportResult = makeExportSvg();
+    const svgElement = exportResult.svg;
+    const rect = exportResult.r;
+    if(!svgElement){
+      alert('Nothing to export');
+      return;
+    }
+    try{
+      const serializer = new XMLSerializer();
+      const serializedSvg = serializer.serializeToString(svgElement);
+      const svgDataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(serializedSvg);
+      const image = new Image();
+      image.crossOrigin = 'anonymous';
+      image.onload = function onImageLoad(){
+        try{
+          const scale = 2;
+          const canvasElement = document.createElement('canvas');
+          canvasElement.width = Math.ceil(rect.w * scale);
+          canvasElement.height = Math.ceil(rect.h * scale);
+          const context = canvasElement.getContext('2d');
+          context.fillStyle = '#f7f8fa';
+          context.fillRect(0, 0, canvasElement.width, canvasElement.height);
+          context.drawImage(image, 0, 0, canvasElement.width, canvasElement.height);
+          const jsPdfConstructor = window.jspdf && (window.jspdf.jsPDF ? window.jspdf.jsPDF : (typeof window.jsPDF === 'function' ? window.jsPDF : null));
+          if(!jsPdfConstructor){
+            alert('PDF export not available');
+            return;
+          }
+          const pixelsPerMillimeter = 25.4 / 96;
+          const pageWidth = Math.max(100, rect.w * pixelsPerMillimeter);
+          const pageHeight = Math.max(100, rect.h * pixelsPerMillimeter);
+          const orientation = rect.w >= rect.h ? 'landscape' : 'portrait';
+          const pdfDocument = new jsPdfConstructor({orientation: orientation, unit: 'mm', format: [pageWidth, pageHeight]});
+          const imageData = canvasElement.toDataURL('image/png');
+          pdfDocument.addImage(imageData, 'PNG', 0, 0, pageWidth, pageHeight);
+          try{
+            const pdfBlob = pdfDocument.output('blob');
+            downloadBlob(pdfBlob, safeFile(state.name || 'network') + '.pdf');
+          }catch(e){
+            pdfDocument.save(safeFile(state.name || 'network') + '.pdf');
+          }
+        }catch(error){
+          alert('PDF export failed: ' + error.message);
+        }
+      };
+      image.onerror = function onImageError(){
+        alert('PDF export failed');
+      };
+      image.src = svgDataUrl;
+    }catch(error){
+      alert('PDF export failed: ' + error.message);
+    }
   }
 
   // Project import via FilePond

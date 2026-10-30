@@ -83,6 +83,35 @@ ipcMain.handle('project:save-file', async (_event, data) => {
   return { saved: true, path: target };
 });
 
+ipcMain.handle('export:file', async (_event, options) => {
+  try {
+    const fileName = String(options && options.fileName ? options.fileName : 'export').replace(/[\\/:*?"<>|]+/g, '_');
+    let extension = String(options && options.extension ? options.extension : 'png').toLowerCase();
+    if (extension === 'jpeg') extension = 'jpg';
+    const filters = [];
+    if (extension === 'png') filters.push({ name: 'PNG Image', extensions: ['png'] });
+    else if (extension === 'jpg') filters.push({ name: 'JPEG Image', extensions: ['jpg'] });
+    else if (extension === 'pdf') filters.push({ name: 'PDF Document', extensions: ['pdf'] });
+    else filters.push({ name: 'File', extensions: [extension] });
+
+    const result = await dialog.showSaveDialog(win, {
+      title: 'Export',
+      defaultPath: path.join(app.getPath('documents'), `${fileName}.${extension}`),
+      filters: filters
+    });
+    if (result.canceled || !result.filePath) return { canceled: true };
+    const data = options && options.data;
+    if (data) {
+      const buffer = Buffer.isBuffer(data) ? data : Buffer.from(data);
+      fs.mkdirSync(path.dirname(result.filePath), { recursive: true });
+      fs.writeFileSync(result.filePath, buffer);
+    }
+    return { saved: true, path: result.filePath };
+  } catch (error) {
+    return { error: String(error && error.message ? error.message : error) };
+  }
+});
+
 function createWindow() {
   win = new BrowserWindow({
     width: 1440, height: 940, minWidth: 900, minHeight: 650,
