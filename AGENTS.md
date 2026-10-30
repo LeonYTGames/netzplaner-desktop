@@ -42,14 +42,14 @@ Netzplaner Desktop is an Electron app for editing network plans (nodes/edges) wi
 - Rebase onto latest `origin/master` when requested
 - Run tests before pushing
 - Always delete merged branches and do not re-use branchnames if they do not make sense for your designated task
-- Never push to deleted/merged branches
+- Never push to deleted/merged branches unless the branch name still makes sense for your designated task, then it's fine.
 
 ## Conventions
 - UI strings in English
 - Grid-aligned node sizes/snap where applicable
 - Keyboard navigation for canvas/inspector
 - Persistence: autosave + recovery + explicit save
-- Don't modify tests to make broken behavior pass; fix implementation
+- Don't modify tests to make broken behavior pass; fix implementation unless the test forces you to not be able to finish your designated task by enforcing a specific control flow or UI look
 
 ## Review guidelines
 - All AI-generated code must be reviewed
