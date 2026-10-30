@@ -114,10 +114,10 @@
 
 <div class="dialog" id="importDialog">
   <div class="modal">
-    <h2>Projekt importieren</h2>
-    <p>JSON-Projektdatei auswählen. Ein importiertes Projekt ersetzt den aktuellen Netzplan.</p>
+    <h2>Import Project</h2>
+    <p>Select a JSON project file. Importing a project will replace the current network plan.</p>
     <input type="file" id="filepondInput" accept="application/json,.json">
-    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px"><button class="btn" id="cancelImportBtn">Abbrechen</button></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px"><button class="btn" id="cancelImportBtn">Cancel</button></div>
   </div>
 </div>
 
@@ -155,7 +155,7 @@
   const scene = $('scene'), canvas = $('canvas'), wrap = $('canvasWrap'), edgesSvg = $('edgesSvg');
   const projectName = $('projectName');
   const GRID_SIZE = 32;
-  const state = { name: 'Unbenanntes Projekt', nodes: [], edges: [], selected: null, connectMode: false, connectFrom: null, grid: true, snap: true, minified: false, zoom: 1, panX: 80, panY: 80 };
+  const state = { name: 'Untitled Project', nodes: [], edges: [], selected: null, connectMode: false, connectFrom: null, grid: true, snap: true, minified: false, zoom: 1, panX: 80, panY: 80 };
   const history = { undo: [], redo: [], last: null };
   let saveTimer=null, saveInFlight=Promise.resolve(), initializing=true;
   function scheduleSave(){ if(initializing)return; $('saveStatus').textContent='Speichert…'; clearTimeout(saveTimer); saveTimer=setTimeout(()=>{void saveNow().catch(()=>{});},180); }
@@ -178,14 +178,14 @@
   }
   function flushProjectSave(){ clearTimeout(saveTimer); return saveNow(); }
   function loadAutosave(){ try { const raw=localStorage.getItem('netzplaner.autosave'); if(!raw)return null; const obj=JSON.parse(raw); return obj?.format==='netzplaner'&&Array.isArray(obj.nodes)&&Array.isArray(obj.edges)?obj:null; } catch { return null; } }
-  function applyProject(obj){ state.name=obj.name||'Unbenanntes Projekt'; state.nodes=Array.isArray(obj.nodes)?obj.nodes:[]; state.edges=Array.isArray(obj.edges)?obj.edges:[]; state.grid=obj.view?.grid!==false; state.snap=obj.view?.snap!==false; state.minified=!!obj.view?.minified; projectName.value=state.name; $('gridToggle').checked=state.grid; $('snapToggle').checked=state.snap; }
-  function exportData(){ state.name=projectName.value.trim()||'Unbenanntes Projekt'; return {format:'netzplaner',version:1,name:state.name,nodes:state.nodes,edges:state.edges,view:{grid:state.grid,snap:state.snap,minified:state.minified}}; }
+  function applyProject(obj){ state.name=obj.name||'Untitled Project'; state.nodes=Array.isArray(obj.nodes)?obj.nodes:[]; state.edges=Array.isArray(obj.edges)?obj.edges:[]; state.grid=obj.view?.grid!==false; state.snap=obj.view?.snap!==false; state.minified=!!obj.view?.minified; projectName.value=state.name; $('gridToggle').checked=state.grid; $('snapToggle').checked=state.snap; }
+  function exportData(){ state.name=projectName.value.trim()||'Untitled Project'; return {format:'netzplaner',version:1,name:state.name,nodes:state.nodes,edges:state.edges,view:{grid:state.grid,snap:state.snap,minified:state.minified}}; }
 
   function uid(){ return Math.random().toString(36).slice(2,8); }
   function clone(v){ return JSON.parse(JSON.stringify(v)); }
   function snapshot(){ return JSON.stringify({name:state.name,nodes:state.nodes,edges:state.edges,grid:state.grid,snap:state.snap,minified:state.minified}); }
   function pushHistory(){ const s=snapshot(); if(s===history.last) return; history.undo.push(history.last===null?s:history.last); history.redo=[]; history.last=s; updateUndoButtons(); }
-  function restoreSnapshot(raw){ const s=JSON.parse(raw); state.name=s.name||'Unbenanntes Projekt'; state.nodes=s.nodes||[]; state.edges=s.edges||[]; state.grid=s.grid!==false; state.snap=s.snap!==false; state.minified=!!s.minified; state.selected=null; state.connectMode=false; state.connectFrom=null; projectName.value=state.name; $('gridToggle').checked=state.grid; $('snapToggle').checked=state.snap; render(); }
+  function restoreSnapshot(raw){ const s=JSON.parse(raw); state.name=s.name||'Untitled Project'; state.nodes=s.nodes||[]; state.edges=s.edges||[]; state.grid=s.grid!==false; state.snap=s.snap!==false; state.minified=!!s.minified; state.selected=null; state.connectMode=false; state.connectFrom=null; projectName.value=state.name; $('gridToggle').checked=state.grid; $('snapToggle').checked=state.snap; render(); }
   function undo(){ if(!history.undo.length)return; const current=snapshot(); const prev=history.undo.pop(); history.redo.push(current); history.last=prev; restoreSnapshot(prev); updateUndoButtons(); }
   function redo(){ if(!history.redo.length)return; const current=snapshot(); const next=history.redo.pop(); history.undo.push(current); history.last=next; restoreSnapshot(next); updateUndoButtons(); }
   function updateUndoButtons(){ $('undoBtn').disabled=!history.undo.length; $('redoBtn').disabled=!history.redo.length; }
@@ -337,7 +337,7 @@
 
   function downloadBlob(blob,name){ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},0); }
   async function saveProjectFile(){
-    state.name=projectName.value.trim()||'Unbenanntes Projekt'; projectName.value=state.name;
+    state.name=projectName.value.trim()||'Untitled Project'; projectName.value=state.name;
     const data=exportData();
     try{
       if(window.netzplaner?.saveProjectFile){
@@ -351,7 +351,7 @@
       history.last=snapshot();
     }catch(error){$('saveStatus').textContent='Speichern fehlgeschlagen';alert('Projekt konnte nicht gespeichert werden: '+error.message);}
   }
-  function exportProject(){ state.name=projectName.value.trim()||'Unbenanntes Projekt'; const data=exportData(); void saveNow(); downloadBlob(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),safeFile(state.name)+'.json'); history.last=snapshot(); }
+  function exportProject(){ state.name=projectName.value.trim()||'Untitled Project'; const data=exportData(); void saveNow(); downloadBlob(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),safeFile(state.name)+'.json'); history.last=snapshot(); }
   function safeFile(s){ return (s||'netzplan').replace(/[\\/:*?"<>|]+/g,'_').trim()||'netzplan'; }
   function projectRect(){
     const w=nodeW(),h=nodeH(); if(!state.nodes.length) return {x:0,y:0,w:700,h:400}; const xs=state.nodes.map(n=>n.x),ys=state.nodes.map(n=>n.y); const minX=Math.min(...xs)-60,minY=Math.min(...ys)-60,maxX=Math.max(...xs)+w+60,maxY=Math.max(...ys)+h+60; return {x:minX,y:minY,w:Math.max(300,maxX-minX),h:Math.max(220,maxY-minY)};
@@ -393,7 +393,7 @@
               const obj=JSON.parse(reader.result);
               if(obj.format!=='netzplaner') throw new Error('Ungültiges Format');
               pushHistory();
-              state.name=obj.name||'Unbenanntes Projekt';
+              state.name=obj.name||'Untitled Project';
               state.nodes=Array.isArray(obj.nodes)?obj.nodes:[];
               state.edges=Array.isArray(obj.edges)?obj.edges:[];
               state.grid=obj.view?.grid!==false;
@@ -410,7 +410,7 @@
               $('importDialog').classList.remove('open');
               pond.removeFiles();
               fitView();
-            }catch(e){ alert('Import fehlgeschlagen: '+e.message); }
+            }catch(e){ alert('Import failed: '+e.message); }
           };
           reader.readAsText(file.file);
         });
@@ -422,8 +422,8 @@
     try{
       await ProjectActions.startNewProject({
         hasContent:!!(state.nodes.length||state.edges.length),
-        confirmDiscard:()=>confirm('Aktuelles Projekt verwerfen und ein neues Projekt starten?'),
-        resetProject:()=>{history.undo=[];history.redo=[];history.last=null;state.name='Unbenanntes Projekt';state.nodes=[];state.edges=[];state.selected=null;state.connectMode=false;state.connectFrom=null;projectName.value=state.name;render();updateUndoButtons();},
+        confirmDiscard:()=>confirm('Discard current project and start a new project?'),
+        resetProject:()=>{history.undo=[];history.redo=[];history.last=null;state.name='Untitled Project';state.nodes=[];state.edges=[];state.selected=null;state.connectMode=false;state.connectFrom=null;projectName.value=state.name;render();updateUndoButtons();},
         persistProject:flushProjectSave
       });
     }catch(error){alert('Das neue Projekt konnte nicht gespeichert werden: '+error.message);}
@@ -438,14 +438,14 @@
         applyRecovered:data=>{applyProject(data);history.undo=[];history.redo=[];history.last=snapshot();render();updateUndoButtons();},
         saveRecovered:flushProjectSave
       });
-      if(!recovered)alert('Es wurde keine frühere Sicherung gefunden.');
+      if(!recovered)alert('No earlier backup found.');
     }catch(error){alert('Wiederherstellung fehlgeschlagen; dein aktuelles Projekt bleibt gespeichert: '+error.message);}
   };
   $('exportProjectBtn').onclick=exportProject;$('saveProjectBtn').onclick=saveProjectFile;$('undoBtn').onclick=undo;$('redoBtn').onclick=redo;$('addNodeBtn').onclick=addNode;$('connectBtn').onclick=toggleConnect;$('deleteBtn').onclick=deleteSelected;$('deleteSelectedBtn').onclick=deleteSelected;$('fitBtn').onclick=fitView;$('pngBtn').onclick=()=>exportImage('png');$('jpgBtn').onclick=()=>exportImage('jpg');$('pdfBtn').onclick=exportPdf;
   $('gridToggle').onchange=()=>{pushHistory();state.grid=$('gridToggle').checked;render();}; $('snapToggle').onchange=()=>{pushHistory();state.snap=$('snapToggle').checked;render();}; $('minifyBtn').onclick=()=>{pushHistory();state.minified=!state.minified;render();fitView();};
   $('zoomInBtn').onclick=()=>{state.zoom=Math.min(2.5,state.zoom*1.15);applyTransform()};$('zoomOutBtn').onclick=()=>{state.zoom=Math.max(.25,state.zoom/1.15);applyTransform()};$('resetZoomBtn').onclick=()=>{state.zoom=1;applyTransform()};
   $('helpBtn').onclick=()=>$('helpPage').classList.add('open');$('closeHelpBtn').onclick=()=>$('helpPage').classList.remove('open');
-  projectName.addEventListener('input',()=>{state.name=projectName.value; scheduleSave()}); projectName.addEventListener('change',()=>{state.name=projectName.value.trim()||'Unbenanntes Projekt';projectName.value=state.name; scheduleSave()});
+  projectName.addEventListener('input',()=>{state.name=projectName.value; scheduleSave()}); projectName.addEventListener('change',()=>{state.name=projectName.value.trim()||'Untitled Project';projectName.value=state.name; scheduleSave()});
   $('nodeSearch').addEventListener('keydown',e=>{
     if(e.key==='Enter'){
       const q=e.target.value.trim().toLowerCase();

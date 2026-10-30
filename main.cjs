@@ -70,9 +70,9 @@ ipcMain.handle('project:save-file', async (_event, data) => {
   let target = savedProjectPath;
   if (!target) {
     const result = await dialog.showSaveDialog(win, {
-      title: 'Projekt speichern',
+      title: 'Save Project',
       defaultPath: path.join(app.getPath('documents'), `${String(data.name || 'netzplan-project').replace(/[\\/:*?"<>|]+/g, '_')}.json`),
-      filters: [{ name: 'Netzplaner-Projekt', extensions: ['json'] }]
+      filters: [{ name: 'Netzplaner Project', extensions: ['json'] }]
     });
     if (result.canceled || !result.filePath) return { canceled: true };
     target = result.filePath;
@@ -97,9 +97,9 @@ function createWindow() {
   const handleClose = createCloseController({
     confirmExit: async () => {
       const { response } = await dialog.showMessageBox(win, {
-        type: 'question', buttons: ['Weiterarbeiten', 'Speichern & beenden'], defaultId: 0, cancelId: 0,
-        title: 'Netzplaner beenden?', message: 'Dein Projekt wird lokal gespeichert, bevor Netzplaner beendet wird.',
-        detail: 'Automatische Sicherungen bleiben für die Wiederherstellung erhalten.'
+        type: 'question', buttons: ['Continue', 'Save & Exit'], defaultId: 0, cancelId: 0,
+        title: 'Quit Netzplaner?', message: 'Your project will be saved locally before exiting.',
+        detail: 'Automatic backups remain available for recovery.'
       });
       return response === 1;
     },
@@ -108,9 +108,9 @@ function createWindow() {
       await projectStore.flush();
     },
     showSaveError: error => dialog.showMessageBox(win, {
-      type: 'error', buttons: ['Weiterarbeiten'], defaultId: 0,
-      title: 'Speichern fehlgeschlagen',
-      message: 'Netzplaner bleibt geöffnet, weil das Projekt nicht gespeichert werden konnte.',
+      type: 'error', buttons: ['Continue'], defaultId: 0,
+      title: 'Save failed',
+      message: 'Netzplaner remains open because the project could not be saved.',
       detail: String(error?.message || error)
     }),
     closeWindow: () => win.close()
