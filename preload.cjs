@@ -6,4 +6,5 @@ contextBridge.exposeInMainWorld('netzplaner', {
   restoreLatest: () => ipcRenderer.invoke('project:restore-latest'),
   getVersion: () => ipcRenderer.invoke('app:get-version'),
   openExternal: (url) => shell.openExternal(url),
+  exportFile: (options) => ipcRenderer.invoke('export:file', options)
 });

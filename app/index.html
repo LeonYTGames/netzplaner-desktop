@@ -335,8 +335,18 @@
   ['fId','fTask','fDuration','fFAZ','fFEZ','fSAZ','fSEZ','fFP','fGP'].forEach((id,i)=>bindField(id,['id','task','duration','FAZ','FEZ','SAZ','SEZ','FP','GP'][i]));
   function focusFirstField(){ $('fTask').focus(); $('fTask').select(); }
 
-  function downloadBlob(blob,name){
+  async function downloadBlob(blob,name){
     try{
+      if(window.netzplaner && typeof window.netzplaner.exportFile === 'function'){
+        const arrayBuffer = await blob.arrayBuffer();
+        const data = Array.from(new Uint8Array(arrayBuffer));
+        const extension = name.split('.').pop();
+        const baseName = name.replace(/\.[^/.]+$/, '');
+        const result = await window.netzplaner.exportFile({ fileName: baseName, extension: extension, data: data });
+        if(result && result.canceled) return;
+        if(result && result.error){ alert('Export failed: ' + result.error); return; }
+        return;
+      }
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
