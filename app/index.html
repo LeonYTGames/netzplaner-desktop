@@ -35,39 +35,39 @@
     <div class="spacer"></div>
     <button class="btn iconbtn" id="undoBtn" title="Undo (Ctrl/Cmd+Z)">↶</button>
     <button class="btn iconbtn" id="redoBtn" title="Redo (Ctrl/Cmd+Y / Shift+Ctrl/Cmd+Z)">↷</button>
-    <button class="btn" id="helpBtn" title="Hilfe & Tastenkürzel">Help</button>
+    <button class="btn" id="helpBtn" title="Help & Shortcuts">Help</button>
   </header>
 
   <div class="workspace">
     <aside class="sidebar">
-      <div class="section-title">Werkzeuge</div>
+      <div class="section-title">Tools</div>
       <div class="tool-grid">
-        <button class="btn accent" id="addNodeBtn">＋ Knoten <span class="kbd">N</span></button>
-        <button class="btn" id="connectBtn">↗ Verbindung <span class="kbd">E</span></button>
-        <button class="btn" id="deleteBtn">⌫ Löschen <span class="kbd">Del</span></button>
-        <button class="btn" id="fitBtn">⛶ Einpassen <span class="kbd">F</span></button>
+        <button class="btn accent" id="addNodeBtn">＋ Node <span class="kbd">N</span></button>
+        <button class="btn" id="connectBtn">↗ Connection <span class="kbd">E</span></button>
+        <button class="btn" id="deleteBtn">⌫ Delete <span class="kbd">Del</span></button>
+        <button class="btn" id="fitBtn">⛶ Fit <span class="kbd">F</span></button>
       </div>
-      <div class="section-title">Ansicht</div>
+      <div class="section-title">View</div>
       <div class="stack">
-        <label class="checkrow"><input id="gridToggle" type="checkbox" checked> Raster</label>
-        <label class="checkrow"><input id="snapToggle" type="checkbox" checked> Am Raster einrasten</label>
+        <label class="checkrow"><input id="gridToggle" type="checkbox" checked> Grid</label>
+        <label class="checkrow"><input id="snapToggle" type="checkbox" checked> Snap to grid</label>
         <button class="btn" id="minifyBtn">Minify <span class="kbd">M</span></button>
       </div>
       <div class="section-title">Export</div>
       <div class="stack">
-        <button class="btn" id="pngBtn">PNG exportieren</button>
-        <button class="btn" id="jpgBtn">JPEG exportieren</button>
-        <button class="btn" id="pdfBtn">PDF exportieren</button>
+        <button class="btn" id="pngBtn">Export PNG</button>
+        <button class="btn" id="jpgBtn">Export JPEG</button>
+        <button class="btn" id="pdfBtn">Export PDF</button>
       </div>
       <div class="section-title">Canvas</div>
       <div class="stack">
-        <button class="btn" id="zoomInBtn">＋ Zoom</button>
-        <button class="btn" id="zoomOutBtn">− Zoom</button>
+        <button class="btn" id="zoomInBtn">＋ Zoom In</button>
+        <button class="btn" id="zoomOutBtn">− Zoom Out</button>
         <button class="btn" id="resetZoomBtn">100 %</button>
       </div>
-      <div class="section-title">Projektdatei</div>
-      <div class="stack" style="margin-bottom:10px"><button class="btn" id="recoverBtn">Letzte Sicherung wiederherstellen</button></div>
-      <div class="notice">Projektdateien enthalten ausschließlich Name, Knoten, Verbindungen und Positionen. Es werden keine Netzplandaten berechnet.</div>
+      <div class="section-title">Project File</div>
+      <div class="stack" style="margin-bottom:10px"><button class="btn" id="recoverBtn">Restore last backup</button></div>
+      <div class="notice">Project files only contain name, nodes, connections and positions. No network calculations are performed.</div>
     </aside>
 
     <main class="canvas-wrap" id="canvasWrap">
@@ -83,13 +83,13 @@
     </main>
 
     <aside class="inspector" id="inspector">
-      <h3>Knotendefinition</h3>
-      <div id="inspectorEmpty" class="empty">Klicke einen Knoten an, um seine Werte zu bearbeiten.</div>
+      <h3>Node</h3>
+      <div id="inspectorEmpty" class="empty">Click a node to edit its values.</div>
       <div id="inspectorForm" hidden>
         <div class="field"><label>ID</label><input id="fId" type="text"></div>
-        <div class="field"><label>Vorgang</label><input id="fTask" type="text"></div>
+        <div class="field"><label>Operation</label><input id="fTask" type="text"></div>
         <div class="row">
-          <div class="field"><label>Dauer</label><input id="fDuration" type="text"></div>
+          <div class="field"><label>Duration</label><input id="fDuration" type="text"></div>
           <div></div>
         </div>
         <div class="row">
@@ -104,8 +104,8 @@
           <div class="field"><label>FP</label><input id="fFP" type="text"></div>
           <div class="field"><label>GP</label><input id="fGP" type="text"></div>
         </div>
-        <div class="stack" style="margin-top:8px"><button class="btn danger" id="deleteSelectedBtn">Knoten löschen</button></div>
-        <div class="section-title">Verbindungen</div>
+        <div class="stack" style="margin-top:8px"><button class="btn danger" id="deleteSelectedBtn">Delete node</button></div>
+        <div class="section-title">Connections</div>
         <div id="edgeList" class="edge-list"></div>
       </div>
     </aside>
@@ -123,25 +123,25 @@
 
 <div class="help" id="helpPage">
   <div class="help-inner">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px"><button class="btn" id="closeHelpBtn">← Zurück</button><h1 style="margin:0">Hilfe & Tastenkürzel</h1></div>
-    <div class="notice" style="margin-bottom:18px">Der Netzplaner ist vollständig manuell. Werte wie FAZ, FEZ, SAZ, SEZ, FP und GP werden nie automatisch berechnet. Verbindungen dienen ausschließlich als grafische Darstellung.</div>
-    <h2>Tastenkürzel</h2>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px"><button class="btn" id="closeHelpBtn">← Back</button><h1 style="margin:0">Help & Shortcuts</h1></div>
+    <div class="notice" style="margin-bottom:18px">Netzplaner is fully manual. Values like FAZ, FEZ, SAZ, SEZ, FP and GP are never calculated automatically. Connections are purely visual.</div>
+    <h2>Shortcuts</h2>
     <div class="hotkeys">
-      <div class="hk"><strong>N</strong><span>Neuen Knoten erstellen</span></div>
-      <div class="hk"><strong>E</strong><span>Verbindungsmodus aktivieren</span></div>
-      <div class="hk"><strong>Delete / Backspace</strong><span>Ausgewählten Knoten löschen</span></div>
-      <div class="hk"><strong>Escape</strong><span>Verbindungsmodus / Auswahl beenden</span></div>
+      <div class="hk"><strong>N</strong><span>Create new node</span></div>
+      <div class="hk"><strong>E</strong><span>Enter connection mode</span></div>
+      <div class="hk"><strong>Delete / Backspace</strong><span>Delete selected node</span></div>
+      <div class="hk"><strong>Escape</strong><span>Exit connection mode / clear selection</span></div>
       <div class="hk"><strong>Ctrl/Cmd + Z</strong><span>Undo</span></div>
       <div class="hk"><strong>Ctrl/Cmd + Y</strong><span>Redo</span></div>
       <div class="hk"><strong>Ctrl/Cmd + Shift + Z</strong><span>Redo</span></div>
-      <div class="hk"><strong>Ctrl/Cmd + S</strong><span>Projekt speichern (beim ersten Mal Speicherort wählen)</span></div>
-      <div class="hk"><strong>Ctrl/Cmd + O</strong><span>Projekt importieren</span></div>
-      <div class="hk"><strong>F</strong><span>Netzplan einpassen</span></div>
-      <div class="hk"><strong>M</strong><span>Minify umschalten</span></div>
-      <div class="hk"><strong>+ / -</strong><span>Zoom ändern</span></div>
+      <div class="hk"><strong>Ctrl/Cmd + S</strong><span>Save project (choose location on first save)</span></div>
+      <div class="hk"><strong>Ctrl/Cmd + O</strong><span>Import project</span></div>
+      <div class="hk"><strong>F</strong><span>Fit network plan to view</span></div>
+      <div class="hk"><strong>M</strong><span>Toggle minify</span></div>
+      <div class="hk"><strong>+ / -</strong><span>Change zoom</span></div>
     </div>
-    <h2 style="margin-top:28px">Bedienung</h2>
-    <p class="empty">Knoten lassen sich per Drag & Drop verschieben. Ist das Raster aktiv und "Am Raster einrasten" aktiviert, rasten ihre Positionen beim Verschieben an den Rasterpunkten ein. Für Verbindungen zuerst <b>Verbindung</b> aktivieren und anschließend Start- und Zielknoten anklicken.</p>
+    <h2 style="margin-top:28px">Usage</h2>
+    <p class="empty">Nodes can be moved by drag and drop. If the grid is active and 'Snap to grid' is enabled, positions snap to grid points. For connections, activate <b>Connection</b> first, then click the start and target nodes.</p>
   </div>
 </div>
 
@@ -158,7 +158,7 @@
   const state = { name: 'Untitled Project', nodes: [], edges: [], selected: null, connectMode: false, connectFrom: null, grid: true, snap: true, minified: false, zoom: 1, panX: 80, panY: 80 };
   const history = { undo: [], redo: [], last: null };
   let saveTimer=null, saveInFlight=Promise.resolve(), initializing=true;
-  function scheduleSave(){ if(initializing)return; $('saveStatus').textContent='Speichert…'; clearTimeout(saveTimer); saveTimer=setTimeout(()=>{void saveNow().catch(()=>{});},180); }
+  function scheduleSave(){ if(initializing)return; $('saveStatus').textContent='Saving…'; clearTimeout(saveTimer); saveTimer=setTimeout(()=>{void saveNow().catch(()=>{});},180); }
   function saveNow(){
     clearTimeout(saveTimer);
     saveTimer=null;
@@ -166,12 +166,12 @@
     let localStorageError=null;
     try{ localStorage.setItem('netzplaner.autosave',JSON.stringify(data)); }catch(e){ localStorageError=e; }
     if(window.netzplaner?.saveProject){
-      saveInFlight=saveInFlight.catch(()=>{}).then(()=>window.netzplaner.saveProject(data)).then(()=>{ $('saveStatus').textContent='Lokal gespeichert'; },error=>{ $('saveStatus').textContent='Speichern fehlgeschlagen'; throw error; });
+      saveInFlight=saveInFlight.catch(()=>{}).then(()=>window.netzplaner.saveProject(data)).then(()=>{ $('saveStatus').textContent='Saved locally'; },error=>{ $('saveStatus').textContent='Save failed'; throw error; });
     } else if(localStorageError){
-      $('saveStatus').textContent='Speichern fehlgeschlagen';
+      $('saveStatus').textContent='Save failed';
       saveInFlight=Promise.reject(localStorageError);
     } else {
-      $('saveStatus').textContent='Lokal gespeichert';
+      $('saveStatus').textContent='Saved locally';
       saveInFlight=Promise.resolve();
     }
     return saveInFlight;
@@ -201,7 +201,7 @@
     const z=Math.min(vw/Math.max(1,maxX-minX),vh/Math.max(1,maxY-minY),1.35);
     state.zoom=Math.max(.25,Math.min(2.5,z)); state.panX=pad-minX*state.zoom; state.panY=pad-minY*state.zoom; applyTransform();
   }
-  function applyTransform(){ scene.style.transform=`translate(${state.panX}px,${state.panY}px) scale(${state.zoom})`; updateGrid(); $('zoomBadge').textContent=Math.round(state.zoom*100)+' %'; $('modeBadge').textContent=state.minified?'Minified':'Normal'; $('selectionBadge').textContent=state.selected?'Knoten '+(state.nodes.find(n=>n.id===state.selected)?.data.id||''):'Keine Auswahl'; }
+  function applyTransform(){ scene.style.transform=`translate(${state.panX}px,${state.panY}px) scale(${state.zoom})`; updateGrid(); $('zoomBadge').textContent=Math.round(state.zoom*100)+' %'; $('modeBadge').textContent=state.minified?'Minified':'Normal'; $('selectionBadge').textContent=state.selected?'Node '+(state.nodes.find(n=>n.id===state.selected)?.data.id||''):'No selection'; }
   function snap(v){ return state.snap&&state.grid ? Math.round(v/GRID_SIZE)*GRID_SIZE : v; }
   function nodeById(id){ return state.nodes.find(n=>n.id===id); }
   function screenToWorld(clientX,clientY){ const r=canvas.getBoundingClientRect(); return {x:(clientX-r.left-state.panX)/state.zoom,y:(clientY-r.top-state.panY)/state.zoom}; }
@@ -319,7 +319,7 @@
     // Place in center of visible area
     const cx=(r.width/2 - state.panX)/state.zoom - w/2;
     const cy=(r.height/2 - state.panY)/state.zoom - h/2;
-    state.nodes.push({id,x:snap(cx),y:snap(cy),data:{id:String(idx),task:'Neuer Vorgang',duration:'',FAZ:'',FEZ:'',SAZ:'',SEZ:'',FP:'',GP:''}});
+    state.nodes.push({id,x:snap(cx),y:snap(cy),data:{id:String(idx),task:'New Operation',duration:'',FAZ:'',FEZ:'',SAZ:'',SEZ:'',FP:'',GP:''}});
     state.selected=id;
     render();
     focusNodeById(id);
@@ -329,7 +329,7 @@
   function renderInspector(){
     const n=nodeById(state.selected); const empty=!n; $('inspectorEmpty').hidden=!empty; $('inspectorForm').hidden=empty; if(empty)return; const d=n.data;
     [['fId','id'],['fTask','task'],['fDuration','duration'],['fFAZ','FAZ'],['fFEZ','FEZ'],['fSAZ','SAZ'],['fSEZ','SEZ'],['fFP','FP'],['fGP','GP']].forEach(([id,k])=>$(id).value=d[k]??'');
-    const list=$('edgeList'); list.innerHTML=''; const rel=state.edges.filter(e=>e.from===n.id||e.to===n.id); if(!rel.length){list.innerHTML='<div class="empty">Keine Verbindungen.</div>'} else rel.forEach(e=>{const a=nodeById(e.from),b=nodeById(e.to);const div=document.createElement('div');div.className='edge-item';div.innerHTML=`<span>${escapeHtml(a?.data.id||'?')} → ${escapeHtml(b?.data.id||'?')}</span><button class="btn" data-edge="${e.id}">×</button>`;div.querySelector('button').onclick=()=>deleteEdge(e.id);list.appendChild(div);});
+    const list=$('edgeList'); list.innerHTML=''; const rel=state.edges.filter(e=>e.from===n.id||e.to===n.id); if(!rel.length){list.innerHTML='<div class="empty">No connections.</div>'} else rel.forEach(e=>{const a=nodeById(e.from),b=nodeById(e.to);const div=document.createElement('div');div.className='edge-item';div.innerHTML=`<span>${escapeHtml(a?.data.id||'?')} → ${escapeHtml(b?.data.id||'?')}</span><button class="btn" data-edge="${e.id}">×</button>`;div.querySelector('button').onclick=()=>deleteEdge(e.id);list.appendChild(div);});
   }
   function bindField(id,key){ $(id).addEventListener('input',()=>{const n=nodeById(state.selected);if(!n)return;n.data[key]=$(id).value; scheduleSave(); if(key==='id'||key==='task') render(); else renderInspector();}); $(id).addEventListener('change',pushHistory); }
   ['fId','fTask','fDuration','fFAZ','fFEZ','fSAZ','fSEZ','fFP','fGP'].forEach((id,i)=>bindField(id,['id','task','duration','FAZ','FEZ','SAZ','SEZ','FP','GP'][i]));
@@ -343,13 +343,13 @@
       if(window.netzplaner?.saveProjectFile){
         const result=await window.netzplaner.saveProjectFile(data);
         if(result?.canceled)return;
-        $('saveStatus').textContent='Gespeichert: '+(result?.path?.split(/[\\/]/).pop()||state.name);
+        $('saveStatus').textContent='Saved: '+(result?.path?.split(/[\\/]/).pop()||state.name);
       }else{
         downloadBlob(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),safeFile(state.name)+'.json');
-        $('saveStatus').textContent='Projektdatei heruntergeladen';
+        $('saveStatus').textContent='Project file downloaded';
       }
       history.last=snapshot();
-    }catch(error){$('saveStatus').textContent='Speichern fehlgeschlagen';alert('Projekt konnte nicht gespeichert werden: '+error.message);}
+    }catch(error){$('saveStatus').textContent='Save failed';alert('Could not save project: '+error.message);}
   }
   function exportProject(){ state.name=projectName.value.trim()||'Untitled Project'; const data=exportData(); void saveNow(); downloadBlob(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),safeFile(state.name)+'.json'); history.last=snapshot(); }
   function safeFile(s){ return (s||'netzplan').replace(/[\\/:*?"<>|]+/g,'_').trim()||'netzplan'; }
@@ -426,11 +426,11 @@
         resetProject:()=>{history.undo=[];history.redo=[];history.last=null;state.name='Untitled Project';state.nodes=[];state.edges=[];state.selected=null;state.connectMode=false;state.connectFrom=null;projectName.value=state.name;render();updateUndoButtons();},
         persistProject:flushProjectSave
       });
-    }catch(error){alert('Das neue Projekt konnte nicht gespeichert werden: '+error.message);}
+    }catch(error){alert('Could not save the new project: '+error.message);}
   };
   $('recoverBtn').onclick=async()=>{
-    if(!window.netzplaner?.restoreLatest){ alert('Wiederherstellung ist nur in der Desktop-App verfügbar.'); return; }
-    if(!confirm('Letzte automatische Sicherung laden? Der aktuelle Stand wird vorher ebenfalls gesichert.'))return;
+    if(!window.netzplaner?.restoreLatest){ alert('Recovery is only available in the desktop app.'); return; }
+    if(!confirm('Load the last automatic backup? The current state will be saved first.'))return;
     try{
       const recovered=await ProjectActions.restoreLatestProject({
         saveCurrent:flushProjectSave,
@@ -439,7 +439,7 @@
         saveRecovered:flushProjectSave
       });
       if(!recovered)alert('No earlier backup found.');
-    }catch(error){alert('Wiederherstellung fehlgeschlagen; dein aktuelles Projekt bleibt gespeichert: '+error.message);}
+    }catch(error){alert('Recovery failed; your current project remains saved: '+error.message);}
   };
   $('exportProjectBtn').onclick=exportProject;$('saveProjectBtn').onclick=saveProjectFile;$('undoBtn').onclick=undo;$('redoBtn').onclick=redo;$('addNodeBtn').onclick=addNode;$('connectBtn').onclick=toggleConnect;$('deleteBtn').onclick=deleteSelected;$('deleteSelectedBtn').onclick=deleteSelected;$('fitBtn').onclick=fitView;$('pngBtn').onclick=()=>exportImage('png');$('jpgBtn').onclick=()=>exportImage('jpg');$('pdfBtn').onclick=exportPdf;
   $('gridToggle').onchange=()=>{pushHistory();state.grid=$('gridToggle').checked;render();}; $('snapToggle').onchange=()=>{pushHistory();state.snap=$('snapToggle').checked;render();}; $('minifyBtn').onclick=()=>{pushHistory();state.minified=!state.minified;render();fitView();};
@@ -458,7 +458,7 @@
         $('nodeSearch').value='';
         $('nodeSearch').blur();
       }else{
-        alert('Keinen Knoten mit diesem Vorgang gefunden.');
+        alert('No node found with this operation.');
       }
       e.preventDefault();
     }
