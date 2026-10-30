@@ -2,26 +2,37 @@ function createCloseController({ confirmExit, flushSave, showSaveError, closeWin
   let allowClose = false;
   let promptOpen = false;
 
-  return async function handleClose(event) {
-    if (allowClose) return;
+  async function performCloseAttempt(event) {
+    if (allowClose) {
+      return;
+    }
     event.preventDefault();
-    if (promptOpen) return;
+    if (promptOpen) {
+      return;
+    }
 
     promptOpen = true;
     try {
-      if (!(await confirmExit())) return;
+      const shouldExit = await confirmExit();
+      if (!shouldExit) {
+        return;
+      }
+
       try {
         await flushSave();
       } catch (error) {
         await showSaveError(error);
         return;
       }
+
       allowClose = true;
       closeWindow();
     } finally {
       promptOpen = false;
     }
-  };
+  }
+
+  return performCloseAttempt;
 }
 
 module.exports = { createCloseController };
