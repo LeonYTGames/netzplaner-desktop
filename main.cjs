@@ -64,6 +64,7 @@ const projectStore = createProjectStore({ persistProject, loadProject, readLates
 ipcMain.handle('project:load', () => projectStore.loadProject());
 ipcMain.handle('project:save', (_event, data) => projectStore.save(data));
 ipcMain.handle('project:restore-latest', () => projectStore.restoreLatest());
+ipcMain.handle('app:get-version', () => app.getVersion());
 ipcMain.handle('project:save-file', async (_event, data) => {
   await projectStore.save(data);
   let target = savedProjectPath;
@@ -115,6 +116,9 @@ function createWindow() {
     closeWindow: () => win.close()
   });
   win.on('close', event => { void handleClose(event); });
+  win.on('closed', () => {
+    win = null;
+  });
 }
 
 app.whenReady().then(() => {
