@@ -13,19 +13,11 @@ function createCloseController({ confirmExit, flushSave, showSaveError, closeWin
       try {
         await flushSave();
       } catch (error) {
-        try {
-          await showSaveError(error);
-        } catch {}
-        // Still allow closing even if save failed
+        await showSaveError(error);
+        return;
       }
       allowClose = true;
-      try {
-        closeWindow();
-      } catch {}
-      // Fallback to force close shortly after
-      setTimeout(() => {
-        try { if (typeof process !== 'undefined' && process.exit) process.exit(0); } catch {}
-      }, 1500);
+      closeWindow();
     } finally {
       promptOpen = false;
     }
