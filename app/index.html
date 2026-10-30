@@ -544,9 +544,10 @@
       const serializedSvg = serializer.serializeToString(svgElement);
       const svgDataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(serializedSvg);
       const image = new Image();
+      image.crossOrigin = 'anonymous';
       image.onload = function onImageLoad(){
         try{
-          const scale = 3;
+          const scale = 2;
           const canvasElement = document.createElement('canvas');
           canvasElement.width = Math.ceil(rect.w * scale);
           canvasElement.height = Math.ceil(rect.h * scale);
@@ -554,20 +555,24 @@
           context.fillStyle = '#f7f8fa';
           context.fillRect(0, 0, canvasElement.width, canvasElement.height);
           context.drawImage(image, 0, 0, canvasElement.width, canvasElement.height);
-          const jsPdfConstructor = window.jspdf && (window.jspdf.jsPDF || window.jspdf);
+          const jsPdfConstructor = window.jspdf && (window.jspdf.jsPDF ? window.jspdf.jsPDF : (typeof window.jsPDF === 'function' ? window.jsPDF : null));
           if(!jsPdfConstructor){
             alert('PDF export not available');
             return;
           }
           const pixelsPerMillimeter = 25.4 / 96;
-          const pageWidth = Math.max(80, rect.w * pixelsPerMillimeter);
-          const pageHeight = Math.max(60, rect.h * pixelsPerMillimeter);
+          const pageWidth = Math.max(100, rect.w * pixelsPerMillimeter);
+          const pageHeight = Math.max(100, rect.h * pixelsPerMillimeter);
           const orientation = rect.w >= rect.h ? 'landscape' : 'portrait';
           const pdfDocument = new jsPdfConstructor({orientation: orientation, unit: 'mm', format: [pageWidth, pageHeight]});
           const imageData = canvasElement.toDataURL('image/png');
           pdfDocument.addImage(imageData, 'PNG', 0, 0, pageWidth, pageHeight);
-          const pdfBlob = pdfDocument.output('blob');
-          downloadBlob(pdfBlob, safeFile(state.name || 'network') + '.pdf');
+          try{
+            const pdfBlob = pdfDocument.output('blob');
+            downloadBlob(pdfBlob, safeFile(state.name || 'network') + '.pdf');
+          }catch(e){
+            pdfDocument.save(safeFile(state.name || 'network') + '.pdf');
+          }
         }catch(error){
           alert('PDF export failed: ' + error.message);
         }
