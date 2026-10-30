@@ -335,7 +335,20 @@
   ['fId','fTask','fDuration','fFAZ','fFEZ','fSAZ','fSEZ','fFP','fGP'].forEach((id,i)=>bindField(id,['id','task','duration','FAZ','FEZ','SAZ','SEZ','FP','GP'][i]));
   function focusFirstField(){ $('fTask').focus(); $('fTask').select(); }
 
-  function downloadBlob(blob,name){ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},0); }
+  function downloadBlob(blob,name){
+    try{
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function(){ try{ URL.revokeObjectURL(url); }catch(e){} a.remove(); }, 1000);
+    }catch(error){
+      alert('Export failed: ' + error.message);
+    }
+  }
   async function saveProjectFile(){
     state.name=projectName.value.trim()||'Untitled Project'; projectName.value=state.name;
     const data=exportData();
