@@ -1,5 +1,11 @@
 # Netzplaner Desktop
 
+## Note:
+
+This shit is absolutely vibecoded, use or dont.
+
+## Description:
+
 A cross-platform Electron desktop app based on the supplied Netzplaner HTML. The original German interface and canvas editor are retained.
 
 ## Run from source
