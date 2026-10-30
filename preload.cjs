@@ -1,5 +1,4 @@
-const { contextBridge, ipcRenderer } = require('electron');
-const { shell } = require('electron');
+const { contextBridge, ipcRenderer, shell } = require('electron');
 contextBridge.exposeInMainWorld('netzplaner', {
   loadProject: () => ipcRenderer.invoke('project:load'),
   saveProject: (data) => ipcRenderer.invoke('project:save', data),

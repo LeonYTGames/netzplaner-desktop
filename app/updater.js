@@ -8,21 +8,22 @@
   function skipVersion(ver){ const s=getSkipped(); s[ver]=true; localStorage.setItem(LS_SKIP, JSON.stringify(s)); }
   function getRemindAt(){ const v=localStorage.getItem(LS_REMIND); return v?parseInt(v,10):0; }
   function remindLater(){ localStorage.setItem(LS_REMIND, String(Date.now()+24*60*60*1000)); }
+  function normalize(v){ return String(v||'').replace(/^v/i,'').trim(); }
   async function checkForUpdates(){
     if(!getEnabled()) return;
     const remindAt=getRemindAt();
     if(remindAt && Date.now()<remindAt) return;
     try {
-      const res = await fetch('https://api.github.com/repos/LeonYTGames/netzplaner-desktop/releases/latest', {headers:{'Accept':'application/vnd.github+json'}});
+      const res = await fetch('https://api.github.com/repos/LeonYTGames/netzplaner-desktop/releases/latest', {headers:{'Accept':'application/vnd.github+json','User-Agent':'netzplaner-desktop'}});
       if(!res.ok) return;
       const data = await res.json();
       const tag = data.tag_name || data.name || '';
       if(!tag) return;
       const skipped = getSkipped();
       if(skipped[tag]) return;
-      const current = (window.netzplaner && window.netzplaner.getVersion) ? await window.netzplaner.getVersion() : '';
-      if(current && tag === current) return;
-      showUpdateDialog({tag, url: data.html_url || 'https://github.com/LeonYTGames/netzplaner-desktop/releases/latest', body: data.body || ''});
+      const current = (window.netzplaner && window.netzplaner.getVersion) ? await window.netzplaner.getVersion().catch(()=> '') : '';
+      if(current && normalize(tag) === normalize(current)) return;
+      showUpdateDialog({tag, url: data.html_url || (data.assets && data.assets[0] && data.assets[0].browser_download_url) || 'https://github.com/LeonYTGames/netzplaner-desktop/releases/latest', body: data.body || ''});
     }catch(e){}
   }
   function showUpdateDialog(info){
@@ -32,7 +33,18 @@
     document.body.appendChild(dlg);
     dlg.querySelector('#updSkip').onclick=()=>{ skipVersion(info.tag); dlg.remove(); };
     dlg.querySelector('#updLater').onclick=()=>{ remindLater(); dlg.remove(); };
-    dlg.querySelector('#updOpen').onclick=()=>{ if(window.netzplaner?.openExternal) window.netzplaner.openExternal(info.url); else window.open(info.url,'_blank'); dlg.remove(); };
+    dlg.querySelector('#updOpen').onclick=async ()=>{
+      try {
+        if(window.netzplaner?.openExternal){
+          await window.netzplaner.openExternal(info.url);
+        }else{
+          window.open(info.url,'_blank');
+        }
+      }catch(e){
+        try{ window.open(info.url,'_blank'); }catch{}
+      }
+      dlg.remove();
+    };
   }
   function escapeHtml(v){ return String(v??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m])); }
   window.addEventListener('DOMContentLoaded', ()=>{
