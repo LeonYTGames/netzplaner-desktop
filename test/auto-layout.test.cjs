@@ -82,7 +82,7 @@ test('keeps parallel branches in the same layer without overlap', () => {
   assertNoOverlap(positions);
 });
 
-test('keeps connected cycles in one layer instead of dropping nodes', () => {
+test('spreads a connected cycle across readable layers', () => {
   const positions = computeLayout(
     [createNode('a'), createNode('b'), createNode('c')],
     [
@@ -93,12 +93,12 @@ test('keeps connected cycles in one layer instead of dropping nodes', () => {
   );
 
   assert.equal(positions.size, 3);
-  assert.equal(positions.get('a').x, positions.get('b').x);
-  assert.equal(positions.get('b').x, positions.get('c').x);
+  assert.ok(positions.get('b').x > positions.get('a').x);
+  assert.ok(positions.get('c').x > positions.get('b').x);
   assertNoOverlap(positions);
 });
 
-test('places nodes before a cycle in an earlier layer', () => {
+test('places nodes before a cycle in earlier layers', () => {
   const positions = computeLayout(
     [createNode('start'), createNode('a'), createNode('b')],
     [
@@ -109,7 +109,7 @@ test('places nodes before a cycle in an earlier layer', () => {
   );
 
   assert.ok(positions.get('start').x < positions.get('a').x);
-  assert.equal(positions.get('a').x, positions.get('b').x);
+  assert.ok(positions.get('a').x < positions.get('b').x);
   assertNoOverlap(positions);
 });
 

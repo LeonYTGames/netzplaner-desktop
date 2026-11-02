@@ -8,7 +8,7 @@
     nodeWidth,
     nodeHeight,
     gridSize = 32,
-    horizontalGap = gridSize * 2,
+    horizontalGap = gridSize * 4,
     verticalGap = gridSize,
     componentGap = gridSize * 2
   }) {
@@ -96,146 +96,104 @@
   function layoutComponent(nodeIds, edges, options) {
     const nodeIdSet = new Set(nodeIds);
     const outgoingByNodeId = new Map(nodeIds.map(nodeId => [nodeId, []]));
-    const incomingByNodeId = new Map(nodeIds.map(nodeId => [nodeId, []]));
 
     for (const edge of edges) {
       if (!nodeIdSet.has(edge.from) || !nodeIdSet.has(edge.to)) continue;
       outgoingByNodeId.get(edge.from).push(edge.to);
-      incomingByNodeId.get(edge.to).push(edge.from);
     }
 
-    const stronglyConnectedComponents = findStronglyConnectedComponents(nodeIds, outgoingByNodeId);
-    const componentIndexByNodeId = new Map();
-    stronglyConnectedComponents.forEach((component, componentIndex) => {
-      for (const nodeId of component) componentIndexByNodeId.set(nodeId, componentIndex);
-    });
+    const forwardOutgoingByNodeId = breakCycles(nodeIds, outgoingByNodeId);
+    const forwardIncomingByNodeId = new Map(nodeIds.map(nodeId => [nodeId, []]));
 
-    const outgoingByComponent = stronglyConnectedComponents.map(() => new Set());
-    const indegreeByComponent = stronglyConnectedComponents.map(() => 0);
-
-    for (const edge of edges) {
-      if (!nodeIdSet.has(edge.from) || !nodeIdSet.has(edge.to)) continue;
-
-      const fromComponent = componentIndexByNodeId.get(edge.from);
-      const toComponent = componentIndexByNodeId.get(edge.to);
-      if (fromComponent === toComponent) continue;
-      if (outgoingByComponent[fromComponent].has(toComponent)) continue;
-
-      outgoingByComponent[fromComponent].add(toComponent);
-      indegreeByComponent[toComponent] += 1;
+    for (const [fromNodeId, targetNodeIds] of forwardOutgoingByNodeId) {
+      for (const targetNodeId of targetNodeIds) {
+        forwardIncomingByNodeId.get(targetNodeId).push(fromNodeId);
+      }
     }
 
-    const layerByComponent = assignLayers(outgoingByComponent, indegreeByComponent);
-    const maxLayer = layerByComponent.reduce((maximum, layer) => Math.max(maximum, layer), 0);
+    const layerByNodeId = assignLayers(nodeIds, forwardOutgoingByNodeId, forwardIncomingByNodeId);
+    const maxLayer = [...layerByNodeId.values()].reduce((maximum, layer) => Math.max(maximum, layer), 0);
     const layers = Array.from({ length: maxLayer + 1 }, () => []);
 
-    stronglyConnectedComponents.forEach((component, componentIndex) => {
-      const layer = layers[layerByComponent[componentIndex]];
-      for (const nodeId of component) layer.push(nodeId);
-    });
+    for (const nodeId of nodeIds) layers[layerByNodeId.get(nodeId)].push(nodeId);
 
     const nodeOrderById = new Map(nodeIds.map((nodeId, index) => [nodeId, index]));
     for (const layer of layers) {
       layer.sort((firstId, secondId) => nodeOrderById.get(firstId) - nodeOrderById.get(secondId));
     }
 
-    orderWithinLayers(layers, incomingByNodeId, outgoingByNodeId);
+    orderWithinLayers(layers, forwardIncomingByNodeId, forwardOutgoingByNodeId);
 
     return buildPositions(layers, options);
   }
 
-  function findStronglyConnectedComponents(nodeIds, outgoingByNodeId) {
-    const discoveryIndexByNodeId = new Map();
-    const lowLinkByNodeId = new Map();
-    const stack = [];
-    const onStack = new Set();
-    const components = [];
-    let nextDiscoveryIndex = 0;
+  function breakCycles(nodeIds, outgoingByNodeId) {
+    const visitStateByNodeId = new Map();
+    const forwardOutgoingByNodeId = new Map(nodeIds.map(nodeId => [nodeId, []]));
 
     for (const startNodeId of nodeIds) {
-      if (discoveryIndexByNodeId.has(startNodeId)) continue;
+      if (visitStateByNodeId.get(startNodeId) === 2) continue;
 
+      visitStateByNodeId.set(startNodeId, 1);
       const callStack = [{ nodeId: startNodeId, neighborIndex: 0 }];
 
       while (callStack.length > 0) {
         const frame = callStack[callStack.length - 1];
-        const nodeId = frame.nodeId;
+        const neighbors = outgoingByNodeId.get(frame.nodeId) || [];
 
-        if (frame.neighborIndex === 0) {
-          discoveryIndexByNodeId.set(nodeId, nextDiscoveryIndex);
-          lowLinkByNodeId.set(nodeId, nextDiscoveryIndex);
-          nextDiscoveryIndex += 1;
-          stack.push(nodeId);
-          onStack.add(nodeId);
-        }
-
-        const neighbors = outgoingByNodeId.get(nodeId) || [];
         if (frame.neighborIndex < neighbors.length) {
           const neighborId = neighbors[frame.neighborIndex];
           frame.neighborIndex += 1;
+          const neighborState = visitStateByNodeId.get(neighborId) || 0;
 
-          if (!discoveryIndexByNodeId.has(neighborId)) {
+          if (neighborState === 1) {
+            // This connection closes a cycle. Leave it out of the forward graph;
+            // the renderer draws it as a backward connection instead.
+            continue;
+          }
+
+          forwardOutgoingByNodeId.get(frame.nodeId).push(neighborId);
+
+          if (neighborState === 0) {
+            visitStateByNodeId.set(neighborId, 1);
             callStack.push({ nodeId: neighborId, neighborIndex: 0 });
-          } else if (onStack.has(neighborId)) {
-            lowLinkByNodeId.set(
-              nodeId,
-              Math.min(lowLinkByNodeId.get(nodeId), discoveryIndexByNodeId.get(neighborId))
-            );
           }
           continue;
         }
 
+        visitStateByNodeId.set(frame.nodeId, 2);
         callStack.pop();
-
-        if (callStack.length > 0) {
-          const parentFrame = callStack[callStack.length - 1];
-          lowLinkByNodeId.set(
-            parentFrame.nodeId,
-            Math.min(lowLinkByNodeId.get(parentFrame.nodeId), lowLinkByNodeId.get(nodeId))
-          );
-        }
-
-        if (lowLinkByNodeId.get(nodeId) === discoveryIndexByNodeId.get(nodeId)) {
-          const component = [];
-          let memberNodeId;
-          do {
-            memberNodeId = stack.pop();
-            onStack.delete(memberNodeId);
-            component.push(memberNodeId);
-          } while (memberNodeId !== nodeId);
-          components.push(component);
-        }
       }
     }
 
-    return components;
+    return forwardOutgoingByNodeId;
   }
 
-  function assignLayers(outgoingByComponent, indegreeByComponent) {
-    const layerByComponent = indegreeByComponent.map(() => 0);
-    const remainingIndegree = indegreeByComponent.slice();
-    const componentQueue = [];
-
-    indegreeByComponent.forEach((indegree, componentIndex) => {
-      if (indegree === 0) componentQueue.push(componentIndex);
-    });
+  function assignLayers(nodeIds, outgoingByNodeId, incomingByNodeId) {
+    const layerByNodeId = new Map(nodeIds.map(nodeId => [nodeId, 0]));
+    const remainingIndegreeByNodeId = new Map(
+      nodeIds.map(nodeId => [nodeId, (incomingByNodeId.get(nodeId) || []).length])
+    );
+    const layerQueue = nodeIds.filter(nodeId => remainingIndegreeByNodeId.get(nodeId) === 0);
 
     let queueIndex = 0;
-    while (queueIndex < componentQueue.length) {
-      const componentIndex = componentQueue[queueIndex];
+    while (queueIndex < layerQueue.length) {
+      const nodeId = layerQueue[queueIndex];
       queueIndex += 1;
 
-      for (const targetComponent of outgoingByComponent[componentIndex]) {
-        layerByComponent[targetComponent] = Math.max(
-          layerByComponent[targetComponent],
-          layerByComponent[componentIndex] + 1
+      for (const targetNodeId of outgoingByNodeId.get(nodeId) || []) {
+        layerByNodeId.set(
+          targetNodeId,
+          Math.max(layerByNodeId.get(targetNodeId), layerByNodeId.get(nodeId) + 1)
         );
-        remainingIndegree[targetComponent] -= 1;
-        if (remainingIndegree[targetComponent] === 0) componentQueue.push(targetComponent);
+
+        const remainingIndegree = remainingIndegreeByNodeId.get(targetNodeId) - 1;
+        remainingIndegreeByNodeId.set(targetNodeId, remainingIndegree);
+        if (remainingIndegree === 0) layerQueue.push(targetNodeId);
       }
     }
 
-    return layerByComponent;
+    return layerByNodeId;
   }
 
   function orderWithinLayers(layers, incomingByNodeId, outgoingByNodeId) {
