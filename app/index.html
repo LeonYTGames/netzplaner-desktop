@@ -12,13 +12,13 @@
 .topbar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#0e131d;border-bottom:1px solid var(--border);z-index:50}.brand{font-weight:750;letter-spacing:.2px;margin-right:12px}.project-name{min-width:180px;max-width:360px;background:transparent;border:1px solid transparent;color:var(--text);padding:7px 9px;border-radius:7px}.project-name:focus{outline:none;border-color:var(--border);background:var(--panel)}.spacer{flex:1}
 .btn{border:1px solid var(--border);background:var(--panel2);color:var(--text);border-radius:7px;padding:7px 10px;cursor:pointer}.btn:hover{background:#1b2331;border-color:#3a465b}.btn.accent{border-color:#496b9f;background:#203149}.btn.active{background:#2b4260;border-color:#5a84b8}.btn.danger{color:#ffdce0;border-color:#6a3340}.iconbtn{width:34px;height:34px;padding:0}.kbd{font-size:11px;color:var(--muted);padding:2px 6px;border:1px solid var(--border);border-radius:5px;background:#0b0f16}
 .workspace{display:grid;grid-template-columns:235px 1fr 290px;min-height:0}.sidebar,.inspector{background:var(--panel);min-height:0;overflow:auto}.sidebar{border-right:1px solid var(--border);padding:14px}.inspector{border-left:1px solid var(--border);padding:14px}.section-title{font-size:11px;text-transform:uppercase;letter-spacing:.11em;color:var(--muted);margin:8px 0 9px}.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tool-grid .btn{min-height:40px}.stack{display:flex;flex-direction:column;gap:8px}.checkrow{display:flex;align-items:center;gap:8px;color:#d4dcec;font-size:14px;padding:4px 0}.checkrow input{accent-color:var(--accent)}
-.canvas-wrap{position:relative;overflow:hidden;background:#d8dee7}.canvas{position:absolute;inset:0;overflow:hidden;cursor:grab}.canvas.dragging{cursor:grabbing}.scene{position:absolute;left:0;top:0;transform-origin:0 0}.grid-bg{position:absolute;left:-50000px;top:-50000px;width:100000px;height:100000px;background-image:linear-gradient(to right,rgba(55,70,90,.22) 1px,transparent 1px),linear-gradient(to bottom,rgba(55,70,90,.22) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}.grid-bg.hidden{display:none}.edges{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}.edge-hit{pointer-events:stroke;stroke:transparent;stroke-width:18;cursor:pointer}.edge-line{pointer-events:none}.node{position:absolute;width:256px;min-height:160px;background:var(--node);color:#1d2430;border:2px solid var(--node-border);box-shadow:0 8px 22px rgba(0,0,0,.28);border-radius:2px;user-select:none}.node.selected{outline:3px solid rgba(116,185,255,.95);outline-offset:4px;box-shadow:0 0 0 4px rgba(116,185,255,.25),0 10px 28px rgba(0,0,0,.32);animation:selectedPulse 1.6s ease-in-out infinite}.node.connecting{outline:3px dashed #a78bfa;outline-offset:3px}@keyframes selectedPulse{0%{box-shadow:0 0 0 4px rgba(116,185,255,.18),0 10px 28px rgba(0,0,0,.32)}50%{box-shadow:0 0 0 6px rgba(116,185,255,.32),0 12px 34px rgba(0,0,0,.36)}100%{box-shadow:0 0 0 4px rgba(116,185,255,.18),0 10px 28px rgba(0,0,0,.32)}}.node-head{display:grid;grid-template-columns:1fr 1.6fr;min-height:52px}.node-head>div,.node-row>div{padding:8px 10px;border-right:1px solid #718296;border-bottom:1px solid #718296}.node-head>div:last-child,.node-row>div:last-child{border-right:0}.node-head .label{font-size:12px;text-transform:uppercase;color:#4c5563;letter-spacing:.04em}.node-head .value{font-weight:650;word-break:break-word}.node-body{display:grid;grid-template-columns:1fr 1fr 1fr}.node-body .cell{padding:10px 10px;border-right:1px solid #718296}.node-body .cell:last-child{border-right:0}.node-body small{display:block;text-transform:uppercase;color:#596678;font-size:9px;letter-spacing:.08em}.node-body strong{font-size:22px;line-height:1.15}.node-corners{position:absolute;inset:0;pointer-events:none}.corner{position:absolute;font-size:12px;font-style:italic;z-index:2;font-size:14px;font-style:normal;font-weight:800;line-height:1;letter-spacing:.01em;color:#172231;white-space:nowrap;background:#f8fbff;border:1px solid #7a899b;border-radius:5px;padding:3px 6px;box-shadow:0 2px 5px rgba(20,32,48,.18)}.corner.tl{left:-5px;top:-34px}.corner.tr{right:-5px;top:-34px}.corner.bl{left:-5px;bottom:-34px}.corner.br{right:-5px;bottom:-34px}
+.canvas-wrap{position:relative;overflow:hidden;background:#d8dee7}.canvas{position:absolute;inset:0;overflow:hidden;cursor:grab}.canvas.dragging{cursor:grabbing}.scene{position:absolute;left:0;top:0;transform-origin:0 0}.grid-bg{position:absolute;left:-50000px;top:-50000px;width:100000px;height:100000px;background-image:linear-gradient(to right,rgba(55,70,90,.22) 1px,transparent 1px),linear-gradient(to bottom,rgba(55,70,90,.22) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}.grid-bg.hidden{display:none}.edges{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}.edge-hit{pointer-events:stroke;stroke:transparent;stroke-width:20;cursor:pointer}.edge-line{pointer-events:none;stroke:#8fa1bb;stroke-width:2.8;marker-end:url(#arrow)}.edge-group.dimmed .edge-line{opacity:.25}.edge-group.dimmed .edge-hit{opacity:.25}.edge-group.focused .edge-line{stroke:#9fc3ff;stroke-width:4;opacity:1}.edge-group.focused .edge-hit{stroke-width:26}.edges.has-focus .edge-group:not(.focused):not(.dimmed){opacity:.18}.node{position:absolute;width:256px;min-height:160px;background:var(--node);color:#1d2430;border:2px solid var(--node-border);box-shadow:0 8px 22px rgba(0,0,0,.28);border-radius:2px;user-select:none}.node.selected{outline:3px solid rgba(116,185,255,.95);outline-offset:4px;box-shadow:0 0 0 4px rgba(116,185,255,.25),0 10px 28px rgba(0,0,0,.32);animation:selectedPulse 1.6s ease-in-out infinite}.node.connecting{outline:3px dashed #a78bfa;outline-offset:3px}@keyframes selectedPulse{0%{box-shadow:0 0 0 4px rgba(116,185,255,.18),0 10px 28px rgba(0,0,0,.32)}50%{box-shadow:0 0 0 6px rgba(116,185,255,.32),0 12px 34px rgba(0,0,0,.36)}100%{box-shadow:0 0 0 4px rgba(116,185,255,.18),0 10px 28px rgba(0,0,0,.32)}}.node-head{display:grid;grid-template-columns:1fr 1.6fr;min-height:52px}.node-head>div,.node-row>div{padding:8px 10px;border-right:1px solid #718296;border-bottom:1px solid #718296}.node-head>div:last-child,.node-row>div:last-child{border-right:0}.node-head .label{font-size:12px;text-transform:uppercase;color:#4c5563;letter-spacing:.04em}.node-head .value{font-weight:650;word-break:break-word}.node-body{display:grid;grid-template-columns:1fr 1fr 1fr}.node-body .cell{padding:10px 10px;border-right:1px solid #718296}.node-body .cell:last-child{border-right:0}.node-body small{display:block;text-transform:uppercase;color:#596678;font-size:9px;letter-spacing:.08em}.node-body strong{font-size:22px;line-height:1.15}.node-corners{position:absolute;inset:0;pointer-events:none}.corner{position:absolute;font-size:12px;font-style:italic;z-index:2;font-size:14px;font-style:normal;font-weight:800;line-height:1;letter-spacing:.01em;color:#172231;white-space:nowrap;background:#f8fbff;border:1px solid #7a899b;border-radius:5px;padding:3px 6px;box-shadow:0 2px 5px rgba(20,32,48,.18)}.corner.tl{left:-5px;top:-34px}.corner.tr{right:-5px;top:-34px}.corner.bl{left:-5px;bottom:-34px}.corner.br{right:-5px;bottom:-34px}
 .inspector h3{margin:0 0 12px;font-size:16px}.field{margin-bottom:9px}.field label{display:block;color:var(--muted);font-size:11px;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}.field input,.field textarea{width:100%;background:#0c1119;border:1px solid var(--border);color:var(--text);border-radius:6px;padding:8px 9px}.field input:focus,.field textarea:focus{outline:2px solid rgba(116,185,255,.25);border-color:#4d6f9e}.inspector .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.empty{color:var(--muted);font-size:13px;line-height:1.55}.edge-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}.edge-item{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7px 8px;background:#0c1119;border:1px solid var(--border);border-radius:6px;font-size:12px}.edge-item button{padding:3px 7px}
-.status{position:absolute;left:12px;bottom:12px;display:flex;gap:8px;align-items:center;z-index:10}.badge{background:rgba(14,19,29,.88);border:1px solid var(--border);color:#c8d2e3;padding:5px 8px;border-radius:6px;font-size:11px;backdrop-filter:blur(7px)}
+.status{position:absolute;left:12px;bottom:12px;display:flex;gap:8px;align-items:center;z-index:10}.badge{background:rgba(14,19,29,.88);border:1px solid var(--border);color:#c8d2e3;padding:5px 8px;border-radius:6px;font-size:11px;backdrop-filter:blur(7px)}.export-menu{position:relative;display:inline-block}.export-options{position:absolute;right:0;top:calc(100% + 6px);display:flex;flex-direction:column;gap:6px;min-width:178px;padding:8px;background:#101620;border:1px solid var(--border);border-radius:9px;box-shadow:0 16px 44px rgba(0,0,0,.45);z-index:120}.export-options[hidden]{display:none}.export-options .btn{justify-content:flex-start;text-align:left}.workspace.sidebar-collapsed{grid-template-columns:0 1fr 290px}.workspace.inspector-collapsed{grid-template-columns:235px 1fr 0}.workspace.sidebar-collapsed.inspector-collapsed{grid-template-columns:0 1fr 0}.workspace.sidebar-collapsed .sidebar,.workspace.inspector-collapsed .inspector{display:none}
 .dialog{position:fixed;inset:0;background:rgba(0,0,0,.62);display:none;align-items:center;justify-content:center;z-index:100}.dialog.open{display:flex}.modal{width:min(660px,92vw);max-height:84vh;overflow:auto;background:#101620;border:1px solid var(--border);border-radius:11px;padding:18px;box-shadow:0 22px 80px rgba(0,0,0,.5)}.modal h2{margin:0 0 6px}.modal p{margin:0 0 14px;color:var(--muted)}
 .help{display:none;position:fixed;inset:58px 0 0 0;background:var(--bg);z-index:80;overflow:auto}.help.open{display:block}.help-inner{max-width:1000px;margin:0 auto;padding:28px}.hotkeys{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}.hk{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:11px 12px;display:flex;justify-content:space-between;gap:12px}.hk span{color:var(--muted);text-align:right}.notice{padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:#0e141d;color:#c8d2e3;font-size:13px;line-height:1.5}
 .minified .node{width:256px;min-height:128px}.minified .node-head{min-height:38px;font-size:11px}.minified .node-head>div,.minified .node-row>div{padding:6px 8px}.minified .node-body .cell{padding:6px 7px}.minified .node-body strong{font-size:16px}.minified .corner{font-size:12px;padding:3px 5px}.minified .corner.tl,.minified .corner.tr{top:-28px}.minified .corner.bl,.minified .corner.br{bottom:-28px}
-@media(max-width:1000px){.workspace{grid-template-columns:210px 1fr}.inspector{display:none}.topbar .project-name{min-width:130px}}
+@media(max-width:1000px){.workspace{grid-template-columns:210px 1fr}.inspector{display:none}.workspace.inspector-collapsed{grid-template-columns:210px 1fr 0}.topbar .project-name{min-width:130px}}
 </style>
 </head>
 <body>
@@ -30,15 +30,25 @@
     <button class="btn" id="newBtn" title="New Project">New</button>
     <button class="btn" id="importBtn" title="Import Project">Import</button>
     <button class="btn accent" id="saveProjectBtn" title="Save Project (Ctrl/Cmd+S)">Save</button>
-    <button class="btn" id="exportProjectBtn" title="Export Project as JSON">Export</button>
+    <div class="export-menu">
+      <button class="btn" id="exportBtn" aria-haspopup="true" aria-expanded="false" title="Export">Export ▾</button>
+      <div class="export-options" id="exportOptions" hidden>
+        <button class="btn" id="exportProjectBtn">Project JSON</button>
+        <button class="btn" id="exportPngBtn">PNG image</button>
+        <button class="btn" id="exportJpgBtn">JPEG image</button>
+        <button class="btn" id="exportPdfBtn">PDF document</button>
+      </div>
+    </div>
     <span id="saveStatus" style="font-size:12px;color:#8d99ad" role="status">Saved locally</span>
     <div class="spacer"></div>
     <button class="btn iconbtn" id="undoBtn" title="Undo (Ctrl/Cmd+Z)">↶</button>
     <button class="btn iconbtn" id="redoBtn" title="Redo (Ctrl/Cmd+Y / Shift+Ctrl/Cmd+Z)">↷</button>
+    <button class="btn iconbtn" id="toggleSidebarBtn" title="Show/hide tools panel" aria-pressed="false">◧</button>
+    <button class="btn iconbtn" id="toggleInspectorBtn" title="Show/hide inspector panel" aria-pressed="false">◨</button>
     <button class="btn" id="helpBtn" title="Help & Shortcuts">Help</button>
   </header>
 
-  <div class="workspace">
+  <div class="workspace" id="workspace">
     <aside class="sidebar">
       <div class="section-title">Tools</div>
       <div class="tool-grid">
@@ -46,18 +56,13 @@
         <button class="btn" id="connectBtn">↗ Connection <span class="kbd">E</span></button>
         <button class="btn" id="deleteBtn">⌫ Delete <span class="kbd">Del</span></button>
         <button class="btn" id="fitBtn">⛶ Fit <span class="kbd">F</span></button>
+        <button class="btn accent" id="autoSortBtn" style="grid-column:1/-1">⇄ Auto-sort <span class="kbd">L</span></button>
       </div>
       <div class="section-title">View</div>
       <div class="stack">
         <label class="checkrow"><input id="gridToggle" type="checkbox" checked> Grid</label>
         <label class="checkrow"><input id="snapToggle" type="checkbox" checked> Snap to grid</label>
         <button class="btn" id="minifyBtn">Minify <span class="kbd">M</span></button>
-      </div>
-      <div class="section-title">Export</div>
-      <div class="stack">
-        <button class="btn" id="pngBtn">Export PNG</button>
-        <button class="btn" id="jpgBtn">Export JPEG</button>
-        <button class="btn" id="pdfBtn">Export PDF</button>
       </div>
       <div class="section-title">Canvas</div>
       <div class="stack">
@@ -75,7 +80,7 @@
         <div class="scene" id="scene">
           <div class="grid-bg" id="gridBg"></div>
           <svg class="edges" id="edgesSvg" width="5000" height="5000" viewBox="0 0 5000 5000" aria-hidden="true">
-            <defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,4 L0,8 z" fill="#8fa1bb"></path></marker></defs>
+            <defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,4 L0,8 z" fill="#8fa1bb"></path></marker><marker id="arrowFocus" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,4 L0,8 z" fill="#9fc3ff"></path></marker></defs>
           </svg>
         </div>
       </div>
@@ -137,25 +142,34 @@
       <div class="hk"><strong>Ctrl/Cmd + S</strong><span>Save project (choose location on first save)</span></div>
       <div class="hk"><strong>Ctrl/Cmd + O</strong><span>Import project</span></div>
       <div class="hk"><strong>F</strong><span>Fit network plan to view</span></div>
+      <div class="hk"><strong>L</strong><span>Auto-sort nodes by their connections</span></div>
       <div class="hk"><strong>M</strong><span>Toggle minify</span></div>
+      <div class="hk"><strong>[ / ]</strong><span>Show or hide side panels</span></div>
+      <div class="hk"><strong>Mouse click</strong><span>Select connection or node. Delete selected connection or node with Delete.</span></div>
       <div class="hk"><strong>+ / -</strong><span>Change zoom</span></div>
     </div>
     <h2 style="margin-top:28px">Usage</h2>
-    <p class="empty">Nodes can be moved by drag and drop. If the grid is active and 'Snap to grid' is enabled, positions snap to grid points. For connections, activate <b>Connection</b> first, then click the start and target nodes.</p>
+    <p class="empty">Nodes can be moved by drag and drop. If the grid is active and 'Snap to grid' is enabled, positions snap to grid points. For connections, activate <b>Connection</b> first, then click the start and target nodes. <b>Auto-sort</b> arranges the nodes into columns that follow their connections; one undo step restores the previous positions.</p>
   </div>
 </div>
 
 <script src="vendor/filepond.min.js"></script>
 <script src="vendor/jspdf.umd.min.js"></script>
 <script src="project-actions.js"></script>
+<script src="auto-layout.js"></script>
+<script src="edge-routing.js"></script>
 <script src="updater.js"></script>
 <script>
 (() => {
   const $ = id => document.getElementById(id);
   const scene = $('scene'), canvas = $('canvas'), wrap = $('canvasWrap'), edgesSvg = $('edgesSvg');
+  const workspace = $('workspace');
   const projectName = $('projectName');
   const GRID_SIZE = 32;
-  const state = { name: 'Untitled Project', nodes: [], edges: [], selected: null, connectMode: false, connectFrom: null, grid: true, snap: true, minified: false, zoom: 1, panX: 80, panY: 80 };
+  const MIN_ZOOM = 0.01;
+  const MAX_ZOOM = 2.5;
+  const MAX_CANVAS_DIMENSION = 8192;
+  const state = { name: 'Untitled Project', nodes: [], edges: [], selected: null, selectedEdge: null, hoveredEdgeId: null, hoveredNodeId: null, connectMode: false, connectFrom: null, grid: true, snap: true, minified: false, zoom: 1, panX: 80, panY: 80 };
   const history = { undo: [], redo: [], last: null };
   let saveTimer=null, saveInFlight=Promise.resolve(), initializing=true;
   function scheduleSave(){ if(initializing)return; $('saveStatus').textContent='Saving…'; clearTimeout(saveTimer); saveTimer=setTimeout(()=>{void saveNow().catch(()=>{});},180); }
@@ -178,14 +192,14 @@
   }
   function flushProjectSave(){ clearTimeout(saveTimer); return saveNow(); }
   function loadAutosave(){ try { const raw=localStorage.getItem('netzplaner.autosave'); if(!raw)return null; const obj=JSON.parse(raw); return obj?.format==='netzplaner'&&Array.isArray(obj.nodes)&&Array.isArray(obj.edges)?obj:null; } catch { return null; } }
-  function applyProject(obj){ state.name=obj.name||'Untitled Project'; state.nodes=Array.isArray(obj.nodes)?obj.nodes:[]; state.edges=Array.isArray(obj.edges)?obj.edges:[]; state.grid=obj.view?.grid!==false; state.snap=obj.view?.snap!==false; state.minified=!!obj.view?.minified; projectName.value=state.name; $('gridToggle').checked=state.grid; $('snapToggle').checked=state.snap; }
+  function applyProject(obj){ state.name=obj.name||'Untitled Project'; state.nodes=Array.isArray(obj.nodes)?obj.nodes:[]; state.edges=Array.isArray(obj.edges)?obj.edges:[]; state.grid=obj.view?.grid!==false; state.snap=obj.view?.snap!==false; state.minified=!!obj.view?.minified; state.selected=null; state.selectedEdge=null; state.hoveredEdgeId=null; state.hoveredNodeId=null; state.connectMode=false; state.connectFrom=null; projectName.value=state.name; $('gridToggle').checked=state.grid; $('snapToggle').checked=state.snap; }
   function exportData(){ state.name=projectName.value.trim()||'Untitled Project'; return {format:'netzplaner',version:1,name:state.name,nodes:state.nodes,edges:state.edges,view:{grid:state.grid,snap:state.snap,minified:state.minified}}; }
 
   function uid(){ return Math.random().toString(36).slice(2,8); }
   function clone(v){ return JSON.parse(JSON.stringify(v)); }
   function snapshot(){ return JSON.stringify({name:state.name,nodes:state.nodes,edges:state.edges,grid:state.grid,snap:state.snap,minified:state.minified}); }
   function pushHistory(){ const s=snapshot(); if(s===history.last) return; history.undo.push(history.last===null?s:history.last); history.redo=[]; history.last=s; updateUndoButtons(); }
-  function restoreSnapshot(raw){ const s=JSON.parse(raw); state.name=s.name||'Untitled Project'; state.nodes=s.nodes||[]; state.edges=s.edges||[]; state.grid=s.grid!==false; state.snap=s.snap!==false; state.minified=!!s.minified; state.selected=null; state.connectMode=false; state.connectFrom=null; projectName.value=state.name; $('gridToggle').checked=state.grid; $('snapToggle').checked=state.snap; render(); }
+  function restoreSnapshot(raw){ const s=JSON.parse(raw); state.name=s.name||'Untitled Project'; state.nodes=s.nodes||[]; state.edges=s.edges||[]; state.grid=s.grid!==false; state.snap=s.snap!==false; state.minified=!!s.minified; state.selected=null; state.selectedEdge=null; state.hoveredEdgeId=null; state.hoveredNodeId=null; state.connectMode=false; state.connectFrom=null; projectName.value=state.name; $('gridToggle').checked=state.grid; $('snapToggle').checked=state.snap; render(); }
   function undo(){ if(!history.undo.length)return; const current=snapshot(); const prev=history.undo.pop(); history.redo.push(current); history.last=prev; restoreSnapshot(prev); updateUndoButtons(); }
   function redo(){ if(!history.redo.length)return; const current=snapshot(); const next=history.redo.pop(); history.undo.push(current); history.last=next; restoreSnapshot(next); updateUndoButtons(); }
   function updateUndoButtons(){ $('undoBtn').disabled=!history.undo.length; $('redoBtn').disabled=!history.redo.length; }
@@ -199,9 +213,9 @@
     const maxX=Math.max(...state.nodes.map(n=>n.x+w)), maxY=Math.max(...state.nodes.map(n=>n.y+h));
     const pad=50, vw=wrap.clientWidth-pad*2, vh=wrap.clientHeight-pad*2;
     const z=Math.min(vw/Math.max(1,maxX-minX),vh/Math.max(1,maxY-minY),1.35);
-    state.zoom=Math.max(.25,Math.min(2.5,z)); state.panX=pad-minX*state.zoom; state.panY=pad-minY*state.zoom; applyTransform();
+    state.zoom=Math.max(MIN_ZOOM,Math.min(MAX_ZOOM,z)); state.panX=pad-minX*state.zoom; state.panY=pad-minY*state.zoom; applyTransform();
   }
-  function applyTransform(){ scene.style.transform=`translate(${state.panX}px,${state.panY}px) scale(${state.zoom})`; updateGrid(); $('zoomBadge').textContent=Math.round(state.zoom*100)+' %'; $('modeBadge').textContent=state.minified?'Minified':'Normal'; $('selectionBadge').textContent=state.selected?'Node '+(state.nodes.find(n=>n.id===state.selected)?.data.id||''):'No selection'; }
+  function applyTransform(){ scene.style.transform=`translate(${state.panX}px,${state.panY}px) scale(${state.zoom})`; updateGrid(); $('zoomBadge').textContent=Math.round(state.zoom*100)+' %'; $('modeBadge').textContent=state.minified?'Minified':'Normal'; const selectedNode=state.selected?state.nodes.find(n=>n.id===state.selected):null; $('selectionBadge').textContent=selectedNode?'Node '+(selectedNode.data.id||''):(state.selectedEdge?'Connection':'No selection'); }
   function snap(v){ return state.snap&&state.grid ? Math.round(v/GRID_SIZE)*GRID_SIZE : v; }
   function nodeById(id){ return state.nodes.find(n=>n.id===id); }
   function screenToWorld(clientX,clientY){ const r=canvas.getBoundingClientRect(); return {x:(clientX-r.left-state.panX)/state.zoom,y:(clientY-r.top-state.panY)/state.zoom}; }
@@ -255,9 +269,11 @@
       // Do not call render() here: render() destroys this DOM node and
       // would invalidate pointer capture before the drag even starts.
       state.selected=id;
+      state.selectedEdge=null;
       scene.querySelectorAll('.node.selected').forEach(n=>n.classList.remove('selected'));
       el.classList.add('selected');
       renderInspector();
+      updateEdgeHighlights();
       applyTransform();
 
       const n=nodeById(id);
@@ -293,22 +309,75 @@
     el.addEventListener('pointercancel',()=>{
       drag=null;
     });
+    el.addEventListener('pointerenter',()=>{
+      if(state.hoveredNodeId===id)return;
+      state.hoveredNodeId=id;
+      updateEdgeHighlights();
+    });
+    el.addEventListener('pointerleave',()=>{
+      if(state.hoveredNodeId!==id)return;
+      state.hoveredNodeId=null;
+      updateEdgeHighlights();
+    });
     el.addEventListener('dblclick',e=>{ e.stopPropagation(); focusFirstField(); });
   }
   function drawEdges(){
     edgesSvg.querySelectorAll('.edge-group').forEach(e=>e.remove());
-    for(const edge of state.edges){
-      const a=nodeById(edge.from), b=nodeById(edge.to); if(!a||!b)continue;
-      const aw=nodeW(), ah=nodeH(); const x1=a.x+aw, y1=a.y+ah/2, x2=b.x, y2=b.y+ah/2;
-      const mid=Math.max(30,Math.abs(x2-x1)*.45); const d=`M ${x1} ${y1} C ${x1+mid} ${y1}, ${x2-mid} ${y2}, ${x2} ${y2}`;
-      const g=document.createElementNS('http://www.w3.org/2000/svg','g'); g.classList.add('edge-group');
-      const hit=document.createElementNS('http://www.w3.org/2000/svg','path'); hit.setAttribute('d',d); hit.setAttribute('fill','none'); hit.classList.add('edge-hit'); hit.dataset.edgeId=edge.id;
-      const line=document.createElementNS('http://www.w3.org/2000/svg','path'); line.setAttribute('d',d); line.setAttribute('fill','none'); line.setAttribute('stroke','#8fa1bb'); line.setAttribute('stroke-width','2.5'); line.setAttribute('marker-end','url(#arrow)'); line.classList.add('edge-line');
-      g.append(hit,line); edgesSvg.appendChild(g); hit.addEventListener('click',e=>{e.stopPropagation(); deleteEdge(edge.id)});
+    const routes=NetzplanerEdgeRouting.computeEdgeRoutes({
+      nodes:state.nodes,
+      edges:state.edges,
+      nodeWidth:nodeW(),
+      nodeHeight:nodeH(),
+      gridSize:GRID_SIZE
+    });
+    for(const route of routes){
+      const edge=state.edges.find(item=>item.id===route.edgeId);
+      if(!edge) continue;
+      const group=document.createElementNS('http://www.w3.org/2000/svg','g');
+      group.classList.add('edge-group');
+      group.dataset.edgeId=edge.id;
+      const hit=document.createElementNS('http://www.w3.org/2000/svg','path');
+      hit.setAttribute('d',route.path);
+      hit.setAttribute('fill','none');
+      hit.classList.add('edge-hit');
+      hit.dataset.edgeId=edge.id;
+      const line=document.createElementNS('http://www.w3.org/2000/svg','path');
+      line.setAttribute('d',route.path);
+      line.setAttribute('fill','none');
+      line.setAttribute('stroke','#8fa1bb');
+      line.setAttribute('stroke-width','2.8');
+      line.setAttribute('stroke-linejoin','round');
+      line.setAttribute('stroke-linecap','round');
+      line.setAttribute('marker-end','url(#arrow)');
+      line.classList.add('edge-line');
+      group.append(hit,line);
+      edgesSvg.appendChild(group);
+      hit.addEventListener('click',e=>{e.stopPropagation(); selectEdge(edge.id);});
+      group.addEventListener('pointerenter',()=>{ if(state.hoveredEdgeId===edge.id)return; state.hoveredEdgeId=edge.id; updateEdgeHighlights(); });
+      group.addEventListener('pointerleave',()=>{ if(state.hoveredEdgeId!==edge.id)return; state.hoveredEdgeId=null; updateEdgeHighlights(); });
     }
+    updateEdgeHighlights();
   }
-  function selectNode(id){ state.selected=id; render(); }
-  function deleteSelected(){ if(!state.selected)return; pushHistory(); const doomed=state.selected; state.nodes=state.nodes.filter(n=>n.id!==doomed); state.edges=state.edges.filter(e=>e.from!==doomed&&e.to!==doomed); state.selected=null; render(); }
+  function selectEdge(id){ state.selected=null; state.selectedEdge=id; render(); }
+  function updateEdgeHighlights(){
+    const focusNodeId=state.hoveredNodeId||state.selected;
+    const focusEdgeId=state.hoveredEdgeId||state.selectedEdge;
+    let hasFocusedEdge=false;
+    edgesSvg.querySelectorAll('.edge-group').forEach(group=>{
+      const edge=state.edges.find(item=>item.id===group.dataset.edgeId);
+      const connectedToFocusNode=Boolean(focusNodeId && edge && (edge.from===focusNodeId||edge.to===focusNodeId));
+      const focused=Boolean(focusEdgeId===group.dataset.edgeId || connectedToFocusNode);
+      const dimmed=Boolean((focusNodeId||focusEdgeId) && !focused);
+      group.classList.toggle('focused',focused);
+      group.classList.toggle('dimmed',dimmed);
+      if(focused) hasFocusedEdge=true;
+      const line=group.querySelector('.edge-line');
+      if(line) line.setAttribute('marker-end',focused?'url(#arrowFocus)':'url(#arrow)');
+    });
+    edgesSvg.classList.toggle('has-focus',hasFocusedEdge);
+  }
+  function selectNode(id){ state.selected=id; state.selectedEdge=null; render(); }
+  function deleteSelected(){ if(state.selectedEdge){ deleteEdge(state.selectedEdge); state.selectedEdge=null; render(); return; } if(!state.selected)return; pushHistory(); const doomed=state.selected; state.nodes=state.nodes.filter(n=>n.id!==doomed); state.edges=state.edges.filter(e=>e.from!==doomed&&e.to!==doomed); state.selected=null; render(); }
   function deleteEdge(id){ pushHistory(); state.edges=state.edges.filter(e=>e.id!==id); render(); }
   function addNode(){
     pushHistory();
@@ -324,6 +393,34 @@
     render();
     focusNodeById(id);
   }
+  function autoSortNodes(){
+    if(!state.nodes.length) return;
+    const positions=NetzplanerAutoLayout.computeLayeredLayout({
+      nodes:state.nodes,
+      edges:state.edges,
+      nodeWidth:nodeW(),
+      nodeHeight:nodeH(),
+      gridSize:GRID_SIZE
+    });
+    if(!positions.size) return;
+    // Snapshot before moving nodes so the whole layout is one undo step.
+    const previousState=snapshot();
+    for(const node of state.nodes){
+      const position=positions.get(node.id);
+      if(!position) continue;
+      node.x=position.x;
+      node.y=position.y;
+    }
+    const sortedState=snapshot();
+    if(sortedState!==previousState){
+      history.undo.push(previousState);
+      history.redo=[];
+      history.last=sortedState;
+      updateUndoButtons();
+    }
+    render();
+    fitView();
+  }
   function handleConnectClick(id){ if(!state.connectFrom){state.connectFrom=id; render(); return;} if(state.connectFrom===id){state.connectFrom=null; render(); return;} if(!state.edges.some(e=>e.from===state.connectFrom&&e.to===id)){pushHistory();state.edges.push({id:uid(),from:state.connectFrom,to:id});} state.connectFrom=null; render(); }
   function toggleConnect(){ state.connectMode=!state.connectMode; state.connectFrom=null; $('connectBtn').classList.toggle('active',state.connectMode); render(); }
   function renderInspector(){
@@ -335,7 +432,29 @@
   ['fId','fTask','fDuration','fFAZ','fFEZ','fSAZ','fSEZ','fFP','fGP'].forEach((id,i)=>bindField(id,['id','task','duration','FAZ','FEZ','SAZ','SEZ','FP','GP'][i]));
   function focusFirstField(){ $('fTask').focus(); $('fTask').select(); }
 
-  function downloadBlob(blob,name){ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},0); }
+  async function downloadBlob(blob,name){
+    try{
+      if(window.netzplaner && typeof window.netzplaner.exportFile === 'function'){
+        const arrayBuffer = await blob.arrayBuffer();
+        const extension = name.split('.').pop();
+        const baseName = name.replace(/\.[^/.]+$/, '');
+        const result = await window.netzplaner.exportFile({ fileName: baseName, extension: extension, data: arrayBuffer });
+        if(result && result.canceled) return;
+        if(result && result.error){ alert('Export failed: ' + result.error); return; }
+        return;
+      }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function(){ try{ URL.revokeObjectURL(url); }catch(e){} a.remove(); }, 1000);
+    }catch(error){
+      alert('Export failed: ' + error.message);
+    }
+  }
   async function saveProjectFile(){
     state.name=projectName.value.trim()||'Untitled Project'; projectName.value=state.name;
     const data=exportData();
@@ -357,25 +476,192 @@
     const w=nodeW(),h=nodeH(); if(!state.nodes.length) return {x:0,y:0,w:700,h:400}; const xs=state.nodes.map(n=>n.x),ys=state.nodes.map(n=>n.y); const minX=Math.min(...xs)-60,minY=Math.min(...ys)-60,maxX=Math.max(...xs)+w+60,maxY=Math.max(...ys)+h+60; return {x:minX,y:minY,w:Math.max(300,maxX-minX),h:Math.max(220,maxY-minY)};
   }
   function makeExportSvg(){
-    const r=projectRect(); const svg=document.createElementNS('http://www.w3.org/2000/svg','svg'); svg.setAttribute('xmlns','http://www.w3.org/2000/svg'); svg.setAttribute('width',r.w); svg.setAttribute('height',r.h); svg.setAttribute('viewBox',`${r.x} ${r.y} ${r.w} ${r.h}`);
-    const bg=document.createElementNS('http://www.w3.org/2000/svg','rect');bg.setAttribute('x',r.x);bg.setAttribute('y',r.y);bg.setAttribute('width',r.w);bg.setAttribute('height',r.h);bg.setAttribute('fill','#f7f8fa');svg.appendChild(bg);
-    const marker=document.createElementNS('http://www.w3.org/2000/svg','marker');marker.setAttribute('id','a');marker.setAttribute('markerWidth','10');marker.setAttribute('markerHeight','8');marker.setAttribute('refX','9');marker.setAttribute('refY','4');marker.setAttribute('orient','auto');const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d','M0,0 L10,4 L0,8 z');p.setAttribute('fill','#617389');marker.appendChild(p);const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');defs.appendChild(marker);svg.appendChild(defs);
-    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
-    for(const edge of state.edges){const a=nodeById(edge.from),b=nodeById(edge.to);if(!a||!b)continue;const x1=a.x+w,y1=a.y+h/2,x2=b.x,y2=b.y+h/2,mid=Math.max(30,Math.abs(x2-x1)*.45);const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d',`M ${x1} ${y1} C ${x1+mid} ${y1}, ${x2-mid} ${y2}, ${x2} ${y2}`);path.setAttribute('fill','none');path.setAttribute('stroke','#617389');path.setAttribute('stroke-width','2.5');path.setAttribute('marker-end','url(#a)');g.appendChild(path);}
-    svg.appendChild(g);
-    for(const n of state.nodes){ const d=n.data, ng=document.createElementNS('http://www.w3.org/2000/svg','g'); ng.setAttribute('transform',`translate(${n.x},${n.y})`); const box=document.createElementNS('http://www.w3.org/2000/svg','rect');box.setAttribute('width',w);box.setAttribute('height',h);box.setAttribute('fill','#f4ead7');box.setAttribute('stroke','#5a91ad');box.setAttribute('stroke-width','2');ng.appendChild(box);
-      function line(x1,y1,x2,y2){const l=document.createElementNS('http://www.w3.org/2000/svg','line');l.setAttribute('x1',x1);l.setAttribute('y1',y1);l.setAttribute('x2',x2);l.setAttribute('y2',y2);l.setAttribute('stroke','#6b7f91');l.setAttribute('stroke-width','1');ng.appendChild(l)}
-      line(0,44,w,44);line(w*0.42,0,w*0.42,44);line(w/3,44,w/3,h);line(w*2/3,44,w*2/3,h);
-      function text(x,y,txt,size,weight,anchor='start',fill='#1d2430',italic=false){const t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('x',x);t.setAttribute('y',y);t.setAttribute('font-family','Arial, sans-serif');t.setAttribute('font-size',size);t.setAttribute('font-weight',weight);t.setAttribute('text-anchor',anchor);t.setAttribute('fill',fill);if(italic)t.setAttribute('font-style','italic');t.textContent=String(txt??'');ng.appendChild(t)}
-      text(10,14,'ID',10,400,'start','#596573');text(10,31,d.id,14,700);text(w*0.42+10,14,'VORGANG',10,400,'start','#596573');text(w*0.42+10,31,d.task,14,700);text(w/6,62,'DAUER',9,400,'middle','#66717e');text(w/6,83,d.duration,16,700,'middle');text(w/2,62,'FP',9,400,'middle','#66717e');text(w/2,83,d.FP,16,700,'middle');text(w*5/6,62,'GP',9,400,'middle','#66717e');text(w*5/6,83,d.GP,16,700,'middle');text(-2,-10,d.FAZ,12,400,'start','#222b36',true);text(w+2,-10,d.FEZ,12,400,'end','#222b36',true);text(-2,h+17,d.SAZ,12,400,'start','#222b36',true);text(w+2,h+17,d.SEZ,12,400,'end','#222b36',true);svg.appendChild(ng);
+    const exportWidth = nodeW();
+    const exportHeight = nodeH();
+    if(!state.nodes.length) return {svg: null, r:{x:0,y:0,w:700,h:400}};
+    const xs=state.nodes.map(function(n){return n.x;});
+    const ys=state.nodes.map(function(n){return n.y;});
+    const minX=Math.min.apply(null,xs)-80;
+    const minY=Math.min.apply(null,ys)-80;
+    const maxX=Math.max.apply(null,xs)+exportWidth+80;
+    const maxY=Math.max.apply(null,ys)+exportHeight+80;
+    const rect={x:minX,y:minY,w:Math.max(400,maxX-minX),h:Math.max(300,maxY-minY)};
+    const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('xmlns','http://www.w3.org/2000/svg');
+    svg.setAttribute('width',String(rect.w));
+    svg.setAttribute('height',String(rect.h));
+    svg.setAttribute('viewBox',rect.x+' '+rect.y+' '+rect.w+' '+rect.h);
+    const bg=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    bg.setAttribute('x',String(rect.x));
+    bg.setAttribute('y',String(rect.y));
+    bg.setAttribute('width',String(rect.w));
+    bg.setAttribute('height',String(rect.h));
+    bg.setAttribute('fill','#f7f8fa');
+    svg.appendChild(bg);
+    const marker=document.createElementNS('http://www.w3.org/2000/svg','marker');
+    marker.setAttribute('id','exportArrow');
+    marker.setAttribute('markerWidth','10');
+    marker.setAttribute('markerHeight','8');
+    marker.setAttribute('refX','9');
+    marker.setAttribute('refY','4');
+    marker.setAttribute('orient','auto');
+    marker.setAttribute('markerUnits','strokeWidth');
+    const arrowPath=document.createElementNS('http://www.w3.org/2000/svg','path');
+    arrowPath.setAttribute('d','M0,0 L10,4 L0,8 z');
+    arrowPath.setAttribute('fill','#617389');
+    marker.appendChild(arrowPath);
+    const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
+    defs.appendChild(marker);
+    svg.appendChild(defs);
+    const edgeGroup=document.createElementNS('http://www.w3.org/2000/svg','g');
+    const edgeRoutes=NetzplanerEdgeRouting.computeEdgeRoutes({
+      nodes:state.nodes,
+      edges:state.edges,
+      nodeWidth:exportWidth,
+      nodeHeight:exportHeight,
+      gridSize:GRID_SIZE
+    });
+    for(const route of edgeRoutes){
+      const pathElement=document.createElementNS('http://www.w3.org/2000/svg','path');
+      pathElement.setAttribute('d',route.path);
+      pathElement.setAttribute('fill','none');
+      pathElement.setAttribute('stroke','#617389');
+      pathElement.setAttribute('stroke-width','2.5');
+      pathElement.setAttribute('stroke-linejoin','round');
+      pathElement.setAttribute('stroke-linecap','round');
+      pathElement.setAttribute('marker-end','url(#exportArrow)');
+      edgeGroup.appendChild(pathElement);
     }
-    return {svg,r};
+    svg.appendChild(edgeGroup);
+    for(let i=0;i<state.nodes.length;i++){
+      const node=state.nodes[i];
+      const nodeData=node.data||{};
+      const nodeGroup=document.createElementNS('http://www.w3.org/2000/svg','g');
+      nodeGroup.setAttribute('transform','translate('+node.x+','+node.y+')');
+      const nodeBox=document.createElementNS('http://www.w3.org/2000/svg','rect');
+      nodeBox.setAttribute('width',String(exportWidth));
+      nodeBox.setAttribute('height',String(exportHeight));
+      nodeBox.setAttribute('fill','#f4ead7');
+      nodeBox.setAttribute('stroke','#5a91ad');
+      nodeBox.setAttribute('stroke-width','2');
+      nodeGroup.appendChild(nodeBox);
+      function drawLine(lineX1,lineY1,lineX2,lineY2){
+        const lineElement=document.createElementNS('http://www.w3.org/2000/svg','line');
+        lineElement.setAttribute('x1',String(lineX1));
+        lineElement.setAttribute('y1',String(lineY1));
+        lineElement.setAttribute('x2',String(lineX2));
+        lineElement.setAttribute('y2',String(lineY2));
+        lineElement.setAttribute('stroke','#6b7f91');
+        lineElement.setAttribute('stroke-width','1');
+        nodeGroup.appendChild(lineElement);
+      }
+      function drawText(textX,textY,textContent,fontSize,fontWeight,textAnchor,fillColor,isItalic){
+        const textElement=document.createElementNS('http://www.w3.org/2000/svg','text');
+        textElement.setAttribute('x',String(textX));
+        textElement.setAttribute('y',String(textY));
+        textElement.setAttribute('font-family','Arial, sans-serif');
+        textElement.setAttribute('font-size',String(fontSize));
+        textElement.setAttribute('font-weight',String(fontWeight));
+        textElement.setAttribute('text-anchor',textAnchor);
+        textElement.setAttribute('fill',fillColor);
+        if(isItalic){ textElement.setAttribute('font-style','italic'); }
+        textElement.textContent=String(textContent===undefined||textContent===null?'':textContent);
+        nodeGroup.appendChild(textElement);
+      }
+      drawLine(0,52,exportWidth,52);
+      drawLine(exportWidth*0.42,0,exportWidth*0.42,52);
+      drawLine(exportWidth/3,52,exportWidth/3,exportHeight);
+      drawLine(exportWidth*2/3,52,exportWidth*2/3,exportHeight);
+      drawText(10,18,'ID',10,400,'start','#596573',false);
+      drawText(10,38,nodeData.id,14,700,'start','#1d2430',false);
+      drawText(exportWidth*0.42+10,18,'OPERATION',10,400,'start','#596573',false);
+      drawText(exportWidth*0.42+10,38,nodeData.task,14,700,'start','#1d2430',false);
+      drawText(exportWidth/6,74,'DURATION',9,400,'middle','#66717e',false);
+      drawText(exportWidth/6,98,nodeData.duration,20,700,'middle','#1d2430',false);
+      drawText(exportWidth/2,74,'FP',9,400,'middle','#66717e',false);
+      drawText(exportWidth/2,98,nodeData.FP,20,700,'middle','#1d2430',false);
+      drawText(exportWidth*5/6,74,'GP',9,400,'middle','#66717e',false);
+      drawText(exportWidth*5/6,98,nodeData.GP,20,700,'middle','#1d2430',false);
+      drawText(-2,-12,nodeData.FAZ,12,400,'start','#222b36',true);
+      drawText(exportWidth+2,-12,nodeData.FEZ,12,400,'end','#222b36',true);
+      drawText(-2,exportHeight+20,nodeData.SAZ,12,400,'start','#222b36',true);
+      drawText(exportWidth+2,exportHeight+20,nodeData.SEZ,12,400,'end','#222b36',true);
+      svg.appendChild(nodeGroup);
+    }
+    return {svg: svg, r: rect};
+  }
+  function calculateExportScale(rect,preferredScale){
+    return Math.min(preferredScale,MAX_CANVAS_DIMENSION/rect.w,MAX_CANVAS_DIMENSION/rect.h);
+  }
+  function loadSvgImage(svgElement){
+    return new Promise((resolve,reject)=>{
+      const serializedSvg=new XMLSerializer().serializeToString(svgElement);
+      const svgBlob=new Blob([serializedSvg],{type:'image/svg+xml;charset=utf-8'});
+      const objectUrl=URL.createObjectURL(svgBlob);
+      const image=new Image();
+      image.onload=()=>{ URL.revokeObjectURL(objectUrl); resolve(image); };
+      image.onerror=()=>{ URL.revokeObjectURL(objectUrl); reject(new Error('Could not render the export image.')); };
+      image.src=objectUrl;
+    });
+  }
+  function renderSvgToCanvas(image,rect,preferredScale){
+    const scale=Math.max(0.05,calculateExportScale(rect,preferredScale));
+    const canvasElement=document.createElement('canvas');
+    canvasElement.width=Math.max(1,Math.ceil(rect.w*scale));
+    canvasElement.height=Math.max(1,Math.ceil(rect.h*scale));
+    const context=canvasElement.getContext('2d');
+    context.fillStyle='#f7f8fa';
+    context.fillRect(0,0,canvasElement.width,canvasElement.height);
+    context.drawImage(image,0,0,canvasElement.width,canvasElement.height);
+    return canvasElement;
+  }
+  function canvasToBlob(canvasElement,type,quality){
+    return new Promise((resolve,reject)=>{
+      canvasElement.toBlob(blob=>{
+        if(blob) resolve(blob);
+        else reject(new Error('Could not encode the export image.'));
+      },type,quality);
+    });
   }
   async function exportImage(kind){
-    const {svg,r}=makeExportSvg(); const serialized=new XMLSerializer().serializeToString(svg); const data='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(serialized); const img=new Image(); img.onload=()=>{const scale=kind==='png'?2:2,canvas2=document.createElement('canvas');canvas2.width=Math.ceil(r.w*scale);canvas2.height=Math.ceil(r.h*scale);const ctx=canvas2.getContext('2d');ctx.fillStyle='#f7f8fa';ctx.fillRect(0,0,canvas2.width,canvas2.height);ctx.drawImage(img,0,0,canvas2.width,canvas2.height);canvas2.toBlob(blob=>downloadBlob(blob,safeFile(state.name||'netzplan')+'.'+(kind==='jpg'?'jpg':'png')),'image/'+(kind==='jpg'?'jpeg':'png'),0.95)};img.src=data;
+    const exportResult=makeExportSvg();
+    if(!exportResult.svg){ alert('Nothing to export'); return; }
+    try{
+      const image=await loadSvgImage(exportResult.svg);
+      const canvasElement=renderSvgToCanvas(image,exportResult.r,3);
+      const isJpeg=kind==='jpg';
+      const blob=await canvasToBlob(canvasElement,isJpeg?'image/jpeg':'image/png',isJpeg?0.95:undefined);
+      await downloadBlob(blob,safeFile(state.name||'network')+(isJpeg?'.jpg':'.png'));
+    }catch(error){
+      alert('Image export failed: '+error.message);
+    }
   }
   async function exportPdf(){
-    const {svg,r}=makeExportSvg(); const serialized=new XMLSerializer().serializeToString(svg); const data='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(serialized); const img=new Image(); img.onload=()=>{const canvas2=document.createElement('canvas');const scale=2;canvas2.width=Math.ceil(r.w*scale);canvas2.height=Math.ceil(r.h*scale);const ctx=canvas2.getContext('2d');ctx.fillStyle='#f7f8fa';ctx.fillRect(0,0,canvas2.width,canvas2.height);ctx.drawImage(img,0,0,canvas2.width,canvas2.height);const {jsPDF}=window.jspdf;const mmPerPx=25.4/96;const pdf=new jsPDF({orientation:r.w>=r.h?'landscape':'portrait',unit:'mm',format:[Math.max(80,r.w*mmPerPx),Math.max(60,r.h*mmPerPx)]});pdf.addImage(canvas2.toDataURL('image/png'),'PNG',0,0,r.w*mmPerPx,r.h*mmPerPx);pdf.save(safeFile(state.name||'netzplan')+'.pdf');};img.src=data;
+    const exportResult=makeExportSvg();
+    if(!exportResult.svg){ alert('Nothing to export'); return; }
+    try{
+      const jsPdfConstructor=window.jspdf && (window.jspdf.jsPDF ? window.jspdf.jsPDF : (typeof window.jsPDF==='function'?window.jsPDF:null));
+      if(!jsPdfConstructor){ alert('PDF export not available'); return; }
+      const image=await loadSvgImage(exportResult.svg);
+      const canvasElement=renderSvgToCanvas(image,exportResult.r,2);
+      const pixelsPerMillimeter=25.4/96;
+      const requestedWidth=Math.max(100,exportResult.r.w*pixelsPerMillimeter);
+      const requestedHeight=Math.max(100,exportResult.r.h*pixelsPerMillimeter);
+      const maximumPageMillimeters=5080;
+      const pageScale=Math.min(1,maximumPageMillimeters/requestedWidth,maximumPageMillimeters/requestedHeight);
+      const pageWidth=requestedWidth*pageScale;
+      const pageHeight=requestedHeight*pageScale;
+      const pdfDocument=new jsPdfConstructor({
+        orientation: exportResult.r.w>=exportResult.r.h?'landscape':'portrait',
+        unit: 'mm',
+        format: [pageWidth,pageHeight]
+      });
+      const imageData=canvasElement.toDataURL('image/jpeg',0.92);
+      pdfDocument.addImage(imageData,'JPEG',0,0,pageWidth,pageHeight,undefined,'FAST');
+      await downloadBlob(pdfDocument.output('blob'),safeFile(state.name||'network')+'.pdf');
+    }catch(error){
+      alert('PDF export failed: '+error.message);
+    }
   }
 
   // Project import via FilePond
@@ -400,6 +686,9 @@
               state.snap=obj.view?.snap!==false;
               state.minified=!!obj.view?.minified;
               state.selected=null;
+              state.selectedEdge=null;
+              state.hoveredEdgeId=null;
+              state.hoveredNodeId=null;
               state.connectMode=false;
               state.connectFrom=null;
               projectName.value=state.name;
@@ -423,7 +712,7 @@
       await ProjectActions.startNewProject({
         hasContent:!!(state.nodes.length||state.edges.length),
         confirmDiscard:()=>confirm('Discard current project and start a new project?'),
-        resetProject:()=>{history.undo=[];history.redo=[];history.last=null;state.name='Untitled Project';state.nodes=[];state.edges=[];state.selected=null;state.connectMode=false;state.connectFrom=null;projectName.value=state.name;render();updateUndoButtons();},
+        resetProject:()=>{history.undo=[];history.redo=[];history.last=null;state.name='Untitled Project';state.nodes=[];state.edges=[];state.selected=null;state.selectedEdge=null;state.hoveredEdgeId=null;state.hoveredNodeId=null;state.connectMode=false;state.connectFrom=null;projectName.value=state.name;render();updateUndoButtons();},
         persistProject:flushProjectSave
       });
     }catch(error){alert('Could not save the new project: '+error.message);}
@@ -441,9 +730,54 @@
       if(!recovered)alert('No earlier backup found.');
     }catch(error){alert('Recovery failed; your current project remains saved: '+error.message);}
   };
-  $('exportProjectBtn').onclick=exportProject;$('saveProjectBtn').onclick=saveProjectFile;$('undoBtn').onclick=undo;$('redoBtn').onclick=redo;$('addNodeBtn').onclick=addNode;$('connectBtn').onclick=toggleConnect;$('deleteBtn').onclick=deleteSelected;$('deleteSelectedBtn').onclick=deleteSelected;$('fitBtn').onclick=fitView;$('pngBtn').onclick=()=>exportImage('png');$('jpgBtn').onclick=()=>exportImage('jpg');$('pdfBtn').onclick=exportPdf;
+  $('exportProjectBtn').onclick=()=>{ closeExportMenu(); exportProject(); };
+  $('exportPngBtn').onclick=()=>{ closeExportMenu(); void exportImage('png'); };
+  $('exportJpgBtn').onclick=()=>{ closeExportMenu(); void exportImage('jpg'); };
+  $('exportPdfBtn').onclick=()=>{ closeExportMenu(); void exportPdf(); };
+  $('saveProjectBtn').onclick=saveProjectFile;$('undoBtn').onclick=undo;$('redoBtn').onclick=redo;$('addNodeBtn').onclick=addNode;$('connectBtn').onclick=toggleConnect;$('deleteBtn').onclick=deleteSelected;$('deleteSelectedBtn').onclick=deleteSelected;$('fitBtn').onclick=fitView;$('autoSortBtn').onclick=autoSortNodes;
+  const exportMenu=$('exportOptions');
+  const exportButton=$('exportBtn');
+  function closeExportMenu(){
+    exportMenu.hidden=true;
+    exportButton.setAttribute('aria-expanded','false');
+  }
+  function toggleExportMenu(){
+    const willOpen=exportMenu.hidden;
+    exportMenu.hidden=!willOpen;
+    exportButton.setAttribute('aria-expanded',String(willOpen));
+  }
+  exportButton.onclick=e=>{ e.stopPropagation(); toggleExportMenu(); };
+  exportMenu.addEventListener('click',e=>{ if(e.target.closest('button')) closeExportMenu(); });
+  document.addEventListener('click',e=>{ if(!e.target.closest('.export-menu')) closeExportMenu(); });
+
+  const PANEL_STATE_KEY='netzplaner.panels';
+  function readPanelState(){
+    try{
+      const saved=JSON.parse(localStorage.getItem(PANEL_STATE_KEY)||'{}');
+      return {sidebarCollapsed:Boolean(saved.sidebarCollapsed),inspectorCollapsed:Boolean(saved.inspectorCollapsed)};
+    }catch(error){
+      return {sidebarCollapsed:false,inspectorCollapsed:false};
+    }
+  }
+  function applyPanelState(panelState){
+    workspace.classList.toggle('sidebar-collapsed',panelState.sidebarCollapsed);
+    workspace.classList.toggle('inspector-collapsed',panelState.inspectorCollapsed);
+    $('toggleSidebarBtn').classList.toggle('active',panelState.sidebarCollapsed);
+    $('toggleInspectorBtn').classList.toggle('active',panelState.inspectorCollapsed);
+    $('toggleSidebarBtn').setAttribute('aria-pressed',String(panelState.sidebarCollapsed));
+    $('toggleInspectorBtn').setAttribute('aria-pressed',String(panelState.inspectorCollapsed));
+    $('toggleSidebarBtn').title=panelState.sidebarCollapsed?'Show tools panel':'Hide tools panel';
+    $('toggleInspectorBtn').title=panelState.inspectorCollapsed?'Show inspector panel':'Hide inspector panel';
+    try{ localStorage.setItem(PANEL_STATE_KEY,JSON.stringify(panelState)); }catch(error){}
+    applyTransform();
+  }
+  const panelState=readPanelState();
+  $('toggleSidebarBtn').onclick=()=>{ panelState.sidebarCollapsed=!panelState.sidebarCollapsed; applyPanelState(panelState); };
+  $('toggleInspectorBtn').onclick=()=>{ panelState.inspectorCollapsed=!panelState.inspectorCollapsed; applyPanelState(panelState); };
+  applyPanelState(panelState);
+
   $('gridToggle').onchange=()=>{pushHistory();state.grid=$('gridToggle').checked;render();}; $('snapToggle').onchange=()=>{pushHistory();state.snap=$('snapToggle').checked;render();}; $('minifyBtn').onclick=()=>{pushHistory();state.minified=!state.minified;render();fitView();};
-  $('zoomInBtn').onclick=()=>{state.zoom=Math.min(2.5,state.zoom*1.15);applyTransform()};$('zoomOutBtn').onclick=()=>{state.zoom=Math.max(.25,state.zoom/1.15);applyTransform()};$('resetZoomBtn').onclick=()=>{state.zoom=1;applyTransform()};
+  $('zoomInBtn').onclick=()=>{state.zoom=Math.min(MAX_ZOOM,state.zoom*1.15);applyTransform()};$('zoomOutBtn').onclick=()=>{state.zoom=Math.max(MIN_ZOOM,state.zoom/1.15);applyTransform()};$('resetZoomBtn').onclick=()=>{state.zoom=1;applyTransform()};
   $('helpBtn').onclick=()=>$('helpPage').classList.add('open');$('closeHelpBtn').onclick=()=>$('helpPage').classList.remove('open');
   projectName.addEventListener('input',()=>{state.name=projectName.value; scheduleSave()}); projectName.addEventListener('change',()=>{state.name=projectName.value.trim()||'Untitled Project';projectName.value=state.name; scheduleSave()});
   $('nodeSearch').addEventListener('keydown',e=>{
@@ -467,7 +801,7 @@
   // Pan canvas
   let pan=null; canvas.addEventListener('pointerdown',e=>{if(e.target.closest('.node')||state.connectMode)return;pan={x:e.clientX,y:e.clientY,px:state.panX,py:state.panY};canvas.classList.add('dragging');canvas.setPointerCapture(e.pointerId)});
   canvas.addEventListener('pointermove',e=>{if(!pan)return;state.panX=pan.px+(e.clientX-pan.x);state.panY=pan.py+(e.clientY-pan.y);applyTransform()});canvas.addEventListener('pointerup',()=>{pan=null;canvas.classList.remove('dragging')});
-  canvas.addEventListener('wheel',e=>{e.preventDefault();const factor=e.deltaY<0?1.08:.93;const before=screenToWorld(e.clientX,e.clientY);state.zoom=Math.max(.25,Math.min(2.5,state.zoom*factor));const after=screenToWorld(e.clientX,e.clientY);state.panX += (after.x-before.x)*state.zoom;state.panY += (after.y-before.y)*state.zoom;applyTransform()},{passive:false});
+  canvas.addEventListener('wheel',e=>{e.preventDefault();const factor=e.deltaY<0?1.08:.93;const before=screenToWorld(e.clientX,e.clientY);state.zoom=Math.max(MIN_ZOOM,Math.min(MAX_ZOOM,state.zoom*factor));const after=screenToWorld(e.clientX,e.clientY);state.panX += (after.x-before.x)*state.zoom;state.panY += (after.y-before.y)*state.zoom;applyTransform()},{passive:false});
   const inspectorFields=['fId','fTask','fDuration','fFAZ','fFEZ','fSAZ','fSEZ','fFP','fGP'];
   function focusNodeById(id){ const el=scene.querySelector(`.node[data-node-id="${CSS.escape(id)}"]`); if(el){ try{el.focus({preventScroll:true});}catch{} } }
   function navigateNodes(dir){
@@ -541,6 +875,7 @@
     $(inspectorFields[0])?.select?.();
   }
   document.addEventListener('keydown',e=>{
+    if(e.key==='Escape') closeExportMenu();
     const tag=document.activeElement?.tagName?.toLowerCase();
     const editing=['input','textarea','select'].includes(tag);
     const mod=e.ctrlKey||e.metaKey;
@@ -596,15 +931,18 @@
       }
     }
     if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();deleteSelected();return;}
-    if(e.key==='Escape'){state.connectMode=false;state.connectFrom=null;$('connectBtn').classList.remove('active');state.selected=null;render();return;}
+    if(e.key==='Escape'){state.connectMode=false;state.connectFrom=null;$('connectBtn').classList.remove('active');state.selected=null;state.selectedEdge=null;render();return;}
     if(e.key.toLowerCase()==='n'){e.preventDefault();addNode();return;}
     if(e.key.toLowerCase()==='e'){e.preventDefault();toggleConnect();return;}
     if(e.key.toLowerCase()==='f'){e.preventDefault();fitView();return;}
+    if(e.key.toLowerCase()==='l'){e.preventDefault();autoSortNodes();return;}
     if(e.key.toLowerCase()==='m'){e.preventDefault();$('minifyBtn').click();return;}
+    if(e.key==='['){e.preventDefault();$('toggleSidebarBtn').click();return;}
+    if(e.key===']'){e.preventDefault();$('toggleInspectorBtn').click();return;}
     if(e.key==='+'){e.preventDefault();$('zoomInBtn').click();return;}
     if(e.key==='-'){e.preventDefault();$('zoomOutBtn').click();return;}
   });
-  $('canvas').addEventListener('click',e=>{if(e.target===canvas&&!state.connectMode){state.selected=null;render();}});
+  $('canvas').addEventListener('click',e=>{if(e.target===canvas&&!state.connectMode){state.selected=null;state.selectedEdge=null;render();}});
   window.addEventListener('resize',()=>applyTransform());
   // Initial example-free project: nothing is calculated or populated.
   window.flushProjectSave=flushProjectSave;
