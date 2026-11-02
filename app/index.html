@@ -192,7 +192,7 @@
   }
   function flushProjectSave(){ clearTimeout(saveTimer); return saveNow(); }
   function loadAutosave(){ try { const raw=localStorage.getItem('netzplaner.autosave'); if(!raw)return null; const obj=JSON.parse(raw); return obj?.format==='netzplaner'&&Array.isArray(obj.nodes)&&Array.isArray(obj.edges)?obj:null; } catch { return null; } }
-  function applyProject(obj){ state.name=obj.name||'Untitled Project'; state.nodes=Array.isArray(obj.nodes)?obj.nodes:[]; state.edges=Array.isArray(obj.edges)?obj.edges:[]; state.grid=obj.view?.grid!==false; state.snap=obj.view?.snap!==false; state.minified=!!obj.view?.minified; projectName.value=state.name; $('gridToggle').checked=state.grid; $('snapToggle').checked=state.snap; }
+  function applyProject(obj){ state.name=obj.name||'Untitled Project'; state.nodes=Array.isArray(obj.nodes)?obj.nodes:[]; state.edges=Array.isArray(obj.edges)?obj.edges:[]; state.grid=obj.view?.grid!==false; state.snap=obj.view?.snap!==false; state.minified=!!obj.view?.minified; state.selected=null; state.selectedEdge=null; state.hoveredEdgeId=null; state.hoveredNodeId=null; state.connectMode=false; state.connectFrom=null; projectName.value=state.name; $('gridToggle').checked=state.grid; $('snapToggle').checked=state.snap; }
   function exportData(){ state.name=projectName.value.trim()||'Untitled Project'; return {format:'netzplaner',version:1,name:state.name,nodes:state.nodes,edges:state.edges,view:{grid:state.grid,snap:state.snap,minified:state.minified}}; }
 
   function uid(){ return Math.random().toString(36).slice(2,8); }
@@ -686,6 +686,9 @@
               state.snap=obj.view?.snap!==false;
               state.minified=!!obj.view?.minified;
               state.selected=null;
+              state.selectedEdge=null;
+              state.hoveredEdgeId=null;
+              state.hoveredNodeId=null;
               state.connectMode=false;
               state.connectFrom=null;
               projectName.value=state.name;
@@ -709,7 +712,7 @@
       await ProjectActions.startNewProject({
         hasContent:!!(state.nodes.length||state.edges.length),
         confirmDiscard:()=>confirm('Discard current project and start a new project?'),
-        resetProject:()=>{history.undo=[];history.redo=[];history.last=null;state.name='Untitled Project';state.nodes=[];state.edges=[];state.selected=null;state.connectMode=false;state.connectFrom=null;projectName.value=state.name;render();updateUndoButtons();},
+        resetProject:()=>{history.undo=[];history.redo=[];history.last=null;state.name='Untitled Project';state.nodes=[];state.edges=[];state.selected=null;state.selectedEdge=null;state.hoveredEdgeId=null;state.hoveredNodeId=null;state.connectMode=false;state.connectFrom=null;projectName.value=state.name;render();updateUndoButtons();},
         persistProject:flushProjectSave
       });
     }catch(error){alert('Could not save the new project: '+error.message);}
