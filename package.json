@@ -18,6 +18,7 @@
     "electron-builder": "^26.0.12"
   },
   "build": {
+    "artifactName": "${productName}-${version}-${arch}.${ext}",
     "appId": "com.netzplaner.desktop",
     "productName": "Netzplaner",
     "directories": {
