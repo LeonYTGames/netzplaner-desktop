@@ -36,12 +36,12 @@ jobs:
             os: windows-latest
             target: win
             arch: x64
-            asset: 'release/*-x64.exe'
-          - platform: WindowsArm
+            asset: 'release/*.exe'
+          - platform: Windows
             os: windows-latest
             target: win
             arch: arm64
-            asset: 'release/*-arm64.exe'
+            asset: 'release/*.exe'
           - platform: Linux
             os: ubuntu-latest
             target: linux
