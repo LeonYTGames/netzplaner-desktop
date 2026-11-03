@@ -46,6 +46,11 @@ jobs:
             os: ubuntu-latest
             target: linux
             arch: x64
+          - platform: Linux
+            os: ubuntu-latest
+            target: linux
+            arch: arm64
+            asset: 'release/*.AppImage'
             asset: 'release/*.AppImage'
           - platform: macOS
             os: macos-latest
