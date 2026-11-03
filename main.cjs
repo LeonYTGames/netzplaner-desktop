@@ -221,11 +221,6 @@ ipcMain.handle('export:file', async (_event, options) => {
   }
 });
 
-function createWindow() {
-  win = new BrowserWindow({
-    width: 1440, height: 940, minWidth: 900, minHeight: 650,
-    title: 'Netzplaner', backgroundColor: '#0b0e14',
-    webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true }
 function createApplicationWindow() {
   mainWindow = new BrowserWindow({
     width: 1440,
