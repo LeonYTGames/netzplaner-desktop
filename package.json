@@ -1,3 +1,4 @@
+
 {
   "name": "netzplaner-desktop",
   "version": "1.0.0",
@@ -17,44 +18,36 @@
     "electron": "^38.2.0",
     "electron-builder": "^26.0.12"
   },
-  "build": {
-    "artifactName": "${productName}-${version}-${arch}.${ext}",
-    "appId": "com.netzplaner.desktop",
-    "productName": "Netzplaner",
-    "directories": {
-      "output": "release"
-    },
-    "build": {
-  "appId": "com.netzplaner.desktop",
-  "productName": "Netzplaner",
-  "artifactName": "${productName}-${version}-${arch}.${ext}",
-  "directories": {
-    "output": "release"
-  },
-  "files": [
-    "*.cjs",
-    "app/**/*",
-    "package.json"
-  ],
-  "mac": {
-    "target": [
-      "dmg",
-      "zip"
-    ]
-  },
-  "win": {
-    "target": [
-      "nsis",
-      "portable"
-    ]
-  },
-  "portable": {
-    "artifactName": "${productName}-${version}-${arch}-portable.${ext}"
-  }
-}
-  },
   "dependencies": {
     "filepond": "^4.32.12",
     "jspdf": "^4.2.1"
+  },
+  "build": {
+    "appId": "com.netzplaner.desktop",
+    "productName": "Netzplaner",
+    "artifactName": "${productName}-${version}-${arch}.${ext}",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "*.cjs",
+      "app/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-${arch}-portable.${ext}"
+    }
   }
 }
