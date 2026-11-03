@@ -24,22 +24,34 @@
     "directories": {
       "output": "release"
     },
-    "files": [
-      "*.cjs",
-      "app/**/*",
-      "package.json"
-    ], 
-    "mac": {
-      "target": [
-        "dmg",
-        "zip"
-      ]
-    },
-    "win": {
-      "target": [
-        "nsis"
-      ]
-    }
+    "build": {
+  "appId": "com.netzplaner.desktop",
+  "productName": "Netzplaner",
+  "artifactName": "${productName}-${version}-${arch}.${ext}",
+  "directories": {
+    "output": "release"
+  },
+  "files": [
+    "*.cjs",
+    "app/**/*",
+    "package.json"
+  ],
+  "mac": {
+    "target": [
+      "dmg",
+      "zip"
+    ]
+  },
+  "win": {
+    "target": [
+      "nsis",
+      "portable"
+    ]
+  },
+  "portable": {
+    "artifactName": "${productName}-${version}-${arch}-portable.${ext}"
+  }
+}
   },
   "dependencies": {
     "filepond": "^4.32.12",
