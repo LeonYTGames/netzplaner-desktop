@@ -61,6 +61,11 @@
         "portable"
       ]
     },
+    "linux": {
+      "target": [
+        "AppImage"
+      ]
+    },
     "portable": {
       "artifactName": "${productName}-${version}-${arch}-portable.${ext}"
     }
