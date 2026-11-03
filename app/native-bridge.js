@@ -5,13 +5,22 @@
     return;
   }
 
-  // Capacitor already knows the native plugins at runtime. Registering the names
-  // here gives this plain HTML app the same promise based API as the Electron
-  // preload bridge without adding a JavaScript bundler.
-  const Filesystem = capacitor.registerPlugin('Filesystem');
-  const Share = capacitor.registerPlugin('Share');
-  const Browser = capacitor.registerPlugin('Browser');
-  const App = capacitor.registerPlugin('App');
+  // Capacitor's native runtime injects plugin proxies into Capacitor.Plugins.
+  // registerPlugin() belongs to the optional @capacitor/core JavaScript bundle,
+  // which a plain HTML app does not load, so read the injected proxies directly.
+  function getNativePlugin(pluginName) {
+    const nativePlugins = capacitor.Plugins || {};
+    const plugin = nativePlugins[pluginName];
+    if (!plugin) {
+      throw new Error(`Capacitor plugin "${pluginName}" is not available`);
+    }
+    return plugin;
+  }
+
+  const Filesystem = getNativePlugin('Filesystem');
+  const Share = getNativePlugin('Share');
+  const Browser = getNativePlugin('Browser');
+  const App = getNativePlugin('App');
 
   const DATA_DIRECTORY = 'DATA';
   const CACHE_DIRECTORY = 'CACHE';

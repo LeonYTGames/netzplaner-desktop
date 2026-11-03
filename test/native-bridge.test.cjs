@@ -6,72 +6,91 @@ const vm = require('node:vm');
 
 const bridgeSource = fs.readFileSync(path.join(__dirname, '..', 'app', 'native-bridge.js'), 'utf8');
 
-function createNativeBridgeHarness({ isNativePlatform = true } = {}) {
+function createNativeRuntimeHarness({ isNativePlatform = true, platform = 'android' } = {}) {
   const storedFiles = new Map();
   const sharedFiles = [];
   const openedUrls = [];
 
-  const plugins = {
-    Filesystem: {
-      async writeFile(options) {
-        storedFiles.set(`${options.directory}:${options.path}`, options.data);
-        return { uri: `file:///${options.directory}/${options.path}` };
-      },
-      async readFile(options) {
-        const key = `${options.directory}:${options.path}`;
-        if (!storedFiles.has(key)) {
-          throw new Error('File not found');
+  function handleNativePluginCall(pluginName, methodName, options) {
+    if (pluginName === 'Filesystem' && methodName === 'writeFile') {
+      storedFiles.set(`${options.directory}:${options.path}`, options.data);
+      return { uri: `file:///${options.directory}/${options.path}` };
+    }
+    if (pluginName === 'Filesystem' && methodName === 'readFile') {
+      const key = `${options.directory}:${options.path}`;
+      if (!storedFiles.has(key)) {
+        throw new Error('File not found');
+      }
+      return { data: storedFiles.get(key) };
+    }
+    if (pluginName === 'Filesystem' && methodName === 'readdir') {
+      const prefix = `${options.directory}:${options.path}/`;
+      const fileNames = new Set();
+      for (const key of storedFiles.keys()) {
+        if (!key.startsWith(prefix)) {
+          continue;
         }
-        return { data: storedFiles.get(key) };
-      },
-      async readdir(options) {
-        const prefix = `${options.directory}:${options.path}/`;
-        const fileNames = new Set();
-        for (const key of storedFiles.keys()) {
-          if (!key.startsWith(prefix)) {
-            continue;
-          }
-          const remainingPath = key.slice(prefix.length);
-          if (!remainingPath.includes('/')) {
-            fileNames.add(remainingPath);
-          }
+        const remainingPath = key.slice(prefix.length);
+        if (!remainingPath.includes('/')) {
+          fileNames.add(remainingPath);
         }
-        if (fileNames.size === 0) {
-          throw new Error('Directory not found');
-        }
-        return { files: [...fileNames].map(name => ({ name })) };
-      },
-      async getUri(options) {
-        return { uri: `file:///${options.directory}/${options.path}` };
       }
+      if (fileNames.size === 0) {
+        throw new Error('Directory not found');
+      }
+      return { files: [...fileNames].map(name => ({ name })) };
+    }
+    if (pluginName === 'Filesystem' && methodName === 'getUri') {
+      return { uri: `file:///${options.directory}/${options.path}` };
+    }
+    if (pluginName === 'Share' && methodName === 'share') {
+      sharedFiles.push(options);
+      return {};
+    }
+    if (pluginName === 'Browser' && methodName === 'open') {
+      openedUrls.push(options.url);
+      return {};
+    }
+    if (pluginName === 'App' && methodName === 'getInfo') {
+      return { version: '9.9.9' };
+    }
+    throw new Error(`Unexpected native call: ${pluginName}.${methodName}`);
+  }
+
+  const capacitor = {
+    DEBUG: false,
+    isLoggingEnabled: false,
+    Plugins: {},
+    getPlatform() {
+      return platform;
     },
-    Share: {
-      async share(options) {
-        sharedFiles.push(options);
-        return {};
-      }
+    isNativePlatform() {
+      return isNativePlatform;
     },
-    Browser: {
-      async open(options) {
-        openedUrls.push(options.url);
-      }
-    },
-    App: {
-      async getInfo() {
-        return { version: '9.9.9' };
-      }
+    nativePromise(pluginName, methodName, options) {
+      return Promise.resolve().then(() => handleNativePluginCall(pluginName, methodName, options));
     }
   };
 
-  const windowObject = {
-    Capacitor: {
-      isNativePlatform() {
-        return isNativePlatform;
-      },
-      registerPlugin(pluginName) {
-        return plugins[pluginName];
-      }
+  // The native bridge generates each plugin object from the methods registered
+  // in Java or Swift. Every method forwards to Capacitor.nativePromise().
+  function addNativePlugin(pluginName, methodNames) {
+    const plugin = {};
+    for (const methodName of methodNames) {
+      plugin[methodName] = function callNativePluginMethod(options) {
+        return capacitor.nativePromise(pluginName, methodName, options);
+      };
     }
+    capacitor.Plugins[pluginName] = plugin;
+  }
+
+  addNativePlugin('Filesystem', ['writeFile', 'readFile', 'readdir', 'getUri']);
+  addNativePlugin('Share', ['share']);
+  addNativePlugin('Browser', ['open']);
+  addNativePlugin('App', ['getInfo']);
+
+  const windowObject = {
+    Capacitor: capacitor
   };
 
   const context = vm.createContext({
@@ -85,6 +104,7 @@ function createNativeBridgeHarness({ isNativePlatform = true } = {}) {
 
   return {
     api: windowObject.netzplaner,
+    capacitor,
     createArrayBuffer(bytes) {
       return vm.runInContext(`Uint8Array.from(${JSON.stringify(bytes)}).buffer`, context);
     },
@@ -104,8 +124,21 @@ function createProject(name) {
   };
 }
 
+test('mobile bridge uses plugin proxies injected by the native runtime on Android and iOS', () => {
+  for (const platform of ['android', 'ios']) {
+    const { api, capacitor } = createNativeRuntimeHarness({ platform });
+
+    assert.equal('registerPlugin' in capacitor, false);
+    assert.equal(typeof capacitor.Plugins.Filesystem.writeFile, 'function');
+    assert.equal(typeof capacitor.Plugins.Share.share, 'function');
+    assert.equal(typeof capacitor.Plugins.Browser.open, 'function');
+    assert.equal(typeof capacitor.Plugins.App.getInfo, 'function');
+    assert.equal(typeof api.saveProject, 'function');
+  }
+});
+
 test('mobile bridge exposes the same project API as the Electron preload script', () => {
-  const { api } = createNativeBridgeHarness();
+  const { api } = createNativeRuntimeHarness();
 
   assert.deepEqual(
     Object.keys(api).sort(),
@@ -114,13 +147,13 @@ test('mobile bridge exposes the same project API as the Electron preload script'
 });
 
 test('mobile bridge does not replace the desktop API on the web platform', () => {
-  const { api } = createNativeBridgeHarness({ isNativePlatform: false });
+  const { api } = createNativeRuntimeHarness({ isNativePlatform: false });
 
   assert.equal(api, undefined);
 });
 
 test('mobile bridge persists the current project and keeps the previous version for recovery', async () => {
-  const { api } = createNativeBridgeHarness();
+  const { api } = createNativeRuntimeHarness();
   const firstProject = createProject('First project');
   const secondProject = createProject('Second project');
 
@@ -133,7 +166,7 @@ test('mobile bridge persists the current project and keeps the previous version 
 });
 
 test('mobile bridge shares a project file and exports binary data through the system share sheet', async () => {
-  const { api, createArrayBuffer, storedFiles, sharedFiles } = createNativeBridgeHarness();
+  const { api, createArrayBuffer, storedFiles, sharedFiles } = createNativeRuntimeHarness();
   const project = createProject('Shared project');
   const binaryData = createArrayBuffer([104, 105]);
 
@@ -150,7 +183,7 @@ test('mobile bridge shares a project file and exports binary data through the sy
 });
 
 test('mobile bridge opens only secure external links and reports the app version', async () => {
-  const { api, openedUrls } = createNativeBridgeHarness();
+  const { api, openedUrls } = createNativeRuntimeHarness();
 
   await api.openExternal('javascript:alert(1)');
   await api.openExternal('http://example.com');
