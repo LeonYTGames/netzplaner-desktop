@@ -22,6 +22,14 @@ allprojects {
         google()
         mavenCentral()
     }
+
+    configurations.all {
+        // Kotlin stdlib 1.8 merged the JDK7/JDK8 classes into the core artifact.
+        // The Cordova framework still pulls the old split artifacts, which makes
+        // the androidTest classpath contain duplicate classes.
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+    }
 }
 
 task clean(type: Delete) {
