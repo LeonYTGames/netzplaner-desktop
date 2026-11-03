@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Netzplaner</title>
 <link rel="stylesheet" href="vendor/filepond.min.css">
 <style>
@@ -18,7 +18,8 @@
 .dialog{position:fixed;inset:0;background:rgba(0,0,0,.62);display:none;align-items:center;justify-content:center;z-index:100}.dialog.open{display:flex}.modal{width:min(660px,92vw);max-height:84vh;overflow:auto;background:#101620;border:1px solid var(--border);border-radius:11px;padding:18px;box-shadow:0 22px 80px rgba(0,0,0,.5)}.modal h2{margin:0 0 6px}.modal p{margin:0 0 14px;color:var(--muted)}
 .help{display:none;position:fixed;inset:58px 0 0 0;background:var(--bg);z-index:80;overflow:auto}.help.open{display:block}.help-inner{max-width:1000px;margin:0 auto;padding:28px}.hotkeys{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}.hk{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:11px 12px;display:flex;justify-content:space-between;gap:12px}.hk span{color:var(--muted);text-align:right}.notice{padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:#0e141d;color:#c8d2e3;font-size:13px;line-height:1.5}
 .minified .node{width:256px;min-height:128px}.minified .node-head{min-height:38px;font-size:11px}.minified .node-head>div,.minified .node-row>div{padding:6px 8px}.minified .node-body .cell{padding:6px 7px}.minified .node-body strong{font-size:16px}.minified .corner{font-size:12px;padding:3px 5px}.minified .corner.tl,.minified .corner.tr{top:-28px}.minified .corner.bl,.minified .corner.br{bottom:-28px}
-@media(max-width:1000px){.workspace{grid-template-columns:210px 1fr}.inspector{display:none}.workspace.inspector-collapsed{grid-template-columns:210px 1fr 0}.topbar .project-name{min-width:130px}}
+@media(max-width:1000px){.workspace{grid-template-columns:210px 1fr}.workspace.inspector-collapsed{grid-template-columns:210px 1fr}.inspector{position:fixed;top:calc(58px + env(safe-area-inset-top));right:0;bottom:0;width:min(320px,86vw);z-index:70;border-left:1px solid var(--border);box-shadow:-18px 0 48px rgba(0,0,0,.45)}.topbar{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}.topbar::-webkit-scrollbar{display:none}.topbar>*{flex-shrink:0}.topbar .project-name{min-width:130px}}
+@media(max-width:760px){.workspace{grid-template-columns:1fr}.workspace.inspector-collapsed{grid-template-columns:1fr}.sidebar{position:fixed;top:calc(58px + env(safe-area-inset-top));left:0;bottom:0;width:min(320px,86vw);z-index:70;border-right:1px solid var(--border);box-shadow:18px 0 48px rgba(0,0,0,.45)}.workspace.sidebar-collapsed .sidebar{display:none}.workspace.inspector-collapsed .inspector{display:none}.topbar{padding-top:calc(10px + env(safe-area-inset-top));padding-left:max(14px,env(safe-area-inset-left));padding-right:max(14px,env(safe-area-inset-right))}.app{grid-template-rows:calc(58px + env(safe-area-inset-top)) 1fr}.help{top:calc(58px + env(safe-area-inset-top))}.status{bottom:max(12px,env(safe-area-inset-bottom));left:max(12px,env(safe-area-inset-left));max-width:calc(100% - 24px);flex-wrap:wrap}.canvas,.node{touch-action:none}}
 </style>
 </head>
 <body>
@@ -155,6 +156,7 @@
 
 <script src="vendor/filepond.min.js"></script>
 <script src="vendor/jspdf.umd.min.js"></script>
+<script src="native-bridge.js"></script>
 <script src="project-actions.js"></script>
 <script src="auto-layout.js"></script>
 <script src="edge-routing.js"></script>
@@ -718,7 +720,7 @@
     }catch(error){alert('Could not save the new project: '+error.message);}
   };
   $('recoverBtn').onclick=async()=>{
-    if(!window.netzplaner?.restoreLatest){ alert('Recovery is only available in the desktop app.'); return; }
+    if(!window.netzplaner?.restoreLatest){ alert('Recovery is only available in the installed app.'); return; }
     if(!confirm('Load the last automatic backup? The current state will be saved first.'))return;
     try{
       const recovered=await ProjectActions.restoreLatestProject({
@@ -751,12 +753,18 @@
   document.addEventListener('click',e=>{ if(!e.target.closest('.export-menu')) closeExportMenu(); });
 
   const PANEL_STATE_KEY='netzplaner.panels';
+  function readDefaultPanelState(){
+    const isCompactLayout=window.matchMedia('(max-width: 1000px)').matches;
+    return {sidebarCollapsed:isCompactLayout,inspectorCollapsed:isCompactLayout};
+  }
   function readPanelState(){
+    const savedValue=localStorage.getItem(PANEL_STATE_KEY);
+    if(!savedValue) return readDefaultPanelState();
     try{
-      const saved=JSON.parse(localStorage.getItem(PANEL_STATE_KEY)||'{}');
+      const saved=JSON.parse(savedValue);
       return {sidebarCollapsed:Boolean(saved.sidebarCollapsed),inspectorCollapsed:Boolean(saved.inspectorCollapsed)};
     }catch(error){
-      return {sidebarCollapsed:false,inspectorCollapsed:false};
+      return readDefaultPanelState();
     }
   }
   function applyPanelState(panelState){
@@ -772,8 +780,8 @@
     applyTransform();
   }
   const panelState=readPanelState();
-  $('toggleSidebarBtn').onclick=()=>{ panelState.sidebarCollapsed=!panelState.sidebarCollapsed; applyPanelState(panelState); };
-  $('toggleInspectorBtn').onclick=()=>{ panelState.inspectorCollapsed=!panelState.inspectorCollapsed; applyPanelState(panelState); };
+  $('toggleSidebarBtn').onclick=()=>{ panelState.sidebarCollapsed=!panelState.sidebarCollapsed; if(!panelState.sidebarCollapsed&&window.matchMedia('(max-width: 1000px)').matches) panelState.inspectorCollapsed=true; applyPanelState(panelState); };
+  $('toggleInspectorBtn').onclick=()=>{ panelState.inspectorCollapsed=!panelState.inspectorCollapsed; if(!panelState.inspectorCollapsed&&window.matchMedia('(max-width: 1000px)').matches) panelState.sidebarCollapsed=true; applyPanelState(panelState); };
   applyPanelState(panelState);
 
   $('gridToggle').onchange=()=>{pushHistory();state.grid=$('gridToggle').checked;render();}; $('snapToggle').onchange=()=>{pushHistory();state.snap=$('snapToggle').checked;render();}; $('minifyBtn').onclick=()=>{pushHistory();state.minified=!state.minified;render();fitView();};
@@ -950,6 +958,8 @@
   history.last=snapshot();updateUndoButtons();render();
   if(window.netzplaner?.loadProject){ window.netzplaner.loadProject().then(saved=>{ if(saved && !startupProject){ applyProject(saved); history.last=snapshot(); } initializing=false; render(); }).catch(()=>{ initializing=false; render(); }); } else { initializing=false; render(); }
   window.addEventListener('beforeunload',()=>{ try{localStorage.setItem('netzplaner.autosave',JSON.stringify(exportData()));}catch{} });
+  document.addEventListener('visibilitychange',()=>{ if(document.hidden){ void flushProjectSave().catch(()=>{}); } });
+  window.addEventListener('pagehide',()=>{ void flushProjectSave().catch(()=>{}); });
 })();
 </script>
 </body>

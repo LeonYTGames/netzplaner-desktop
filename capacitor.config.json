@@ -1,0 +1,16 @@
+{
+  "appId": "com.netzplaner.app",
+  "appName": "Netzplaner",
+  "webDir": "app",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#0b0e14"
+  },
+  "ios": {
+    "backgroundColor": "#0b0e14",
+    "contentInset": "never"
+  }
+}
