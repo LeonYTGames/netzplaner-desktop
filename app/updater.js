@@ -231,7 +231,18 @@
     };
   }
 
+  function isNativeMobileApp() {
+    return Boolean(window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform());
+  }
+
+  function isDesktopApplication() {
+    return Boolean(window.netzplaner) && !isNativeMobileApp();
+  }
+
   function initializeUpdater() {
+    if (!isDesktopApplication()) {
+      return;
+    }
     setTimeout(checkForAvailableUpdates, 1500);
     createSettingsButton();
   }
