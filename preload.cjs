@@ -1,15 +1,6 @@
 const { contextBridge, ipcRenderer, shell } = require('electron');
-contextBridge.exposeInMainWorld('netzplaner', {
-  loadProject: () => ipcRenderer.invoke('project:load'),
-  saveProject: (data) => ipcRenderer.invoke('project:save', data),
-  saveProjectFile: (data) => ipcRenderer.invoke('project:save-file', data),
-  restoreLatest: () => ipcRenderer.invoke('project:restore-latest'),
-  getVersion: () => ipcRenderer.invoke('app:get-version'),
-  openExternal: (url) => shell.openExternal(url),
-  exportFile: (options) => ipcRenderer.invoke('export:file', options)
-});
 
-const exposedApi = {
+contextBridge.exposeInMainWorld('netzplaner', {
   loadProject: function loadProjectFromMainProcess() {
     return ipcRenderer.invoke('project:load');
   },
@@ -26,8 +17,18 @@ const exposedApi = {
     return ipcRenderer.invoke('app:get-version');
   },
   openExternal: function openUrlExternally(url) {
-    return shell.openExternal(url);
+    let parsedUrl;
+    try {
+      parsedUrl = new URL(url);
+    } catch {
+      return Promise.resolve(false);
+    }
+    if (parsedUrl.protocol !== 'https:') {
+      return Promise.resolve(false);
+    }
+    return shell.openExternal(parsedUrl.toString());
+  },
+  exportFile: function exportFileToDisk(options) {
+    return ipcRenderer.invoke('export:file', options);
   }
-};
-
-contextBridge.exposeInMainWorld('netzplaner', exposedApi);
+});

@@ -1,8 +1,9 @@
-name: Build and release desktop installers
+name: Build and release desktop and mobile builds
 
 on:
   push:
     branches: [master]
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -46,11 +47,11 @@ jobs:
             os: ubuntu-latest
             target: linux
             arch: x64
+            asset: 'release/*.AppImage'
           - platform: Linux
             os: ubuntu-latest
             target: linux
             arch: arm64
-            asset: 'release/*.AppImage'
             asset: 'release/*.AppImage'
           - platform: macOS
             os: macos-latest
@@ -83,9 +84,88 @@ jobs:
           if-no-files-found: error
           retention-days: 5
 
+  build-android:
+    name: Build Android debug APK
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Install dependencies
+        run: npm ci
+      - name: Copy web assets into the Android project
+        run: npx cap sync android
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug --no-daemon
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Android-debug
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 5
+
+  build-ios:
+    name: Build iOS app (unsigned)
+    needs: test
+    runs-on: macos-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Copy web assets into the iOS project
+        run: npx cap sync ios
+      - name: Build unsigned device app
+        run: |
+          xcodebuild \
+            -project ios/App/App.xcodeproj \
+            -scheme App \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath ios/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            build
+      - name: Package unsigned app
+        run: |
+          ditto -c -k --sequesterRsrc --keepParent \
+            ios/DerivedData/Build/Products/Release-iphoneos/App.app \
+            Netzplaner-ios-unsigned.zip
+      - name: Upload iOS app
+        uses: actions/upload-artifact@v4
+        with:
+          name: iOS-unsigned
+          path: Netzplaner-ios-unsigned.zip
+          if-no-files-found: error
+          retention-days: 5
+
   release:
     name: Publish master build
-    needs: build
+    if: github.event_name != 'pull_request'
+    needs: [build, build-android, build-ios]
     runs-on: ubuntu-latest
     steps:
       - name: Download installers
@@ -99,9 +179,11 @@ jobs:
           tag_name: master-${{ github.sha }}
           name: Netzplaner master build (${{ github.sha }})
           body: |
-            Automated desktop installers built from master commit `${{ github.sha }}`.
+            Automated desktop and mobile builds from master commit `${{ github.sha }}`.
 
-            This release is generated on every push to `master`.
+            Desktop installers are ready to run. The Android APK is a debug build.
+            The iOS app is unsigned and has to be signed before it can be installed
+            on a device. This release is generated on every push to `master`.
           target_commitish: ${{ github.sha }}
           files: release-assets/*
           fail_on_unmatched_files: true

@@ -203,7 +203,7 @@ ipcMain.handle('export:file', async (_event, options) => {
     else if (extension === 'pdf') filters.push({ name: 'PDF Document', extensions: ['pdf'] });
     else filters.push({ name: 'File', extensions: [extension] });
 
-    const result = await dialog.showSaveDialog(win, {
+    const result = await dialog.showSaveDialog(mainWindow, {
       title: 'Export',
       defaultPath: path.join(app.getPath('documents'), `${fileName}.${extension}`),
       filters: filters

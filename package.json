@@ -1,4 +1,3 @@
-
 {
   "name": "netzplaner-desktop",
   "version": "1.0.0",
@@ -6,19 +5,35 @@
   "main": "main.cjs",
   "author": "Netzplaner",
   "license": "UNLICENSED",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "start": "electron .",
     "test": "node --test",
     "dist": "electron-builder --mac --win --linux",
     "dist:mac": "electron-builder --mac",
     "dist:win": "electron-builder --win",
-    "dist:linux": "electron-builder --linux"
+    "dist:linux": "electron-builder --linux",
+    "cap:sync": "cap sync",
+    "cap:open:android": "cap open android",
+    "cap:open:ios": "cap open ios",
+    "build:android": "cap sync android && cd android && ./gradlew assembleDebug",
+    "build:ios": "cap sync ios && xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Debug -sdk iphonesimulator -derivedDataPath ios/DerivedData CODE_SIGNING_ALLOWED=NO build"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.6.0",
     "electron": "^38.2.0",
     "electron-builder": "^26.0.12"
   },
   "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/browser": "^8.0.5",
+    "@capacitor/core": "^8.6.0",
+    "@capacitor/filesystem": "^8.1.5",
+    "@capacitor/ios": "^8.6.0",
+    "@capacitor/share": "^8.0.3",
     "filepond": "^4.32.12",
     "jspdf": "^4.2.1"
   },
@@ -44,6 +59,11 @@
       "target": [
         "nsis",
         "portable"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage"
       ]
     },
     "portable": {
