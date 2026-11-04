@@ -14,7 +14,7 @@
 .workspace{--sidebar-width:235px;--inspector-width:290px;position:relative;display:grid;grid-template-columns:var(--sidebar-width) 1fr var(--inspector-width);min-height:0}.sidebar,.inspector{background:var(--panel);min-height:0;overflow:auto}.sidebar{grid-column:1;border-right:1px solid var(--border);padding:14px}.inspector{grid-column:3;border-left:1px solid var(--border);padding:14px}.section-title{font-size:11px;text-transform:uppercase;letter-spacing:.11em;color:var(--muted);margin:8px 0 9px}.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tool-grid .btn{min-height:40px}.stack{display:flex;flex-direction:column;gap:8px}.checkrow{display:flex;align-items:center;gap:8px;color:#d4dcec;font-size:14px;padding:4px 0}.checkrow input{accent-color:var(--accent)}
 .canvas-wrap{grid-column:2;position:relative;overflow:hidden;background:#d8dee7}.canvas{position:absolute;inset:0;overflow:hidden;cursor:grab;touch-action:none}.canvas.dragging{cursor:grabbing}.scene{position:absolute;left:0;top:0;transform-origin:0 0}.grid-bg{position:absolute;left:-50000px;top:-50000px;width:100000px;height:100000px;background-image:linear-gradient(to right,rgba(55,70,90,.22) 1px,transparent 1px),linear-gradient(to bottom,rgba(55,70,90,.22) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}.grid-bg.hidden{display:none}.edges{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}.edge-hit{pointer-events:stroke;stroke:transparent;stroke-width:20;cursor:pointer}.edge-line{pointer-events:none;stroke:#8fa1bb;stroke-width:2.8;marker-end:url(#arrow)}.edge-group.dimmed .edge-line{opacity:.25}.edge-group.dimmed .edge-hit{opacity:.25}.edge-group.focused .edge-line{stroke:#9fc3ff;stroke-width:4;opacity:1}.edge-group.focused .edge-hit{stroke-width:26}.edges.has-focus .edge-group:not(.focused):not(.dimmed){opacity:.18}.node{position:absolute;width:256px;min-height:160px;background:var(--node);color:#1d2430;border:2px solid var(--node-border);box-shadow:0 8px 22px rgba(0,0,0,.28);border-radius:2px;user-select:none;touch-action:none}.node.selected{outline:3px solid rgba(116,185,255,.95);outline-offset:4px;box-shadow:0 0 0 4px rgba(116,185,255,.25),0 10px 28px rgba(0,0,0,.32);animation:selectedPulse 1.6s ease-in-out infinite}.node.connecting{outline:3px dashed #a78bfa;outline-offset:3px}@keyframes selectedPulse{0%{box-shadow:0 0 0 4px rgba(116,185,255,.18),0 10px 28px rgba(0,0,0,.32)}50%{box-shadow:0 0 0 6px rgba(116,185,255,.32),0 12px 34px rgba(0,0,0,.36)}100%{box-shadow:0 0 0 4px rgba(116,185,255,.18),0 10px 28px rgba(0,0,0,.32)}}.node-head{display:grid;grid-template-columns:1fr 1.6fr;min-height:52px}.node-head>div,.node-row>div{padding:8px 10px;border-right:1px solid #718296;border-bottom:1px solid #718296}.node-head>div:last-child,.node-row>div:last-child{border-right:0}.node-head .label{font-size:12px;text-transform:uppercase;color:#4c5563;letter-spacing:.04em}.node-head .value{font-weight:650;word-break:break-word}.node-body{display:grid;grid-template-columns:1fr 1fr 1fr}.node-body .cell{padding:10px 10px;border-right:1px solid #718296}.node-body .cell:last-child{border-right:0}.node-body small{display:block;text-transform:uppercase;color:#596678;font-size:9px;letter-spacing:.08em}.node-body strong{font-size:22px;line-height:1.15}.node-corners{position:absolute;inset:0;pointer-events:none}.corner{position:absolute;font-size:12px;font-style:italic;z-index:2;font-size:14px;font-style:normal;font-weight:800;line-height:1;letter-spacing:.01em;color:#172231;white-space:nowrap;background:#f8fbff;border:1px solid #7a899b;border-radius:5px;padding:3px 6px;box-shadow:0 2px 5px rgba(20,32,48,.18)}.corner.tl{left:-5px;top:-34px}.corner.tr{right:-5px;top:-34px}.corner.bl{left:-5px;bottom:-34px}.corner.br{right:-5px;bottom:-34px}
 .inspector h3{margin:0 0 12px;font-size:16px}.field{margin-bottom:9px}.field label{display:block;color:var(--muted);font-size:11px;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}.field input,.field textarea{width:100%;background:#0c1119;border:1px solid var(--border);color:var(--text);border-radius:6px;padding:8px 9px}.field input:focus,.field textarea:focus{outline:2px solid rgba(116,185,255,.25);border-color:#4d6f9e}.inspector .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.empty{color:var(--muted);font-size:13px;line-height:1.55}.edge-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}.edge-item{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7px 8px;background:#0c1119;border:1px solid var(--border);border-radius:6px;font-size:12px}.edge-item button{padding:3px 7px}
-.status{position:absolute;left:12px;bottom:12px;display:flex;gap:8px;align-items:center;z-index:10}.badge{background:rgba(14,19,29,.88);border:1px solid var(--border);color:#c8d2e3;padding:5px 8px;border-radius:6px;font-size:11px;backdrop-filter:blur(7px)}.export-menu{position:relative;display:inline-block}.export-options{position:absolute;right:0;top:calc(100% + 6px);display:flex;flex-direction:column;gap:6px;min-width:178px;padding:8px;background:#101620;border:1px solid var(--border);border-radius:9px;box-shadow:0 16px 44px rgba(0,0,0,.45);z-index:120}.export-options[hidden]{display:none}.export-options .btn{justify-content:flex-start;text-align:left}.workspace.sidebar-collapsed{--sidebar-width:0}.workspace.inspector-collapsed{--inspector-width:0}.workspace.sidebar-collapsed .sidebar,.workspace.inspector-collapsed .inspector{display:none}
+.status{position:absolute;left:12px;bottom:12px;display:flex;gap:8px;align-items:center;z-index:10}.badge{background:rgba(14,19,29,.88);border:1px solid var(--border);color:#c8d2e3;padding:5px 8px;border-radius:6px;font-size:11px;backdrop-filter:blur(7px)}.export-menu{position:relative;display:inline-block}.export-options{position:absolute;right:0;top:calc(100% + 6px);display:flex;flex-direction:column;gap:6px;min-width:178px;padding:8px;background:#101620;border:1px solid var(--border);border-radius:9px;box-shadow:0 16px 44px rgba(0,0,0,.45);z-index:120}.export-options[hidden]{display:none}.export-options .btn{justify-content:flex-start;text-align:left}.workspace.sidebar-collapsed{--sidebar-width:0}.workspace.inspector-collapsed{--inspector-width:0}.workspace.sidebar-collapsed .sidebar,.workspace.inspector-collapsed .inspector{display:none}.selection-summary{background:#1b2536;border:1px solid #3a4a63;color:#cdd9ec;border-radius:7px;padding:8px 10px;font-size:12px;line-height:1.4;margin-bottom:10px}.marquee{position:absolute;border:1px solid rgba(116,185,255,.9);background:rgba(116,185,255,.16);pointer-events:none;z-index:6}
 .dialog{position:fixed;inset:0;background:rgba(0,0,0,.62);display:none;align-items:center;justify-content:center;z-index:100}.dialog.open{display:flex}.modal{width:min(660px,92vw);max-height:84vh;overflow:auto;background:#101620;border:1px solid var(--border);border-radius:11px;padding:18px;box-shadow:0 22px 80px rgba(0,0,0,.5)}.modal h2{margin:0 0 6px}.modal p{margin:0 0 14px;color:var(--muted)}
 .help{display:none;position:fixed;inset:58px 0 0 0;background:var(--bg);z-index:80;overflow:auto}.help.open{display:block}.help-inner{max-width:1000px;margin:0 auto;padding:28px}.hotkeys{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}.hk{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:11px 12px;display:flex;justify-content:space-between;gap:12px}.hk span{color:var(--muted);text-align:right}.notice{padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:#0e141d;color:#c8d2e3;font-size:13px;line-height:1.5}
 .minified .node{width:256px;min-height:128px}.minified .node-head{min-height:38px;font-size:11px}.minified .node-head>div,.minified .node-row>div{padding:6px 8px}.minified .node-body .cell{padding:6px 7px}.minified .node-body strong{font-size:16px}.minified .corner{font-size:12px;padding:3px 5px}.minified .corner.tl,.minified .corner.tr{top:-28px}.minified .corner.bl,.minified .corner.br{bottom:-28px}
@@ -86,12 +86,14 @@
             <defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,4 L0,8 z" fill="#8fa1bb"></path></marker><marker id="arrowFocus" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,4 L0,8 z" fill="#9fc3ff"></path></marker></defs>
           </svg>
         </div>
+        <div class="marquee" id="marquee" hidden></div>
       </div>
       <div class="status"><div class="badge" id="zoomBadge">100 %</div><div class="badge" id="modeBadge">Normal</div><div class="badge" id="selectionBadge">Keine Auswahl</div></div>
     </main>
 
     <aside class="inspector" id="inspector">
       <h3>Node</h3>
+      <div class="selection-summary" id="selectionSummary" hidden></div>
       <div id="inspectorEmpty" class="empty">Click a node to edit its values.</div>
       <div id="inspectorForm" hidden>
         <div class="field"><label>ID</label><input id="fId" type="text"></div>
@@ -149,10 +151,14 @@
       <div class="hk"><strong>M</strong><span>Toggle minify</span></div>
       <div class="hk"><strong>[ / ]</strong><span>Show or hide side panels</span></div>
       <div class="hk"><strong>Mouse click</strong><span>Select connection or node. Delete selected connection or node with Delete.</span></div>
+      <div class="hk"><strong>Shift / Ctrl / Cmd + click</strong><span>Add a node to the selection or remove it again.</span></div>
+      <div class="hk"><strong>Shift + drag</strong><span>Draw a selection box on the canvas to select several nodes.</span></div>
+      <div class="hk"><strong>Drag a selected node</strong><span>Move every selected node together.</span></div>
+      <div class="hk"><strong>Ctrl/Cmd + Arrow</strong><span>Move the whole selection by one grid step.</span></div>
       <div class="hk"><strong>+ / -</strong><span>Change zoom</span></div>
     </div>
     <h2 style="margin-top:28px">Usage</h2>
-    <p class="empty">Nodes can be moved by drag and drop. If the grid is active and 'Snap to grid' is enabled, positions snap to grid points. For connections, activate <b>Connection</b> first, then click the start and target nodes. <b>Auto-sort</b> arranges the nodes into columns that follow their connections; one undo step restores the previous positions.</p>
+    <p class="empty">Nodes can be moved by drag and drop. If the grid is active and 'Snap to grid' is enabled, positions snap to grid points. Hold Shift, Ctrl or Cmd while clicking to select several nodes, or Shift-drag on the canvas to draw a selection box. Dragging one selected node moves the whole selection, and inspector changes apply to every selected node. For connections, activate <b>Connection</b> first, then click the start and target nodes. If several nodes are selected, click the target node to connect each selected node to it. <b>Auto-sort</b> arranges the nodes into columns that follow their connections; one undo step restores the previous positions.</p>
   </div>
 </div>
 
@@ -173,8 +179,8 @@
   const MIN_ZOOM = 0.01;
   const MAX_ZOOM = 2.5;
   const MAX_CANVAS_DIMENSION = 8192;
-  const state = { name: 'Untitled Project', nodes: [], edges: [], selected: null, selectedEdge: null, hoveredEdgeId: null, hoveredNodeId: null, connectMode: false, connectFrom: null, grid: true, snap: true, minified: false, zoom: 1, panX: 80, panY: 80 };
-  const history = { undo: [], redo: [], last: null };
+  const state = { name: 'Untitled Project', nodes: [], edges: [], selected: null, selectedNodes: [], selectedEdge: null, hoveredEdgeId: null, hoveredNodeId: null, connectMode: false, connectFrom: null, grid: true, snap: true, minified: false, zoom: 1, panX: 80, panY: 80 };
+  const history = { undo: [], redo: [] };
   let saveTimer=null, saveInFlight=Promise.resolve(), initializing=true;
   function scheduleSave(){ if(initializing)return; $('saveStatus').textContent='Saving…'; clearTimeout(saveTimer); saveTimer=setTimeout(()=>{void saveNow().catch(()=>{});},180); }
   function saveNow(){
@@ -196,16 +202,24 @@
   }
   function flushProjectSave(){ clearTimeout(saveTimer); return saveNow(); }
   function loadAutosave(){ try { const raw=localStorage.getItem('netzplaner.autosave'); if(!raw)return null; const obj=JSON.parse(raw); return obj?.format==='netzplaner'&&Array.isArray(obj.nodes)&&Array.isArray(obj.edges)?obj:null; } catch { return null; } }
-  function applyProject(obj){ state.name=obj.name||'Untitled Project'; state.nodes=Array.isArray(obj.nodes)?obj.nodes:[]; state.edges=Array.isArray(obj.edges)?obj.edges:[]; state.grid=obj.view?.grid!==false; state.snap=obj.view?.snap!==false; state.minified=!!obj.view?.minified; state.selected=null; state.selectedEdge=null; state.hoveredEdgeId=null; state.hoveredNodeId=null; state.connectMode=false; state.connectFrom=null; projectName.value=state.name; $('gridToggle').checked=state.grid; $('snapToggle').checked=state.snap; }
+  function applyProject(obj){ state.name=obj.name||'Untitled Project'; state.nodes=Array.isArray(obj.nodes)?obj.nodes:[]; state.edges=Array.isArray(obj.edges)?obj.edges:[]; state.grid=obj.view?.grid!==false; state.snap=obj.view?.snap!==false; state.minified=!!obj.view?.minified; clearSelection(); state.hoveredEdgeId=null; state.hoveredNodeId=null; state.connectMode=false; state.connectFrom=null; projectName.value=state.name; $('gridToggle').checked=state.grid; $('snapToggle').checked=state.snap; }
   function exportData(){ state.name=projectName.value.trim()||'Untitled Project'; return {format:'netzplaner',version:1,name:state.name,nodes:state.nodes,edges:state.edges,view:{grid:state.grid,snap:state.snap,minified:state.minified}}; }
 
   function uid(){ return Math.random().toString(36).slice(2,8); }
   function clone(v){ return JSON.parse(JSON.stringify(v)); }
   function snapshot(){ return JSON.stringify({name:state.name,nodes:state.nodes,edges:state.edges,grid:state.grid,snap:state.snap,minified:state.minified}); }
-  function pushHistory(){ const s=snapshot(); if(s===history.last) return; history.undo.push(history.last===null?s:history.last); history.redo=[]; history.last=s; updateUndoButtons(); }
-  function restoreSnapshot(raw){ const s=JSON.parse(raw); state.name=s.name||'Untitled Project'; state.nodes=s.nodes||[]; state.edges=s.edges||[]; state.grid=s.grid!==false; state.snap=s.snap!==false; state.minified=!!s.minified; state.selected=null; state.selectedEdge=null; state.hoveredEdgeId=null; state.hoveredNodeId=null; state.connectMode=false; state.connectFrom=null; projectName.value=state.name; $('gridToggle').checked=state.grid; $('snapToggle').checked=state.snap; render(); }
-  function undo(){ if(!history.undo.length)return; const current=snapshot(); const prev=history.undo.pop(); history.redo.push(current); history.last=prev; restoreSnapshot(prev); updateUndoButtons(); }
-  function redo(){ if(!history.redo.length)return; const current=snapshot(); const next=history.redo.pop(); history.undo.push(current); history.last=next; restoreSnapshot(next); updateUndoButtons(); }
+  function captureSnapshot(stateSnapshot){
+    const latestUndoEntry=history.undo[history.undo.length-1];
+    if(latestUndoEntry===stateSnapshot) return;
+    history.undo.push(stateSnapshot);
+    history.redo=[];
+    updateUndoButtons();
+  }
+  // Call before a mutation so the pre-mutation state becomes the undo step.
+  function pushHistory(){ captureSnapshot(snapshot()); }
+  function restoreSnapshot(raw){ const s=JSON.parse(raw); state.name=s.name||'Untitled Project'; state.nodes=s.nodes||[]; state.edges=s.edges||[]; state.grid=s.grid!==false; state.snap=s.snap!==false; state.minified=!!s.minified; clearSelection(); state.hoveredEdgeId=null; state.hoveredNodeId=null; state.connectMode=false; state.connectFrom=null; projectName.value=state.name; $('gridToggle').checked=state.grid; $('snapToggle').checked=state.snap; render(); }
+  function undo(){ if(!history.undo.length)return; const current=snapshot(); const prev=history.undo.pop(); history.redo.push(current); restoreSnapshot(prev); updateUndoButtons(); }
+  function redo(){ if(!history.redo.length)return; const current=snapshot(); const next=history.redo.pop(); history.undo.push(current); restoreSnapshot(next); updateUndoButtons(); }
   function updateUndoButtons(){ $('undoBtn').disabled=!history.undo.length; $('redoBtn').disabled=!history.redo.length; }
 
   function nodeW(){ return state.minified?256:256; }
@@ -222,9 +236,29 @@
   function fitViewForCompactLayout(){
     if(isCompactLayout()&&state.nodes.length) fitView();
   }
-  function applyTransform(){ scene.style.transform=`translate(${state.panX}px,${state.panY}px) scale(${state.zoom})`; updateGrid(); $('zoomBadge').textContent=Math.round(state.zoom*100)+' %'; $('modeBadge').textContent=state.minified?'Minified':'Normal'; const selectedNode=state.selected?state.nodes.find(n=>n.id===state.selected):null; $('selectionBadge').textContent=selectedNode?'Node '+(selectedNode.data.id||''):(state.selectedEdge?'Connection':'No selection'); }
+  function applyTransform(){ scene.style.transform=`translate(${state.panX}px,${state.panY}px) scale(${state.zoom})`; updateGrid(); $('zoomBadge').textContent=Math.round(state.zoom*100)+' %'; $('modeBadge').textContent=state.minified?'Minified':'Normal'; const selectedCount=selectedNodeIds().length; const selectedNode=nodeById(state.selected); $('selectionBadge').textContent=selectedCount>1?selectedCount+' nodes selected':(selectedNode?'Node '+(selectedNode.data.id||''):(state.selectedEdge?'Connection':'No selection')); }
   function snap(v){ return state.snap&&state.grid ? Math.round(v/GRID_SIZE)*GRID_SIZE : v; }
   function nodeById(id){ return state.nodes.find(n=>n.id===id); }
+  function selectedNodeIds(){ return state.selectedNodes.filter(id=>Boolean(nodeById(id))); }
+  function isNodeSelected(id){ return state.selectedNodes.includes(id); }
+  function clearSelection(){ state.selected=null; state.selectedNodes=[]; state.selectedEdge=null; }
+  function setSelection(ids,primaryId){
+    const uniqueIds=[...new Set(ids)].filter(id=>Boolean(nodeById(id)));
+    state.selectedNodes=uniqueIds;
+    state.selected=uniqueIds.includes(primaryId)?primaryId:(uniqueIds[uniqueIds.length-1]||null);
+    state.selectedEdge=null;
+  }
+  function toggleNodeSelection(id){
+    if(isNodeSelected(id)){
+      state.selectedNodes=state.selectedNodes.filter(nodeId=>nodeId!==id);
+      if(state.selected===id) state.selected=state.selectedNodes[state.selectedNodes.length-1]||null;
+    }else{
+      state.selectedNodes=[...state.selectedNodes,id];
+      state.selected=id;
+    }
+    state.selectedEdge=null;
+  }
+  function hasSelectionModifier(event){ return event.shiftKey||event.ctrlKey||event.metaKey; }
   function screenToWorld(clientX,clientY){ const r=canvas.getBoundingClientRect(); return {x:(clientX-r.left-state.panX)/state.zoom,y:(clientY-r.top-state.panY)/state.zoom}; }
 
   function updateGrid(){
@@ -236,7 +270,8 @@
     $('gridBg')?.classList.toggle('hidden',!state.grid); scene.classList.toggle('minified',state.minified);
     scene.querySelectorAll('.node').forEach(e=>e.remove());
     for(const n of state.nodes){
-      const el=document.createElement('div'); el.className='node'+(state.selected===n.id?' selected ':'')+(state.connectFrom===n.id?' connecting':''); el.dataset.nodeId=n.id; el.tabIndex=0; el.setAttribute('role','button'); el.setAttribute('aria-label',`Knoten ${n.data.id}: ${n.data.task}`); el.style.left=n.x+'px'; el.style.top=n.y+'px';
+      const isConnectionSource=state.connectMode&&isNodeSelected(n.id);
+      const el=document.createElement('div'); el.className='node'+(isNodeSelected(n.id)?' selected ':'')+((state.connectFrom===n.id||isConnectionSource)?' connecting':''); el.dataset.nodeId=n.id; el.tabIndex=0; el.setAttribute('role','button'); el.setAttribute('aria-label',`Knoten ${n.data.id}: ${n.data.task}`); el.style.left=n.x+'px'; el.style.top=n.y+'px';
       const d=n.data;
       el.innerHTML=`<div class="node-corners"><div class="corner tl">${escapeHtml(d.FAZ)}</div><div class="corner tr">${escapeHtml(d.FEZ)}</div><div class="corner bl">${escapeHtml(d.SAZ)}</div><div class="corner br">${escapeHtml(d.SEZ)}</div></div><div class="node-head"><div><div class="label">ID</div><div class="value">${escapeHtml(d.id)}</div></div><div><div class="label">Vorgang</div><div class="value">${escapeHtml(d.task)}</div></div></div><div class="node-body"><div class="cell"><small>Dauer</small><strong>${escapeHtml(d.duration)}</strong></div><div class="cell"><small>FP</small><strong>${escapeHtml(d.FP)}</strong></div><div class="cell"><small>GP</small><strong>${escapeHtml(d.GP)}</strong></div></div>`;
       scene.appendChild(el); attachNodeEvents(el,n.id);
@@ -251,7 +286,7 @@
         e.preventDefault();
         e.stopPropagation();
         if(state.connectMode){ handleConnectClick(id); return; }
-        state.selected=id;
+        setSelection([id],id);
         render();
         focusNodeById(id);
         return;
@@ -259,7 +294,7 @@
       if(e.key==='Delete'||e.key==='Backspace'){
         e.preventDefault();
         e.stopPropagation();
-        state.selected=id;
+        setSelection([id],id);
         deleteSelected();
         return;
       }
@@ -268,6 +303,13 @@
       if(e.button!==0)return;
       e.stopPropagation();
 
+      if(hasSelectionModifier(e)){
+        toggleNodeSelection(id);
+        render();
+        focusNodeById(id);
+        return;
+      }
+
       if(state.connectMode){
         handleConnectClick(id);
         return;
@@ -275,16 +317,24 @@
 
       // Do not call render() here: render() destroys this DOM node and
       // would invalidate pointer capture before the drag even starts.
-      state.selected=id;
-      state.selectedEdge=null;
-      scene.querySelectorAll('.node.selected').forEach(n=>n.classList.remove('selected'));
-      el.classList.add('selected');
+      if(!isNodeSelected(id)) setSelection([id],id);
+      scene.querySelectorAll('.node').forEach(nodeElement=>{
+        nodeElement.classList.toggle('selected',isNodeSelected(nodeElement.dataset.nodeId));
+      });
       renderInspector();
       updateEdgeHighlights();
       applyTransform();
 
-      const n=nodeById(id);
-      drag={sx:e.clientX,sy:e.clientY,ox:n.x,oy:n.y,moved:false};
+      const dragOrigins=new Map();
+      for(const selectedId of selectedNodeIds()){
+        const selectedNode=nodeById(selectedId);
+        if(selectedNode) dragOrigins.set(selectedId,{x:selectedNode.x,y:selectedNode.y});
+      }
+      if(!dragOrigins.has(id)){
+        const draggedNode=nodeById(id);
+        dragOrigins.set(id,{x:draggedNode.x,y:draggedNode.y});
+      }
+      drag={sx:e.clientX,sy:e.clientY,origins:dragOrigins,moved:false,beforeSnapshot:snapshot()};
       el.setPointerCapture(e.pointerId);
     });
     el.addEventListener('pointermove',e=>{
@@ -293,14 +343,23 @@
       const dy=(e.clientY-drag.sy)/state.zoom;
       if(Math.abs(dx)+Math.abs(dy)>2) drag.moved=true;
 
-      const n=nodeById(id);
-      n.x=snap(drag.ox+dx);
-      n.y=snap(drag.oy+dy);
+      const primaryOrigin=drag.origins.get(id);
+      if(!primaryOrigin)return;
+      const offsetX=snap(primaryOrigin.x+dx)-primaryOrigin.x;
+      const offsetY=snap(primaryOrigin.y+dy)-primaryOrigin.y;
 
-      // Move the existing element instead of re-rendering the whole scene.
-      // Re-rendering here destroys the element that owns pointer capture.
-      el.style.left=n.x+'px';
-      el.style.top=n.y+'px';
+      for(const [selectedId,origin] of drag.origins){
+        const selectedNode=nodeById(selectedId);
+        if(!selectedNode) continue;
+        selectedNode.x=origin.x+offsetX;
+        selectedNode.y=origin.y+offsetY;
+        const nodeElement=scene.querySelector(`.node[data-node-id="${CSS.escape(selectedId)}"]`);
+        if(nodeElement){
+          nodeElement.style.left=selectedNode.x+'px';
+          nodeElement.style.top=selectedNode.y+'px';
+        }
+      }
+
       drawEdges();
       renderInspector();
       applyTransform();
@@ -308,8 +367,8 @@
     });
     el.addEventListener('pointerup',e=>{
       if(!drag)return;
-      if(drag.moved){
-        pushHistory();
+      if(drag.moved && drag.beforeSnapshot!==snapshot()){
+        captureSnapshot(drag.beforeSnapshot);
       }
       drag=null;
     });
@@ -365,16 +424,17 @@
     }
     updateEdgeHighlights();
   }
-  function selectEdge(id){ state.selected=null; state.selectedEdge=id; render(); }
+  function selectEdge(id){ clearSelection(); state.selectedEdge=id; render(); }
   function updateEdgeHighlights(){
-    const focusNodeId=state.hoveredNodeId||state.selected;
+    const focusNodeIds=new Set(selectedNodeIds());
+    if(state.hoveredNodeId) focusNodeIds.add(state.hoveredNodeId);
     const focusEdgeId=state.hoveredEdgeId||state.selectedEdge;
     let hasFocusedEdge=false;
     edgesSvg.querySelectorAll('.edge-group').forEach(group=>{
       const edge=state.edges.find(item=>item.id===group.dataset.edgeId);
-      const connectedToFocusNode=Boolean(focusNodeId && edge && (edge.from===focusNodeId||edge.to===focusNodeId));
+      const connectedToFocusNode=Boolean(edge && (focusNodeIds.has(edge.from)||focusNodeIds.has(edge.to)));
       const focused=Boolean(focusEdgeId===group.dataset.edgeId || connectedToFocusNode);
-      const dimmed=Boolean((focusNodeId||focusEdgeId) && !focused);
+      const dimmed=Boolean((focusNodeIds.size||focusEdgeId) && !focused);
       group.classList.toggle('focused',focused);
       group.classList.toggle('dimmed',dimmed);
       if(focused) hasFocusedEdge=true;
@@ -383,8 +443,18 @@
     });
     edgesSvg.classList.toggle('has-focus',hasFocusedEdge);
   }
-  function selectNode(id){ state.selected=id; state.selectedEdge=null; render(); }
-  function deleteSelected(){ if(state.selectedEdge){ deleteEdge(state.selectedEdge); state.selectedEdge=null; render(); return; } if(!state.selected)return; pushHistory(); const doomed=state.selected; state.nodes=state.nodes.filter(n=>n.id!==doomed); state.edges=state.edges.filter(e=>e.from!==doomed&&e.to!==doomed); state.selected=null; render(); }
+  function selectNode(id){ setSelection([id],id); render(); }
+  function deleteSelected(){
+    if(state.selectedEdge){ deleteEdge(state.selectedEdge); state.selectedEdge=null; render(); return; }
+    const doomedIds=selectedNodeIds();
+    if(!doomedIds.length)return;
+    pushHistory();
+    const doomed=new Set(doomedIds);
+    state.nodes=state.nodes.filter(n=>!doomed.has(n.id));
+    state.edges=state.edges.filter(e=>!doomed.has(e.from)&&!doomed.has(e.to));
+    clearSelection();
+    render();
+  }
   function deleteEdge(id){ pushHistory(); state.edges=state.edges.filter(e=>e.id!==id); render(); }
   function addNode(){
     pushHistory();
@@ -396,7 +466,7 @@
     const cx=(r.width/2 - state.panX)/state.zoom - w/2;
     const cy=(r.height/2 - state.panY)/state.zoom - h/2;
     state.nodes.push({id,x:snap(cx),y:snap(cy),data:{id:String(idx),task:'New Operation',duration:'',FAZ:'',FEZ:'',SAZ:'',SEZ:'',FP:'',GP:''}});
-    state.selected=id;
+    setSelection([id],id);
     render();
     focusNodeById(id);
   }
@@ -418,24 +488,71 @@
       node.x=position.x;
       node.y=position.y;
     }
-    const sortedState=snapshot();
-    if(sortedState!==previousState){
-      history.undo.push(previousState);
-      history.redo=[];
-      history.last=sortedState;
-      updateUndoButtons();
-    }
+    if(snapshot()!==previousState) captureSnapshot(previousState);
     render();
     fitView();
   }
-  function handleConnectClick(id){ if(!state.connectFrom){state.connectFrom=id; render(); return;} if(state.connectFrom===id){state.connectFrom=null; render(); return;} if(!state.edges.some(e=>e.from===state.connectFrom&&e.to===id)){pushHistory();state.edges.push({id:uid(),from:state.connectFrom,to:id});} state.connectFrom=null; render(); }
+  function addConnections(sourceIds,targetId){
+    const newEdges=sourceIds
+      .filter(sourceId=>sourceId!==targetId)
+      .filter(sourceId=>!state.edges.some(edge=>edge.from===sourceId&&edge.to===targetId))
+      .map(sourceId=>({id:uid(),from:sourceId,to:targetId}));
+    if(!newEdges.length) return false;
+    pushHistory();
+    state.edges.push(...newEdges);
+    return true;
+  }
+  function handleConnectClick(id){
+    if(state.connectFrom){
+      if(state.connectFrom===id){ state.connectFrom=null; render(); return; }
+      addConnections([state.connectFrom],id);
+      state.connectFrom=null;
+      render();
+      return;
+    }
+    // Several selected nodes act as the sources, so one click on the target
+    // connects all of them. The selection is kept for repeated fan-out.
+    const sourceIds=selectedNodeIds().filter(sourceId=>sourceId!==id);
+    if(sourceIds.length){
+      addConnections(sourceIds,id);
+      render();
+      return;
+    }
+    state.connectFrom=id;
+    render();
+  }
   function toggleConnect(){ state.connectMode=!state.connectMode; state.connectFrom=null; $('connectBtn').classList.toggle('active',state.connectMode); render(); }
   function renderInspector(){
-    const n=nodeById(state.selected); const empty=!n; $('inspectorEmpty').hidden=!empty; $('inspectorForm').hidden=empty; if(empty)return; const d=n.data;
+    const selectedIds=selectedNodeIds();
+    const n=nodeById(state.selected);
+    const empty=!n;
+    const summary=$('selectionSummary');
+    summary.hidden=selectedIds.length<2;
+    summary.textContent=selectedIds.length>1?`${selectedIds.length} nodes selected. Changes apply to every selected node.`:'';
+    const deleteButton=$('deleteSelectedBtn');
+    if(deleteButton) deleteButton.textContent=selectedIds.length>1?`Delete ${selectedIds.length} nodes`:'Delete node';
+    $('inspectorEmpty').hidden=!empty; $('inspectorForm').hidden=empty; if(empty)return; const d=n.data;
     [['fId','id'],['fTask','task'],['fDuration','duration'],['fFAZ','FAZ'],['fFEZ','FEZ'],['fSAZ','SAZ'],['fSEZ','SEZ'],['fFP','FP'],['fGP','GP']].forEach(([id,k])=>$(id).value=d[k]??'');
-    const list=$('edgeList'); list.innerHTML=''; const rel=state.edges.filter(e=>e.from===n.id||e.to===n.id); if(!rel.length){list.innerHTML='<div class="empty">No connections.</div>'} else rel.forEach(e=>{const a=nodeById(e.from),b=nodeById(e.to);const div=document.createElement('div');div.className='edge-item';div.innerHTML=`<span>${escapeHtml(a?.data.id||'?')} → ${escapeHtml(b?.data.id||'?')}</span><button class="btn" data-edge="${e.id}">×</button>`;div.querySelector('button').onclick=()=>deleteEdge(e.id);list.appendChild(div);});
+    const list=$('edgeList'); list.innerHTML=''; const rel=state.edges.filter(e=>selectedIds.includes(e.from)||selectedIds.includes(e.to)); if(!rel.length){list.innerHTML='<div class="empty">No connections.</div>'} else rel.forEach(e=>{const a=nodeById(e.from),b=nodeById(e.to);const div=document.createElement('div');div.className='edge-item';div.innerHTML=`<span>${escapeHtml(a?.data.id||'?')} → ${escapeHtml(b?.data.id||'?')}</span><button class="btn" data-edge="${e.id}">×</button>`;div.querySelector('button').onclick=()=>deleteEdge(e.id);list.appendChild(div);});
   }
-  function bindField(id,key){ $(id).addEventListener('input',()=>{const n=nodeById(state.selected);if(!n)return;n.data[key]=$(id).value; scheduleSave(); if(key==='id'||key==='task') render(); else renderInspector();}); $(id).addEventListener('change',pushHistory); }
+  function bindField(id,key){
+    let beforeEditing=null;
+    $(id).addEventListener('focus',()=>{ beforeEditing=snapshot(); });
+    $(id).addEventListener('input',()=>{
+      const selectedIds=selectedNodeIds();
+      if(!selectedIds.length)return;
+      for(const selectedId of selectedIds){
+        const n=nodeById(selectedId);
+        if(n) n.data[key]=$(id).value;
+      }
+      scheduleSave();
+      if(key==='id'||key==='task') render(); else renderInspector();
+    });
+    $(id).addEventListener('change',()=>{
+      if(beforeEditing!==null && beforeEditing!==snapshot()) captureSnapshot(beforeEditing);
+      beforeEditing=null;
+    });
+  }
   ['fId','fTask','fDuration','fFAZ','fFEZ','fSAZ','fSEZ','fFP','fGP'].forEach((id,i)=>bindField(id,['id','task','duration','FAZ','FEZ','SAZ','SEZ','FP','GP'][i]));
   function focusFirstField(){ $('fTask').focus(); $('fTask').select(); }
 
@@ -474,10 +591,9 @@
         downloadBlob(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),safeFile(state.name)+'.json');
         $('saveStatus').textContent='Project file downloaded';
       }
-      history.last=snapshot();
     }catch(error){$('saveStatus').textContent='Save failed';alert('Could not save project: '+error.message);}
   }
-  function exportProject(){ state.name=projectName.value.trim()||'Untitled Project'; const data=exportData(); void saveNow(); downloadBlob(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),safeFile(state.name)+'.json'); history.last=snapshot(); }
+  function exportProject(){ state.name=projectName.value.trim()||'Untitled Project'; const data=exportData(); void saveNow(); downloadBlob(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),safeFile(state.name)+'.json'); }
   function safeFile(s){ return (s||'netzplan').replace(/[\\/:*?"<>|]+/g,'_').trim()||'netzplan'; }
   function projectRect(){
     const w=nodeW(),h=nodeH(); if(!state.nodes.length) return {x:0,y:0,w:700,h:400}; const xs=state.nodes.map(n=>n.x),ys=state.nodes.map(n=>n.y); const minX=Math.min(...xs)-60,minY=Math.min(...ys)-60,maxX=Math.max(...xs)+w+60,maxY=Math.max(...ys)+h+60; return {x:minX,y:minY,w:Math.max(300,maxX-minX),h:Math.max(220,maxY-minY)};
@@ -692,8 +808,7 @@
               state.grid=obj.view?.grid!==false;
               state.snap=obj.view?.snap!==false;
               state.minified=!!obj.view?.minified;
-              state.selected=null;
-              state.selectedEdge=null;
+              clearSelection();
               state.hoveredEdgeId=null;
               state.hoveredNodeId=null;
               state.connectMode=false;
@@ -719,7 +834,7 @@
       await ProjectActions.startNewProject({
         hasContent:!!(state.nodes.length||state.edges.length),
         confirmDiscard:()=>confirm('Discard current project and start a new project?'),
-        resetProject:()=>{history.undo=[];history.redo=[];history.last=null;state.name='Untitled Project';state.nodes=[];state.edges=[];state.selected=null;state.selectedEdge=null;state.hoveredEdgeId=null;state.hoveredNodeId=null;state.connectMode=false;state.connectFrom=null;projectName.value=state.name;render();updateUndoButtons();},
+        resetProject:()=>{history.undo=[];history.redo=[];state.name='Untitled Project';state.nodes=[];state.edges=[];clearSelection();state.hoveredEdgeId=null;state.hoveredNodeId=null;state.connectMode=false;state.connectFrom=null;projectName.value=state.name;render();updateUndoButtons();},
         persistProject:flushProjectSave
       });
     }catch(error){alert('Could not save the new project: '+error.message);}
@@ -731,7 +846,7 @@
       const recovered=await ProjectActions.restoreLatestProject({
         saveCurrent:flushProjectSave,
         readLatest:()=>window.netzplaner.restoreLatest(),
-        applyRecovered:data=>{applyProject(data);history.undo=[];history.redo=[];history.last=snapshot();render();updateUndoButtons();},
+        applyRecovered:data=>{applyProject(data);history.undo=[];history.redo=[];render();updateUndoButtons();},
         saveRecovered:flushProjectSave
       });
       if(!recovered)alert('No earlier backup found.');
@@ -793,14 +908,17 @@
   $('gridToggle').onchange=()=>{pushHistory();state.grid=$('gridToggle').checked;render();}; $('snapToggle').onchange=()=>{pushHistory();state.snap=$('snapToggle').checked;render();}; $('minifyBtn').onclick=()=>{pushHistory();state.minified=!state.minified;render();fitView();};
   $('zoomInBtn').onclick=()=>{state.zoom=Math.min(MAX_ZOOM,state.zoom*1.15);applyTransform()};$('zoomOutBtn').onclick=()=>{state.zoom=Math.max(MIN_ZOOM,state.zoom/1.15);applyTransform()};$('resetZoomBtn').onclick=()=>{state.zoom=1;applyTransform()};
   $('helpBtn').onclick=()=>$('helpPage').classList.add('open');$('closeHelpBtn').onclick=()=>$('helpPage').classList.remove('open');
-  projectName.addEventListener('input',()=>{state.name=projectName.value; scheduleSave()}); projectName.addEventListener('change',()=>{state.name=projectName.value.trim()||'Untitled Project';projectName.value=state.name; scheduleSave()});
+  let projectNameBeforeEditing=null;
+  projectName.addEventListener('focus',()=>{ projectNameBeforeEditing=snapshot(); });
+  projectName.addEventListener('input',()=>{state.name=projectName.value; scheduleSave()});
+  projectName.addEventListener('change',()=>{state.name=projectName.value.trim()||'Untitled Project';projectName.value=state.name;scheduleSave();if(projectNameBeforeEditing!==null&&projectNameBeforeEditing!==snapshot())captureSnapshot(projectNameBeforeEditing);projectNameBeforeEditing=null;});
   $('nodeSearch').addEventListener('keydown',e=>{
     if(e.key==='Enter'){
       const q=e.target.value.trim().toLowerCase();
       if(!q){ e.target.blur(); return; }
       const found=[...state.nodes].find(n=>(n.data.task||'').toLowerCase().includes(q)||(n.data.id||'').toLowerCase().includes(q));
       if(found){
-        state.selected=found.id;
+        setSelection([found.id],found.id);
         render();
         focusNodeById(found.id);
         $('nodeSearch').value='';
@@ -814,7 +932,8 @@
   });
   // Pan and pinch-zoom canvas
   const activePointers=new Map();
-  let pan=null, pinch=null;
+  const marqueeElement=$('marquee');
+  let pan=null, pinch=null, marquee=null, ignoreNextCanvasClick=false;
   function readPinchPair(){
     const points=[...activePointers.values()];
     return points.length>=2?[points[0],points[1]]:null;
@@ -837,6 +956,7 @@
     canvas.classList.add('dragging');
   }
   function endCanvasPointer(event){
+    if(marquee){ finishMarquee(); return; }
     activePointers.delete(event.pointerId);
     if(activePointers.size<2) pinch=null;
     if(activePointers.size===1){
@@ -847,8 +967,51 @@
       canvas.classList.remove('dragging');
     }
   }
+  function startMarquee(event){
+    const bounds=canvas.getBoundingClientRect();
+    marquee={bounds,startX:event.clientX,startY:event.clientY,currentX:event.clientX,currentY:event.clientY};
+    marqueeElement.hidden=false;
+    updateMarqueeBox();
+    canvas.setPointerCapture(event.pointerId);
+  }
+  function updateMarqueeBox(){
+    const left=Math.min(marquee.startX,marquee.currentX)-marquee.bounds.left;
+    const top=Math.min(marquee.startY,marquee.currentY)-marquee.bounds.top;
+    marqueeElement.style.left=left+'px';
+    marqueeElement.style.top=top+'px';
+    marqueeElement.style.width=Math.abs(marquee.currentX-marquee.startX)+'px';
+    marqueeElement.style.height=Math.abs(marquee.currentY-marquee.startY)+'px';
+  }
+  function resetMarqueeBox(){
+    marquee=null;
+    marqueeElement.hidden=true;
+    marqueeElement.removeAttribute('style');
+  }
+  function finishMarquee(){
+    const left=Math.min(marquee.startX,marquee.currentX);
+    const top=Math.min(marquee.startY,marquee.currentY);
+    const right=Math.max(marquee.startX,marquee.currentX);
+    const bottom=Math.max(marquee.startY,marquee.currentY);
+    const start=screenToWorld(left,top);
+    const end=screenToWorld(right,bottom);
+    const width=nodeW(), height=nodeH();
+    const picked=state.nodes
+      .filter(n=>n.x<end.x&&n.x+width>start.x&&n.y<end.y&&n.y+height>start.y)
+      .map(n=>n.id);
+    resetMarqueeBox();
+    if(picked.length){
+      setSelection([...selectedNodeIds(),...picked]);
+      render();
+    }
+    ignoreNextCanvasClick=true;
+  }
   canvas.addEventListener('pointerdown',e=>{
+    ignoreNextCanvasClick=false;
     if(e.target.closest('.node')||state.connectMode)return;
+    if(e.shiftKey){
+      startMarquee(e);
+      return;
+    }
     activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
     canvas.setPointerCapture(e.pointerId);
     if(activePointers.size===1){
@@ -860,6 +1023,12 @@
     }
   });
   canvas.addEventListener('pointermove',e=>{
+    if(marquee){
+      marquee.currentX=e.clientX;
+      marquee.currentY=e.clientY;
+      updateMarqueeBox();
+      return;
+    }
     if(!activePointers.has(e.pointerId))return;
     activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
     if(pinch&&activePointers.size>=2){
@@ -878,7 +1047,7 @@
     applyTransform();
   });
   canvas.addEventListener('pointerup',endCanvasPointer);
-  canvas.addEventListener('pointercancel',endCanvasPointer);
+  canvas.addEventListener('pointercancel',event=>{ if(marquee) resetMarqueeBox(); endCanvasPointer(event); });
   canvas.addEventListener('lostpointercapture',endCanvasPointer);
   canvas.addEventListener('wheel',e=>{e.preventDefault();const factor=e.deltaY<0?1.08:.93;const before=screenToWorld(e.clientX,e.clientY);state.zoom=Math.max(MIN_ZOOM,Math.min(MAX_ZOOM,state.zoom*factor));const after=screenToWorld(e.clientX,e.clientY);state.panX += (after.x-before.x)*state.zoom;state.panY += (after.y-before.y)*state.zoom;applyTransform()},{passive:false});
   const inspectorFields=['fId','fTask','fDuration','fFAZ','fFEZ','fSAZ','fSEZ','fFP','fGP'];
@@ -887,7 +1056,7 @@
     if(!state.nodes.length)return;
     if(!state.selected){
       const n=[...state.nodes].sort((a,b)=>(a.y-b.y)||(a.x-b.x))[0];
-      state.selected=n.id;
+      setSelection([n.id],n.id);
       render();
       focusNodeById(n.id);
       return;
@@ -934,7 +1103,7 @@
       }
     }
     if(best){
-      state.selected=best.id;
+      setSelection([best.id],best.id);
       render();
       focusNodeById(best.id);
     }
@@ -975,20 +1144,23 @@
       }
     }
     if(!editing && mod && (e.key==='ArrowUp'||e.key==='ArrowDown'||e.key==='ArrowLeft'||e.key==='ArrowRight')){
-      if(state.selected){
-        const n=nodeById(state.selected);
-        if(n){
-          const step=e.shiftKey?GRID_SIZE:GRID_SIZE;
+      const selectedIds=selectedNodeIds();
+      if(selectedIds.length){
+        const step=GRID_SIZE;
+        const beforeMoving=snapshot();
+        for(const selectedId of selectedIds){
+          const n=nodeById(selectedId);
+          if(!n) continue;
           if(e.key==='ArrowUp')n.y=snap(n.y-step);
           if(e.key==='ArrowDown')n.y=snap(n.y+step);
           if(e.key==='ArrowLeft')n.x=snap(n.x-step);
           if(e.key==='ArrowRight')n.x=snap(n.x+step);
-          pushHistory();
-          render();
-          focusNodeById(n.id);
-          e.preventDefault();
-          return;
         }
+        if(beforeMoving!==snapshot()) captureSnapshot(beforeMoving);
+        render();
+        if(state.selected) focusNodeById(state.selected);
+        e.preventDefault();
+        return;
       }
     }
     if(!editing && !mod && (e.key==='ArrowUp'||e.key==='ArrowDown'||e.key==='ArrowLeft'||e.key==='ArrowRight')){
@@ -1010,7 +1182,7 @@
       }
     }
     if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();deleteSelected();return;}
-    if(e.key==='Escape'){state.connectMode=false;state.connectFrom=null;$('connectBtn').classList.remove('active');state.selected=null;state.selectedEdge=null;render();return;}
+    if(e.key==='Escape'){state.connectMode=false;state.connectFrom=null;$('connectBtn').classList.remove('active');clearSelection();render();return;}
     if(e.key.toLowerCase()==='n'){e.preventDefault();addNode();return;}
     if(e.key.toLowerCase()==='e'){e.preventDefault();toggleConnect();return;}
     if(e.key.toLowerCase()==='f'){e.preventDefault();fitView();return;}
@@ -1021,13 +1193,16 @@
     if(e.key==='+'){e.preventDefault();$('zoomInBtn').click();return;}
     if(e.key==='-'){e.preventDefault();$('zoomOutBtn').click();return;}
   });
-  $('canvas').addEventListener('click',e=>{if(e.target===canvas&&!state.connectMode){state.selected=null;state.selectedEdge=null;render();}});
+  $('canvas').addEventListener('click',e=>{
+    if(ignoreNextCanvasClick){ ignoreNextCanvasClick=false; return; }
+    if(e.target===canvas&&!state.connectMode){ clearSelection(); render(); }
+  });
   window.addEventListener('resize',()=>applyTransform());
   // Initial example-free project: nothing is calculated or populated.
   window.flushProjectSave=flushProjectSave;
   const startupProject=loadAutosave(); if(startupProject) applyProject(startupProject);
-  history.last=snapshot();updateUndoButtons();render();fitViewForCompactLayout();
-  if(window.netzplaner?.loadProject){ window.netzplaner.loadProject().then(saved=>{ if(saved && !startupProject){ applyProject(saved); history.last=snapshot(); } initializing=false; render();fitViewForCompactLayout(); }).catch(()=>{ initializing=false; render(); }); } else { initializing=false; render(); }
+  updateUndoButtons();render();fitViewForCompactLayout();
+  if(window.netzplaner?.loadProject){ window.netzplaner.loadProject().then(saved=>{ if(saved && !startupProject){ applyProject(saved); } initializing=false; render();fitViewForCompactLayout(); }).catch(()=>{ initializing=false; render(); }); } else { initializing=false; render(); }
   window.addEventListener('beforeunload',()=>{ try{localStorage.setItem('netzplaner.autosave',JSON.stringify(exportData()));}catch{} });
   document.addEventListener('visibilitychange',()=>{ if(document.hidden){ void flushProjectSave().catch(()=>{}); } });
   window.addEventListener('pagehide',()=>{ void flushProjectSave().catch(()=>{}); });
