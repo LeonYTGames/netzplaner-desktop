@@ -170,7 +170,7 @@
       <div class="hk"><strong>+ / -</strong><span>Change zoom</span></div>
     </div>
     <h2 style="margin-top:28px">Usage</h2>
-    <p class="empty">Nodes can be moved by drag and drop. If the grid is active and 'Snap to grid' is enabled, positions snap to grid points. Hold Shift, Ctrl or Cmd while clicking to select several nodes, or Shift-drag on the canvas to draw a selection box. Dragging one selected node moves the whole selection, and inspector changes apply to every selected node. Connections are drawn as smooth bezier curves between the closest facing node sides. Select a connection to show its handles: drag them to bend the curve, double-click the line to add a point, double-click a handle to remove it, or use the inspector to add, remove, and reset curve points. For connections, activate <b>Connection</b> first, then click the start and target nodes. If several nodes are selected, click the target node to connect each selected node to it. <b>Auto-sort</b> arranges the nodes into columns that follow their connections; one undo step restores the previous positions.</p>
+    <p class="empty">Nodes can be moved by drag and drop. If the grid is active and 'Snap to grid' is enabled, positions snap to grid points. Hold Shift, Ctrl or Cmd while clicking to select several nodes, or Shift-drag on the canvas to draw a selection box. Dragging one selected node moves the whole selection, and inspector changes apply to every selected node. Connections are drawn as smooth curves between the closest facing node sides and automatically route around nodes when needed. Select a connection to show its handles: drag them to bend the curve, double-click the line to add a point, double-click a handle to remove it, or use the inspector to add, remove, and reset curve points. For connections, activate <b>Connection</b> first, then click the start and target nodes. If several nodes are selected, click the target node to connect each selected node to it. <b>Auto-sort</b> arranges the nodes into columns that follow their connections; one undo step restores the previous positions.</p>
   </div>
 </div>
 
@@ -273,14 +273,25 @@
   function hasSelectionModifier(event){ return event.shiftKey||event.ctrlKey||event.metaKey; }
   function screenToWorld(clientX,clientY){ const r=canvas.getBoundingClientRect(); return {x:(clientX-r.left-state.panX)/state.zoom,y:(clientY-r.top-state.panY)/state.zoom}; }
   function edgeWaypoints(edge){ return Array.isArray(edge.waypoints)?edge.waypoints:[]; }
+  let cachedEdgeRoutes=null,cachedEdgeRouteSignature='',fastEdgeRouting=false;
   function currentEdgeRoutes(){
-    return NetzplanerEdgeRouting.computeEdgeRoutes({
+    const signature=[
+      fastEdgeRouting?'fast':'full',
+      nodeW()+'x'+nodeH(),
+      ...state.nodes.map(node=>`${node.id},${node.x},${node.y}`),
+      ...state.edges.map(edge=>`${edge.id},${edge.from},${edge.to}`)
+    ].join('|');
+    if(cachedEdgeRoutes&&cachedEdgeRouteSignature===signature) return cachedEdgeRoutes;
+    cachedEdgeRoutes=NetzplanerEdgeRouting.computeEdgeRoutes({
       nodes:state.nodes,
       edges:state.edges,
       nodeWidth:nodeW(),
       nodeHeight:nodeH(),
-      gridSize:GRID_SIZE
+      gridSize:GRID_SIZE,
+      directOnly:fastEdgeRouting
     });
+    cachedEdgeRouteSignature=signature;
+    return cachedEdgeRoutes;
   }
   function routeForEdge(edgeId){ return currentEdgeRoutes().find(route=>route.edgeId===edgeId)||null; }
   function edgeCurvePoints(route,edge){
@@ -289,7 +300,12 @@
     return [route.points[0],...waypoints.map(point=>[point.x,point.y]),route.points[route.points.length-1]];
   }
   function edgeCurvePath(route,edge){
-    return NetzplanerEdgeRouting.buildBezierPath(edgeCurvePoints(route,edge),{startSide:route.startSide,endSide:route.endSide});
+    const hasWaypoints=edgeWaypoints(edge).length>0;
+    return NetzplanerEdgeRouting.buildBezierPath(edgeCurvePoints(route,edge),{
+      startSide:route.startSide,
+      endSide:route.endSide,
+      rounded:!hasWaypoints&&route.kind==='avoiding'
+    });
   }
   function ensureEdgeWaypoints(edge,route){
     if(!edgeWaypoints(edge).length){
@@ -493,6 +509,7 @@
         }
       }
 
+      fastEdgeRouting=true;
       drawEdges();
       renderInspector();
       applyTransform();
@@ -504,9 +521,11 @@
         captureSnapshot(drag.beforeSnapshot);
       }
       drag=null;
+      finishFastEdgeRouting();
     });
     el.addEventListener('pointercancel',()=>{
       drag=null;
+      finishFastEdgeRouting();
     });
     el.addEventListener('pointerenter',()=>{
       if(state.hoveredNodeId===id)return;
@@ -519,6 +538,11 @@
       updateEdgeHighlights();
     });
     el.addEventListener('dblclick',e=>{ e.stopPropagation(); focusFirstField(); });
+  }
+  function finishFastEdgeRouting(){
+    if(!fastEdgeRouting) return;
+    fastEdgeRouting=false;
+    drawEdges();
   }
   function drawEdges(){
     edgesSvg.querySelectorAll('.edge-group').forEach(e=>e.remove());

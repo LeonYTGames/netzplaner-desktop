@@ -137,6 +137,57 @@ test('separates backward connections arriving at the same target', () => {
   assert.notEqual(firstEndY, secondEndY);
 });
 
+test('orders source ports by the destination they lead to', () => {
+  const routes = computeRoutes(
+    [
+      createNode('a', 0, 0),
+      createNode('lower', 512, 320),
+      createNode('upper', 512, -320)
+    ],
+    [createEdge('to-lower', 'a', 'lower'), createEdge('to-upper', 'a', 'upper')]
+  );
+
+  assert.ok(routeById(routes, 'to-upper').points[0][1] < routeById(routes, 'to-lower').points[0][1]);
+});
+
+test('routes around an unrelated node in the direct path', () => {
+  const routes = computeRoutes(
+    [
+      createNode('a', 0, 0),
+      createNode('blocker', 384, -40),
+      createNode('b', 1024, 0)
+    ],
+    [createEdge('e1', 'a', 'b')]
+  );
+  const route = routeById(routes, 'e1');
+
+  assert.equal(route.kind, 'avoiding');
+  assert.ok(route.points.length > 4);
+  for (const point of route.points) {
+    const insideBlocker = point[0] > 384 + 2 && point[0] < 384 + NODE_WIDTH - 2 &&
+      point[1] > -40 + 2 && point[1] < -40 + NODE_HEIGHT - 2;
+    assert.equal(insideBlocker, false);
+  }
+});
+
+test('can skip obstacle avoidance for fast drag previews', () => {
+  const routes = computeEdgeRoutes({
+    nodes: [
+      createNode('a', 0, 0),
+      createNode('blocker', 384, -40),
+      createNode('b', 1024, 0)
+    ],
+    edges: [createEdge('e1', 'a', 'b')],
+    nodeWidth: NODE_WIDTH,
+    nodeHeight: NODE_HEIGHT,
+    gridSize: GRID_SIZE,
+    directOnly: true
+  });
+
+  assert.equal(routeById(routes, 'e1').kind, 'bezier');
+  assert.equal(routeById(routes, 'e1').points.length, 4);
+});
+
 test('ignores self connections and edges with missing nodes', () => {
   const routes = computeRoutes(
     [createNode('a', 0, 0), createNode('b', 512, 0)],
@@ -168,6 +219,15 @@ test('builds a cubic bezier path through custom waypoints', () => {
   assert.match(path, /^M 0 0/);
   assert.ok(path.endsWith('300 0'));
   assert.equal((path.match(/ C /g) || []).length, 3);
+});
+
+test('rounds orthogonal corners without overshooting them', () => {
+  const path = buildBezierPath([[0, 0], [100, 0], [100, 100], [200, 100]], { rounded: true });
+
+  assert.match(path, /^M 0 0/);
+  assert.match(path, / Q 100 0 /);
+  assert.doesNotMatch(path, / C /);
+  assert.ok(path.endsWith('200 100'));
 });
 
 test('keeps endpoint handles inside the first and last segment', () => {
