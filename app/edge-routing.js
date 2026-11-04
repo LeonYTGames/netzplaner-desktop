@@ -129,26 +129,64 @@
 
   function createRoute(kind, rawPoints) {
     const points = removeDuplicatePoints(rawPoints);
-    return { kind, points, path: pointsToPath(points) };
+    return { kind, points, path: buildBezierPath(points) };
   }
 
   function removeDuplicatePoints(points) {
     return points.filter((point, index) => {
       if (index === 0) return true;
       const previous = points[index - 1];
-      return point[0] !== previous[0] || point[1] !== previous[1];
+      return coordinate(point, 0) !== coordinate(previous, 0) || coordinate(point, 1) !== coordinate(previous, 1);
     });
   }
 
-  function pointsToPath(points) {
-    return points
-      .map((point, index) => `${index === 0 ? 'M' : 'L'} ${roundCoordinate(point[0])} ${roundCoordinate(point[1])}`)
-      .join(' ');
+  function coordinate(point, index) {
+    return Array.isArray(point) ? point[index] : (index === 0 ? point.x : point.y);
+  }
+
+  function toPathPoint(point) {
+    const x = coordinate(point, 0);
+    const y = coordinate(point, 1);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+    return { x, y };
+  }
+
+  // Builds a cubic bezier chain through every point. End tangents stay
+  // horizontal so the curve leaves and enters nodes cleanly, while interior
+  // points use Catmull-Rom tangents for a smooth, bendable line.
+  function buildBezierPath(rawPoints) {
+    if (!Array.isArray(rawPoints)) return '';
+    const points = removeDuplicatePoints(rawPoints.map(toPathPoint).filter(Boolean));
+    if (points.length < 2) return '';
+
+    const parts = [`M ${roundCoordinate(points[0].x)} ${roundCoordinate(points[0].y)}`];
+    for (let index = 0; index < points.length - 1; index += 1) {
+      const start = points[index];
+      const end = points[index + 1];
+      const previous = points[index - 1] || start;
+      const next = points[index + 2] || end;
+      // Keep endpoint handles short enough that they never overshoot the
+      // first or last segment; otherwise the curve forms a small hook where
+      // it leaves or enters a node.
+      const endpointHandleLength = Math.min(32, Math.max(12, Math.abs(end.x - start.x) * 0.5));
+      const startHandle = index === 0
+        ? { x: start.x + endpointHandleLength, y: start.y }
+        : { x: start.x + (end.x - previous.x) / 6, y: start.y + (end.y - previous.y) / 6 };
+      const endHandle = index === points.length - 2
+        ? { x: end.x - endpointHandleLength, y: end.y }
+        : { x: end.x - (next.x - start.x) / 6, y: end.y - (next.y - start.y) / 6 };
+      parts.push(
+        `C ${roundCoordinate(startHandle.x)} ${roundCoordinate(startHandle.y)} ` +
+        `${roundCoordinate(endHandle.x)} ${roundCoordinate(endHandle.y)} ` +
+        `${roundCoordinate(end.x)} ${roundCoordinate(end.y)}`
+      );
+    }
+    return parts.join(' ');
   }
 
   function roundCoordinate(value) {
     return Math.round(value * 100) / 100;
   }
 
-  return Object.freeze({ computeEdgeRoutes });
+  return Object.freeze({ computeEdgeRoutes, buildBezierPath });
 });

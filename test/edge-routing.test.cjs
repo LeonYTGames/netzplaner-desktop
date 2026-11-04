@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const { computeEdgeRoutes } = require('../app/edge-routing.js');
+const { computeEdgeRoutes, buildBezierPath } = require('../app/edge-routing.js');
 
 const NODE_WIDTH = 256;
 const NODE_HEIGHT = 160;
@@ -166,6 +166,43 @@ test('ignores self connections and edges with missing nodes', () => {
   );
 
   assert.deepEqual(routes.map(route => route.edgeId), ['valid']);
+});
+
+test('renders computed routes as cubic bezier paths instead of straight segments', () => {
+  const routes = computeRoutes(
+    [createNode('a', 0, 0), createNode('b', 512, 64)],
+    [createEdge('e1', 'a', 'b')]
+  );
+  const route = routeById(routes, 'e1');
+
+  assert.match(route.path, /^M /);
+  assert.doesNotMatch(route.path, / L /);
+  assert.equal((route.path.match(/ C /g) || []).length, route.points.length - 1);
+});
+
+test('builds a cubic bezier path through custom waypoints', () => {
+  const path = buildBezierPath([[0, 0], [100, -80], [200, 40], [300, 0]]);
+
+  assert.match(path, /^M 0 0/);
+  assert.ok(path.endsWith('300 0'));
+  assert.equal((path.match(/ C /g) || []).length, 3);
+});
+
+test('keeps endpoint handles inside the first and last segment', () => {
+  const path = buildBezierPath([[0, 0], [16, 0], [16, 100], [32, 100]]);
+  const coordinates = path.match(/-?\d+(?:\.\d+)?/g).map(Number);
+
+  const firstControlX = coordinates[2];
+  const lastControlX = coordinates[coordinates.length - 4];
+
+  assert.ok(firstControlX > 0 && firstControlX <= 16);
+  assert.ok(lastControlX >= 16 && lastControlX < 32);
+});
+
+test('returns an empty bezier path when fewer than two points are given', () => {
+  assert.equal(buildBezierPath([[10, 10]]), '');
+  assert.equal(buildBezierPath([]), '');
+  assert.equal(buildBezierPath(null), '');
 });
 
 test('rejects invalid node dimensions', () => {
