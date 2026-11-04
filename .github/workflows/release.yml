@@ -85,7 +85,7 @@ jobs:
           retention-days: 5
 
   build-android:
-    name: Build Android debug APK
+    name: Build Android APK
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -111,14 +111,18 @@ jobs:
         run: npm ci
       - name: Copy web assets into the Android project
         run: npx cap sync android
-      - name: Build debug APK
+      - name: Build APK
         working-directory: android
         run: ./gradlew assembleDebug --no-daemon
+      - name: Name release asset
+        run: |
+          version=$(node -p "require('./package.json').version")
+          cp android/app/build/outputs/apk/debug/app-debug.apk "Netzplaner-${version}-android-universal.apk"
       - name: Upload Android APK
         uses: actions/upload-artifact@v4
         with:
-          name: Android-debug
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: Android
+          path: Netzplaner-*-android-universal.apk
           if-no-files-found: error
           retention-days: 5
 
@@ -151,14 +155,15 @@ jobs:
             build
       - name: Package unsigned app
         run: |
+          version=$(node -p "require('./package.json').version")
           ditto -c -k --sequesterRsrc --keepParent \
             ios/DerivedData/Build/Products/Release-iphoneos/App.app \
-            Netzplaner-ios-unsigned.zip
+            "Netzplaner-${version}-ios-arm64.zip"
       - name: Upload iOS app
         uses: actions/upload-artifact@v4
         with:
-          name: iOS-unsigned
-          path: Netzplaner-ios-unsigned.zip
+          name: iOS
+          path: Netzplaner-*-ios-arm64.zip
           if-no-files-found: error
           retention-days: 5
 
@@ -181,9 +186,12 @@ jobs:
           body: |
             Automated desktop and mobile builds from master commit `${{ github.sha }}`.
 
-            Desktop installers are ready to run. The Android APK is a debug build.
-            The iOS app is unsigned and has to be signed before it can be installed
-            on a device. This release is generated on every push to `master`.
+            Assets are named `Netzplaner-<version>-<architecture>.<extension>`.
+            Mobile assets also include the platform, for example
+            `Netzplaner-1.0.0-android-universal.apk` and `Netzplaner-1.0.0-ios-arm64.zip`.
+            Desktop installers are ready to run. The iOS app is unsigned and has to be
+            signed before it can be installed on a device. See the README for
+            installation instructions. This release is generated on every push to `master`.
           target_commitish: ${{ github.sha }}
           files: release-assets/*
           fail_on_unmatched_files: true
