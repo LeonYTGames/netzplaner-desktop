@@ -170,7 +170,7 @@
       <div class="hk"><strong>+ / -</strong><span>Change zoom</span></div>
     </div>
     <h2 style="margin-top:28px">Usage</h2>
-    <p class="empty">Nodes can be moved by drag and drop. If the grid is active and 'Snap to grid' is enabled, positions snap to grid points. Hold Shift, Ctrl or Cmd while clicking to select several nodes, or Shift-drag on the canvas to draw a selection box. Dragging one selected node moves the whole selection, and inspector changes apply to every selected node. Connections are drawn as smooth bezier curves. Select a connection to show its handles: drag them to bend the curve, double-click the line to add a point, double-click a handle to remove it, or use the inspector to add, remove, and reset curve points. For connections, activate <b>Connection</b> first, then click the start and target nodes. If several nodes are selected, click the target node to connect each selected node to it. <b>Auto-sort</b> arranges the nodes into columns that follow their connections; one undo step restores the previous positions.</p>
+    <p class="empty">Nodes can be moved by drag and drop. If the grid is active and 'Snap to grid' is enabled, positions snap to grid points. Hold Shift, Ctrl or Cmd while clicking to select several nodes, or Shift-drag on the canvas to draw a selection box. Dragging one selected node moves the whole selection, and inspector changes apply to every selected node. Connections are drawn as smooth bezier curves between the closest facing node sides. Select a connection to show its handles: drag them to bend the curve, double-click the line to add a point, double-click a handle to remove it, or use the inspector to add, remove, and reset curve points. For connections, activate <b>Connection</b> first, then click the start and target nodes. If several nodes are selected, click the target node to connect each selected node to it. <b>Auto-sort</b> arranges the nodes into columns that follow their connections; one undo step restores the previous positions.</p>
   </div>
 </div>
 
@@ -288,7 +288,9 @@
     if(!waypoints.length) return route.points;
     return [route.points[0],...waypoints.map(point=>[point.x,point.y]),route.points[route.points.length-1]];
   }
-  function edgeCurvePath(route,edge){ return NetzplanerEdgeRouting.buildBezierPath(edgeCurvePoints(route,edge)); }
+  function edgeCurvePath(route,edge){
+    return NetzplanerEdgeRouting.buildBezierPath(edgeCurvePoints(route,edge),{startSide:route.startSide,endSide:route.endSide});
+  }
   function ensureEdgeWaypoints(edge,route){
     if(!edgeWaypoints(edge).length){
       edge.waypoints=route.points.slice(1,-1).map(([x,y])=>({x,y}));
