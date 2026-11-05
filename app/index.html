@@ -704,6 +704,7 @@
     render();
   }
   function toggleConnect(){ state.connectMode=!state.connectMode; state.connectFrom=null; $('connectBtn').classList.toggle('active',state.connectMode); render(); }
+  
   function renderInspector(){
     const selectedIds=selectedNodeIds();
     const n=nodeById(state.selected);
@@ -722,8 +723,9 @@
     if(!n) return;
     const d=n.data;
     [['fId','id'],['fTask','task'],['fDuration','duration'],['fFAZ','FAZ'],['fFEZ','FEZ'],['fSAZ','SAZ'],['fSEZ','SEZ'],['fFP','FP'],['fGP','GP']].forEach(([id,k])=>$(id).value=d[k]??'');
-    const list=$('edgeList'); list.innerHTML=''; const rel=state.edges.filter(e=>selectedIds.includes(e.from)||selectedIds.includes(e.to)); if(!rel.length){list.innerHTML='<div class="empty">No connections.</div>'} else rel.forEach(e=>{const a=nodeById(e.from),b=nodeById(e.to);const div=document.createElement('div');div.className='edge-item';div.innerHTML=`<span>${escapeHtml(a?.data.id||'?')} → ${escapeHtml(b?.data.id||'?')}</span><button class="btn" data-edge="${e.id}">×</button>`;div.querySelector('button').onclick=()=>deleteEdge(e.id);list.appendChild(div);});
+    const list=$('edgeList'); list.innerHTML=''; const rel=state.edges.filter(e=>selectedIds.includes(e.from)||selectedIds.includes(e.to)); if(!rel.length){list.innerHTML='<div class="empty">No connections.</div>'} else rel.forEach(e=>{const a=nodeById(e.from),b=nodeById(e.to);const div=document.createElement('div');div.className='edge-item';div.innerHTML=`<span>${escapeHtml(a?.data.task||'?')} (${escapeHtml(a?.data.id||'?')}) → ${escapeHtml(b?.data.task||'?')} (${escapeHtml(b?.data.id||'?')})</span><button class="btn" data-edge="${e.id}">×</button>`;div.querySelector('button').onclick=()=>deleteEdge(e.id);list.appendChild(div);});
   }
+
   function renderEdgeInspector(edge){
     const source=nodeById(edge.from);
     const target=nodeById(edge.to);
